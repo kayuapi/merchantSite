@@ -28,6 +28,7 @@ import { createFirestoreInstance } from 'redux-firestore';
 import { AmplifySignOut, withAuthenticator } from '@aws-amplify/ui-react';
 // import { Auth } from 'aws-amplify';
 import customRoutes from './customRoutes';
+import Dashboard from './Dashboard';
 // import { ConfirmSignIn, ConfirmSignUp, ForgotPassword, RequireNewPassword, SignIn, SignUp, VerifyContact } from 'aws-amplify-react';
 
 
@@ -91,6 +92,7 @@ const App = () => {
             <Admin 
             customRoutes={customRoutes}
             layout={Layout}
+            dashboard={Dashboard}
             // loginPage={MyLoginPage}
             logoutButton={MyLogoutButton}
             // authProvider={authProvider}
@@ -100,7 +102,7 @@ const App = () => {
             >
                 
                 <Resource name="menuItems" {...menuItems} />
-                <Resource name="categories" {...categories} />
+                {/* <Resource name="categories" {...categories} /> */}
             </Admin>
         </ReactReduxFirebaseProvider>
     </Provider>

@@ -18,7 +18,7 @@ const Menu = ({ onMenuClick, logout }) => {
     return (
         <div>
             {' '}
-            {resources.map(resource => (
+            {/* {resources.map(resource => (
               <MenuItemLink
                 key={resource.name}
                 to={`/${resource.name}`}
@@ -26,7 +26,7 @@ const Menu = ({ onMenuClick, logout }) => {
                 leftIcon={createElement(resource.icon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
-              />))}
+              />))} */}
               {/* <MenuItemLink
                 to={`/qrcode`}
                 primaryText={"Qr code"}
@@ -55,13 +55,13 @@ const Menu = ({ onMenuClick, logout }) => {
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
               />
-              <MenuItemLink
+              {/* <MenuItemLink
                 to={`/playground`}
                 primaryText={"Playground"}
                 leftIcon={createElement(OrderMemoIcon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
-              />
+              /> */}
 
             {isXSmall && logout}
         </div>
