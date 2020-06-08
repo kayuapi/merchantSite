@@ -1,0 +1,7 @@
+{
+    "tableName": "amplifyChmboxorderingDdb",
+    "partitionKeyName": "shopId",
+    "partitionKeyType": "S",
+    "sortKeyName": "SK",
+    "sortKeyType": "S"
+}

@@ -1,0 +1,204 @@
+{
+  "items": {
+    "L": [
+      {
+        "M": {
+          "image": {
+            "S": "https://source.unsplash.com/400x400/?coffee"
+          },
+          "name": {
+            "S": "Chocolate coffee"
+          },
+          "price": {
+            "S": "from RM3"
+          },
+          "uiLocation": {
+            "M": {
+              "h": {
+                "N": "2"
+              },
+              "w": {
+                "N": "1"
+              },
+              "x": {
+                "N": "0"
+              },
+              "y": {
+                "N": "0"
+              }
+            }
+          },
+          "variants": {
+            "L": [
+              {
+                "M": {
+                  "name": {
+                    "S": "Small"
+                  },
+                  "price": {
+                    "S": "RM 4"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "name": {
+                    "S": "Medium"
+                  },
+                  "price": {
+                    "S": "RM 5"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "name": {
+                    "S": "Big"
+                  },
+                  "price": {
+                    "S": "RM 6"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "M": {
+          "image": {
+            "S": "https://source.unsplash.com/400x400/?coffee"
+          },
+          "name": {
+            "S": "Strawberry coffee"
+          },
+          "price": {
+            "S": "from RM4"
+          },
+          "uiLocation": {
+            "M": {
+              "h": {
+                "N": "2"
+              },
+              "w": {
+                "N": "1"
+              },
+              "x": {
+                "N": "1"
+              },
+              "y": {
+                "N": "0"
+              }
+            }
+          },
+          "variants": {
+            "L": [
+              {
+                "M": {
+                  "name": {
+                    "S": "Small"
+                  },
+                  "price": {
+                    "S": "RM 4"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "name": {
+                    "S": "Medium"
+                  },
+                  "price": {
+                    "S": "RM 5"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "name": {
+                    "S": "Big"
+                  },
+                  "price": {
+                    "S": "RM 6"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "M": {
+          "image": {
+            "S": "https://source.unsplash.com/400x400/?coffee"
+          },
+          "name": {
+            "S": "Banana coffee"
+          },
+          "price": {
+            "S": "from RM3"
+          },
+          "uiLocation": {
+            "M": {
+              "h": {
+                "N": "2"
+              },
+              "w": {
+                "N": "1"
+              },
+              "x": {
+                "N": "0"
+              },
+              "y": {
+                "N": "1"
+              }
+            }
+          },
+          "variants": {
+            "L": [
+              {
+                "M": {
+                  "name": {
+                    "S": "Small"
+                  },
+                  "price": {
+                    "S": "RM 4"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "name": {
+                    "S": "Medium"
+                  },
+                  "price": {
+                    "S": "RM 5"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "name": {
+                    "S": "Big"
+                  },
+                  "price": {
+                    "S": "RM 6"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "pageName": {
+    "S": "Coffee"
+  },
+  "shopId": {
+    "S": "ap-southeast-1:3237ef5f-ab3a-433a-a09f-24c25852d86e"
+  },
+  "SK": {
+    "S": "PluginMenu#Page1"
+  }
+}

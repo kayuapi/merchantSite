@@ -1,0 +1,44 @@
+{
+    "paths": [
+        {
+            "name": "/uiplugin",
+            "lambdaFunction": "adminfrontendamplify4cb2a585",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
+        }
+    ],
+    "resourceName": "amplifyChmboxOrderingApi",
+    "apiName": "amplifyChmboxOrderingApi",
+    "functionArns": [
+        {
+            "lambdaFunction": "adminfrontendamplify4cb2a585"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 1,
+        "authRoleName": "amplify-adminfrontendamplify-dev-191430-authRole",
+        "unAuthRoleName": "amplify-adminfrontendamplify-dev-191430-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "adminfrontendamplify4cb2a585",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
