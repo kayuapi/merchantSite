@@ -17,7 +17,7 @@ import { Provider } from 'react-redux';
 import { createHashHistory } from 'history';
 import createAdminStore from './createAdminStore';
 // import { createStore, combineReducers, compose } from 'redux';
-import authProvider from './authProvider';
+// import authProvider from './authProvider';
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -28,6 +28,7 @@ import { createFirestoreInstance } from 'redux-firestore';
 import { AmplifySignOut, withAuthenticator } from '@aws-amplify/ui-react';
 // import { Auth } from 'aws-amplify';
 import customRoutes from './customRoutes';
+import Dashboard from './Dashboard';
 // import { ConfirmSignIn, ConfirmSignUp, ForgotPassword, RequireNewPassword, SignIn, SignUp, VerifyContact } from 'aws-amplify-react';
 
 
@@ -67,7 +68,7 @@ const history = createHashHistory();
 // const store = createStore(rootReducer, initialState)
 
 const store = createAdminStore({
-    authProvider,
+    // authProvider,
     dataProvider,
     history,
 });
@@ -91,8 +92,9 @@ const App = () => {
             <Admin 
             customRoutes={customRoutes}
             layout={Layout}
+            dashboard={Dashboard}
             // loginPage={MyLoginPage}
-            logoutButton={MyLogoutButton}
+            // logoutButton={MyLogoutButton}
             // authProvider={authProvider}
             dataProvider={dataProvider}
             i18nProvider={i18nProvider}
@@ -100,7 +102,7 @@ const App = () => {
             >
                 
                 <Resource name="menuItems" {...menuItems} />
-                <Resource name="categories" {...categories} />
+                {/* <Resource name="categories" {...categories} /> */}
             </Admin>
         </ReactReduxFirebaseProvider>
     </Provider>

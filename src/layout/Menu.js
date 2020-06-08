@@ -4,6 +4,7 @@ import { useMediaQuery, Theme } from '@material-ui/core';
 import { useTranslate, MenuItemLink, getResources } from 'react-admin';
 // import { DashboardMenuItem } from 'react-admin';
 // import QrIcon from '@material-ui/icons/CropFree';
+import BannerIcon from '@material-ui/icons/Image';
 import MenuIcon from '@material-ui/icons/Create';
 import OrderMemoIcon from '@material-ui/icons/Note';
 
@@ -18,7 +19,7 @@ const Menu = ({ onMenuClick, logout }) => {
     return (
         <div>
             {' '}
-            {resources.map(resource => (
+            {/* {resources.map(resource => (
               <MenuItemLink
                 key={resource.name}
                 to={`/${resource.name}`}
@@ -26,7 +27,7 @@ const Menu = ({ onMenuClick, logout }) => {
                 leftIcon={createElement(resource.icon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
-              />))}
+              />))} */}
               {/* <MenuItemLink
                 to={`/qrcode`}
                 primaryText={"Qr code"}
@@ -42,6 +43,13 @@ const Menu = ({ onMenuClick, logout }) => {
                 sidebarIsOpen={open}
               /> */}
               <MenuItemLink
+                to={`/banner`}
+                primaryText={"Banner"}
+                leftIcon={createElement(BannerIcon)}
+                onClick={onMenuClick}
+                sidebarIsOpen={open}
+              />
+              <MenuItemLink
                 to={`/easyMenu`}
                 primaryText={"Easy Menu"}
                 leftIcon={createElement(MenuIcon)}
@@ -55,13 +63,13 @@ const Menu = ({ onMenuClick, logout }) => {
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
               />
-              <MenuItemLink
+              {/* <MenuItemLink
                 to={`/playground`}
                 primaryText={"Playground"}
                 leftIcon={createElement(OrderMemoIcon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
-              />
+              /> */}
 
             {isXSmall && logout}
         </div>
