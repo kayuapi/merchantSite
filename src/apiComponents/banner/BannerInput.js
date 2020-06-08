@@ -34,18 +34,22 @@ class S3ImageUpload extends React.Component {
         this.state = {
             uploadedPercentage: 0,
             uploadedImageUrl: '',
-            uploaded: false
+            uploaded: false,
+            imageDisplayType: this.props.imageDisplayType
         }    
         this.onChange = this.onChange.bind(this);
     }
     componentDidMount() {
-        
         Auth.currentUserInfo().then(userInfo => {
+            const uriEncodedUserInfo = encodeURIComponent(userInfo.id);
+            console.log('userInfo Id', userInfo.id);
+            console.log('uri component', uriEncodedUserInfo);
             const uploadedImageUrl = `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/${userInfo.id}/`;
             // this.setState({uploadedImageUrl: `https://amplify-chmboxordering-bucket191430-dev.s3-ap-southeast-1.amazonaws.com/protected/${userInfo.id}/`});
             this.setState({uploadedImageUrl: uploadedImageUrl});
         })
     }
+
     onChange(e) {
         let that = this;
         console.log('INSIDE STORAGEINPUT: PROPS', this.props);
@@ -83,12 +87,12 @@ class S3ImageUpload extends React.Component {
     render() {
         const { uploaded, uploadedPercentage } = this.state;
         return (
-            <div style={{textAlign: 'center'}}>
-                {!uploaded && <input style={{height: '100px', width: '100%'}}
+            <div style={{textAlign: 'center', color: 'blue', backgroundColor: '#90caf9', height: '150px'}}>
+                {!uploaded && <input style={{height: '150px', width: '100%'}}
                     type="file" accept='image/*'
                     onChange={(evt) => this.onChange(evt)}
                 />}
-                { uploaded && <img height="100" width="100" style={{objectFit: 'contain'}} alt={this.state.uploadedImageUrl} src={this.state.uploadedImageUrl} />}
+                { uploaded && <img height="150px" width="100%" style={{objectFit: this.props.imageDisplayType}} alt={this.state.uploadedImageUrl} src={this.state.uploadedImageUrl} />}
                 { uploadedPercentage > 0 && <LinearProgressWithLabel value={this.state.uploadedPercentage} /> }
             </div>
         )
