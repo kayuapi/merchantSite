@@ -17,7 +17,7 @@ import { Provider } from 'react-redux';
 import { createHashHistory } from 'history';
 import createAdminStore from './createAdminStore';
 // import { createStore, combineReducers, compose } from 'redux';
-import authProvider from './authProvider';
+// import authProvider from './authProvider';
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -68,7 +68,7 @@ const history = createHashHistory();
 // const store = createStore(rootReducer, initialState)
 
 const store = createAdminStore({
-    authProvider,
+    // authProvider,
     dataProvider,
     history,
 });
@@ -94,7 +94,7 @@ const App = () => {
             layout={Layout}
             dashboard={Dashboard}
             // loginPage={MyLoginPage}
-            logoutButton={MyLogoutButton}
+            // logoutButton={MyLogoutButton}
             // authProvider={authProvider}
             dataProvider={dataProvider}
             i18nProvider={i18nProvider}
