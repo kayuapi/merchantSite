@@ -4,6 +4,8 @@ import BannerInput from './BannerInput';
 import ImageDisplayTypeSelection from './ImageDisplayTypeSelection';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
+import { Auth, API } from 'aws-amplify';
+
 const useStyles = makeStyles(theme => ({
     button: {
       'margin': theme.spacing(1),
@@ -28,10 +30,48 @@ const useStyles = makeStyles(theme => ({
     }
   }
 ));
+
+// async function getJwtToken() {
+//   const jwtToken = (await Auth.currentSession()).getIdToken().getJwtToken();
+//   console.log(jwtToken);
+//   return jwtToken;
+// }
+
+async function submitData() {
+  const apiName = 'amplifyChmboxOrderingApi';
+  const basePath = '/uiplugin';
+  try {
+    const jwtToken = (await Auth.currentSession()).getIdToken().getJwtToken();
+    console.log('jwtToke', jwtToken);
+    const myInit = {
+      headers: {
+        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+      },
+      body: {
+        shopId: `testingABCD`, 
+        SK: `TESTING`, 
+        items: jwtToken
+      },
+      response: false
+    };  
+    const path = `${basePath}`;
+    const pageSubmissionResponse = await API.post(apiName, path,  myInit);
+    console.log('pageSubmissionResponse', pageSubmissionResponse);
+    return pageSubmissionResponse;
+  }
+  catch(err) {
+    console.log('api response error', err.response);
+  }
+}
+
+
 const Banner = props => {
     const classes = useStyles();
     const [imageDisplayType, setImageDisplayType] = useState('contain'); 
     const { setValue } = useForm();
+    submitData();
+
+
     return (
       <div className={classes.root}>
         <form>

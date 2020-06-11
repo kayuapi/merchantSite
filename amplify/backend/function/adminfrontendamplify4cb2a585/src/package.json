@@ -6,8 +6,11 @@
   "dependencies": {
     "aws-sdk": "^2.580.0",
     "aws-serverless-express": "^3.3.5",
+    "axios": "^0.19.2",
     "body-parser": "^1.17.1",
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.3"
   },
   "devDependencies": {},
   "scripts": {
