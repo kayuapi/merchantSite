@@ -49,7 +49,7 @@ async function submitData() {
       },
       body: {
         shopId: `testingABCD`, 
-        SK: `TESTING`, 
+        SK: `TESTING2`, 
         items: jwtToken
       },
       response: false

@@ -44,12 +44,9 @@ const getPublicKeys = async () => {
 
 const verifyPromised = promisify(jsonwebtoken.verify.bind(jsonwebtoken));
 
-const getDataFromJwt = async (token) => {
+const getUserNameFromJwt = async (token) => {
   let result;
   try {
-    console.log('testing');
-    // console.log(`user claim verfiy invoked for ${JSON.stringify(request)}`);
-    // const token = request.token;
     const tokenSections = (token || '').split('.');
     if (tokenSections.length < 2) {
       throw new Error('requested token is invalid');
@@ -72,7 +69,6 @@ const getDataFromJwt = async (token) => {
     if (claim.token_use !== 'id') {
       throw new Error('claim use is not id');
     }
-    console.log(`claim confirmed for ${claim.username}`);
     result = {userName: claim['cognito:username'], isValid: true};
   } catch (error) {
     result = {userName: '', clientId: '', error: error.message, isValid: false};
@@ -251,18 +247,10 @@ app.post(path, verifyToken, function(req, res) {
   let dataFromJwt;
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-    req.body['shopId'] = 'test3';
-    req.body['token'] = req.token;
-    req.body['env'] = process.env;
-    // req.body['jwtDecoded'] = getDataFromJwt(req);
-    // req.body['decodedUsername'] = getDataFromJwt(req).userName;
-    dataFromJwt = getDataFromJwt(req.token);
+    dataFromJwt = getUserNameFromJwt(req.token);
   }
   dataFromJwt.then((claim) => {
-    // req.body['userName'] = userName;
-    // req.body['clientId']= clientId;
-    req.body['claim'] = claim;
-
+    req.body['shopId'] = claim.userName;
     let putItemParams = {
       TableName: tableName,
       Item: req.body
