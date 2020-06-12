@@ -149,14 +149,7 @@ export function AdminProductDisplay({
 
   const [value, setValue] = useState(inCartProductQty);
 
-  const [open, setOpen] = React.useState(false);
   const [isVariantOpen, setVariantOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handlePlusMinusChange = () => {
     setVariantOpen(true);
@@ -176,18 +169,16 @@ export function AdminProductDisplay({
             <input hidden name={`menuPage.items[${index}].uiLocation.h`} type="number" readOnly value={uiLocation.h} ref={register()} />
 
             <input hidden name={`menuPage.items[${index}].image`} readOnly value={image} ref={register()} />
-              <CardActionArea onClick={handleClickOpen}>
-                <CardMedia
-                  component="img"
-                  alt={name}
-                  id={id}
-                  height="100"
-                  width="100"
-                  className={classes.cardMedia}
-                  image={image}
-                  title={name}
-                />
-              </CardActionArea>
+              <CardMedia
+                component="img"
+                alt={name}
+                id={id}
+                height="100"
+                width="100"
+                className={classes.cardMedia}
+                image={image}
+                title={name}
+              />
               <CardContent className={classes.content}>
                 <Controller
                   as={<InputBase />}
@@ -217,20 +208,18 @@ export function AdminProductDisplay({
               <input hidden name={`menuPage.items[${index}].uiLocation.h`} type="number" readOnly value={uiLocation.h} ref={register()} />
 
               <input hidden name={`menuPage.items[${index}].image`} ref={register()} />
-              <CardActionArea onClick={handleClickOpen}>
-                <CardMedia
-                  component={StorageInput}
-                  alt={name}
-                  id={id}
-                  height="100"
-                  width="100"
-                  index={index}
-                  className={classes.cardMedia}
-                  image={image}
-                  title={name}
-                  writeValue={writeValue}
-                />
-              </CardActionArea>
+              <CardMedia
+                component={StorageInput}
+                alt={name}
+                id={id}
+                height="100"
+                width="100"
+                index={index}
+                className={classes.cardMedia}
+                image={image}
+                title={name}
+                writeValue={writeValue}
+              />
               <CardContent className={classes.content}>
                 <Controller
                   as={<InputBase />}
