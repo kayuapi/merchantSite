@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import Container from '@material-ui/core/Container';
 import BannerInput from './BannerInput';
 import ImageDisplayTypeSelection from './ImageDisplayTypeSelection';
@@ -84,25 +84,66 @@ async function grabFromDb(item) {
   }
 }
 
-const Banner = props => {
+function init(initialState) {
+  return {
+    imageDisplayType: '',
+    currentImageDisplayType: '',
+    isLoading: true,
+    currentBanner: ''  
+  }
+}
+
+const initialState = {
+  imageDisplayType: '',
+  currentImageDisplayType: '',
+  currentBanner: ''
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'initialStateLoaded':
+      return {
+        imageDisplayType: action.payload.imageDisplayType,
+        currentImageDisplayType: action.payload.imageDisplayType,
+        image: action.payload.image
+      };
+    case 'changeCurrentImageDisplayType':
+      return {
+        ...state,
+        currentImageDisplayType: action.payload
+      };
+    case 'savedCurrentImageDisplayType':
+      return {
+        ...state,
+        imageDisplayType: state.currentImageDisplayType
+      };
+    default:
+      throw new Error();
+  }
+}
+
+const Banner = ({props}) => {
+  const [state, dispatch] = useReducer(reducer, initialState, init);
+
   console.log('rendering banner...');
 
   const classes = useStyles();
-  const [imageDisplayType, setImageDisplayType] = useState('contain');
   const [isLoading, setIsLoading] = useState(true);
-  const [currentBanner, setCurrentBanner] = useState('');s
 
   useEffect(()=> {
     console.log('effect ran');
-    console.log('imageDisplayType', imageDisplayType);
-    console.log('isLoading', isLoading);
-    console.log('currentBanner', currentBanner);
     grabFromDb('Banner').then((retrievedItem)=> {
       setIsLoading(false);
-      setCurrentBanner(retrievedItem.image);
-      setImageDisplayType(retrievedItem.imageDisplayType);
+      dispatch({
+        type: 'initialStateLoaded', 
+        payload: {
+          currentImageDisplayType: retrievedItem.imageDisplayType,
+          imageDisplayType: retrievedItem.imageDisplayType,
+          image: retrievedItem.image
+        }
+      })
     });
-  }, [currentBanner, imageDisplayType, isLoading]);
+  }, []);
   
   return (
     <div className={classes.root}>        
@@ -110,16 +151,16 @@ const Banner = props => {
           ***FEATURE IN DEVELOPMENT***<br />
           *****PREVIEW & COMING SOON*****<br /><br />
         {isLoading && <CircularProgress />}
-        {!isLoading && currentBanner &&
+        {!isLoading && state.image &&
           <form>
-            <ImageDisplayTypeSelection imageDisplayType={imageDisplayType} setImageDisplayType={setImageDisplayType} />
-            <img height="150px" width="100%" style={{objectFit: imageDisplayType}} alt={currentBanner} src={currentBanner} />
+            <ImageDisplayTypeSelection image={state.image} currentImageDisplayType={state.currentImageDisplayType} isDirty={state.imageDisplayType !== state.currentImageDisplayType} dispatch={dispatch} />
+            <img height="150px" width="100%" style={{objectFit: state.currentImageDisplayType}} alt={state.image} src={state.image} />
           </form>
         }
-        {!isLoading && !currentBanner &&
+        {!isLoading && !state.image &&
           <>
-            <ImageDisplayTypeSelection imageDisplayType={imageDisplayType} setImageDisplayType={setImageDisplayType} />
-            <BannerInput imageDisplayType={imageDisplayType} loadingData={isLoading} />
+            {/* <ImageDisplayTypeSelection currentImageDisplayType={state.currentImageDisplayType} isDirty={state.imageDisplayType !== state.currentImageDisplayType} dispatch={dispatch} /> */}
+            <BannerInput imageDisplayType={state.imageDisplayType} loadingData={isLoading} />
           </>
         }
       </Container>
