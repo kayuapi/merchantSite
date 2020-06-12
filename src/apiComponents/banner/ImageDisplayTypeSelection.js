@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import Box from '@material-ui/core/Box';
 import { resetWarningCache } from 'prop-types';
-import { API } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -34,7 +34,7 @@ export default function ToggleButtons(props) {
     try {
       const myInit = {
         headers: {
-          
+          'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
         },
         body: {
           SK: 'Banner',

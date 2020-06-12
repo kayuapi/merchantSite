@@ -72,9 +72,9 @@ class S3ImageUpload extends React.Component {
         this.mounted = true;
 
         Auth.currentUserInfo().then(userInfo => {
-            const uriEncodedUserInfo = encodeURIComponent(userInfo.id);
-            console.log('userInfo Id', userInfo.id);
-            console.log('uri component', uriEncodedUserInfo);
+            // const uriEncodedUserInfo = encodeURIComponent(userInfo.id);
+            // console.log('userInfo Id', userInfo.id);
+            // console.log('uri component', uriEncodedUserInfo);
             const uploadedImageUrl = `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/${userInfo.id}/`;
             // this.setState({uploadedImageUrl: `https://amplify-chmboxordering-bucket191430-dev.s3-ap-southeast-1.amazonaws.com/protected/${userInfo.id}/`});
             if (this.mounted) {

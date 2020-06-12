@@ -39,28 +39,28 @@ const useStyles = makeStyles(theme => ({
 //   return jwtToken;
 // }
 
-async function submitData() {
-  const apiName = 'amplifyChmboxOrderingApi';
-  const basePath = '/uiplugin';
-  try {
-    const myInit = {
-      headers: {
-        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
-      },
-      body: {
-        SK: `Banner`
-      },
-      response: false
-    };
-    const path = `${basePath}`;
-    const pageSubmissionResponse = await API.post(apiName, path,  myInit);
-    console.log('pageSubmissionResponse', pageSubmissionResponse);
-    return pageSubmissionResponse;
-  }
-  catch(err) {
-    console.log('api response error', err.response);
-  }
-}
+// async function submitData() {
+//   const apiName = 'amplifyChmboxOrderingApi';
+//   const basePath = '/uiplugin';
+//   try {
+//     const myInit = {
+//       headers: {
+//         'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+//       },
+//       body: {
+//         SK: `Banner`
+//       },
+//       response: false
+//     };
+//     const path = `${basePath}`;
+//     const pageSubmissionResponse = await API.post(apiName, path,  myInit);
+//     console.log('pageSubmissionResponse', pageSubmissionResponse);
+//     return pageSubmissionResponse;
+//   }
+//   catch(err) {
+//     console.log('api response error', err.response);
+//   }
+// }
 
 async function grabFromDb(item) {
   const apiName = 'amplifyChmboxOrderingApi';
@@ -68,7 +68,7 @@ async function grabFromDb(item) {
   try {
     const myInit = {
       headers: {
-        // 'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
       },
       response: false
     };
