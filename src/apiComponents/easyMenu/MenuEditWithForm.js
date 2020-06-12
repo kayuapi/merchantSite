@@ -166,7 +166,8 @@ class AddRemoveLayout extends React.PureComponent {
       position: "absolute",
       right: "2px",
       top: 0,
-      cursor: "pointer"
+      cursor: "pointer",
+      fontSize: "x-large"
     };
     let productName;
     if (el.uiLocation) {
