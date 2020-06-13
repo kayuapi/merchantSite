@@ -13,10 +13,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// function submitDisplayTypeChange() {
-//   API.
-// }
-
 
 export default function ToggleButtons(props) {
   const classes = useStyles();

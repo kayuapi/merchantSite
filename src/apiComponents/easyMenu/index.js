@@ -29,12 +29,7 @@ import SaveIcon from '@material-ui/icons/Save';
 // import { API, Auth } from 'aws-amplify';
 import AddAndDeleteTab from './AddAndDeleteTab';
 import { API, Auth } from 'aws-amplify';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 const useStyles = makeStyles(theme => ({
   button: {
     'margin': theme.spacing(1),
@@ -106,7 +101,6 @@ async function submitPageNames(pageNames) {
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin';
   try {
-    const currentUserInfo = await Auth.currentUserInfo();
     const myInit = {
       headers: {
         'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
@@ -119,7 +113,6 @@ async function submitPageNames(pageNames) {
     };  
     const path = `${basePath}`;
     const response = await API.post(apiName, path,  myInit);
-    console.log('pageNamesSubmissionResponse', response);
     return response;
   }
   catch(err) {
@@ -127,33 +120,28 @@ async function submitPageNames(pageNames) {
   }
 }
 
-function saveData(data, handleClick) {
-  Promise.all([submitPageNames(data.menuPage.categories), submitPage(data.menuPage.items, data.menuPage.pageId)]).then((values) => {
-    handleClick();
-  })
+async function saveData(data, setIsSubmitting) {
+  setIsSubmitting(true);
+  const pageNamesResponse = await submitPageNames(data.menuPage.categories);
+  const pageResponse = await submitPage(data.menuPage.items, data.menuPage.pageId);
+  if (pageNamesResponse.success && pageResponse.success) {
+    setIsSubmitting(false);
+  }
 }
 
 const EasyMenuPageShow = props => {    
     const classes = useStyles();
     const methods = useForm();
-    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     console.log('easymenu rendering');
-    const handleClick = () => {
-      setOpenSnackbar(true);
-    };
-    const handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-      setOpenSnackbar(false);
-    };
-    const onSubmit = data => {console.log("data", data); saveData(data, handleClick)};
+    const onSubmit = data => {console.log("data", data); saveData(data, setIsSubmitting)};
     return (
       <div className={classes.root}>
         <Container className={classes.cardGrid} maxWidth="md">
           <FormContext {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
               <Button
+                disabled={ isSubmitting }
                 type="submit"
                 variant="contained"
                 color="primary"
@@ -161,7 +149,8 @@ const EasyMenuPageShow = props => {
                 className={classes.button}
                 startIcon={<SaveIcon />}
               >
-                Save page
+                {isSubmitting && <span>Saving...</span>}
+                {!isSubmitting && <span>Save page</span>}
               </Button>
               <AddAndDeleteTab formMethods={methods}>
                 {(pageNames) => (<>
@@ -181,11 +170,6 @@ const EasyMenuPageShow = props => {
               </AddAndDeleteTab>
             </form>
           </FormContext>
-          <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="success">
-              This is a success message!
-            </Alert>
-          </Snackbar>
         </Container>
         <DevTool control={methods.control} />
       </div>
