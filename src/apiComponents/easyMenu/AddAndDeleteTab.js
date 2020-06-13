@@ -178,11 +178,11 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
 
   const addTab = (e) => {
     e.stopPropagation();
-    append({value: "New category"});
+    append({value: ""});
     setTabValue(fields.length.toString());
     setPageNames({
       ...pageNames, 
-      data: [...pageNames.data, "New category"]
+      data: [...pageNames.data, ""]
     })
   };
 
@@ -247,6 +247,7 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
                                     // defaultValue={`menuPages[${index}].value`}
                                     // defaultValue={fields[`${index}`].value}
                                     defaultValue={tab.value}
+                                    placeholder="New category"
                                     />}
                           // icon={<Close id={tab.id} onClick={deleteTab} />}
                           icon={<MyCloseIcon index={index} />}

@@ -160,7 +160,7 @@ const Banner = ({props}) => {
         {!isLoading && !state.image &&
           <>
             {/* <ImageDisplayTypeSelection currentImageDisplayType={state.currentImageDisplayType} isDirty={state.imageDisplayType !== state.currentImageDisplayType} dispatch={dispatch} /> */}
-            <BannerInput imageDisplayType={state.imageDisplayType} loadingData={isLoading} />
+            <BannerInput imageDisplayType="fill" loadingData={isLoading} />
           </>
         }
       </Container>
