@@ -81,7 +81,7 @@ export default function ToggleButtons(props) {
         startIcon={<SaveIcon />}
         onClick={()=>submitDisplayTypeChange(image, currentImageDisplayType)}
       >
-        {!isSubmitting && isDirty && <span>Save Display Type</span>}
+        {!isSubmitting && isDirty && <span>Save</span>}
         {!isSubmitting && !isDirty && <span>Saved</span>}
         {isSubmitting && <span>Saving...</span>}
 
