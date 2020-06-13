@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     color: "inherit",
     backgroundColor: "a09b87",
+    top: '55px', // hard coded need to be changed
     "& .myTab": {
       backgroundColor: "yellow",
       color: "green"

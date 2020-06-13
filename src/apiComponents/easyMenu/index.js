@@ -33,6 +33,15 @@ import { API, Auth } from 'aws-amplify';
 const useStyles = makeStyles(theme => ({
   button: {
     'margin': theme.spacing(1),
+    
+  },
+  buttonContainer: {
+    'position': 'sticky',
+    top: 0,
+    left: 'auto',
+    right: 0,
+    background: 'ghostwhite',
+    zIndex: 2
   },
   root: {
     flexGrow: 1,
@@ -140,6 +149,7 @@ const EasyMenuPageShow = props => {
         <Container className={classes.cardGrid} maxWidth="md">
           <FormContext {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
+              <div className={classes.buttonContainer}>
               <Button
                 disabled={ isSubmitting }
                 type="submit"
@@ -152,6 +162,7 @@ const EasyMenuPageShow = props => {
                 {isSubmitting && <span>Saving...</span>}
                 {!isSubmitting && <span>Save page</span>}
               </Button>
+              </div>
               <AddAndDeleteTab formMethods={methods}>
                 {(pageNames) => (<>
                     <TabPanel value="0"><MenuEditWithForm pageNames={pageNames} pageId="Page1" /></TabPanel> 
