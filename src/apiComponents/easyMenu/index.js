@@ -81,21 +81,20 @@ async function submitPage(items, pageId) {
     element.uiLocation.h = Number(element.uiLocation.h);
   });
   try {
-    const currentUserInfo = await Auth.currentUserInfo();
     const myInit = {
       headers: {
+        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
       },
       body: {
-        shopId: `${currentUserInfo.id}`, 
         SK: `PluginMenu#${pageId}`, 
         items: items
       },
       response: false
     };  
     const path = `${basePath}`;
-    const pageSubmissionResponse = await API.post(apiName, path,  myInit);
-    console.log('pageSubmissionResponse', pageSubmissionResponse);
-    return pageSubmissionResponse;
+    const response = await API.post(apiName, path,  myInit);
+    console.log('pageSubmissionResponse', response);
+    return response;
   }
   catch(err) {
     console.log('api response error', err.response);
@@ -110,18 +109,18 @@ async function submitPageNames(pageNames) {
     const currentUserInfo = await Auth.currentUserInfo();
     const myInit = {
       headers: {
+        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
       },
       body: {
-        shopId: `${currentUserInfo.id}`, 
         SK: 'PluginMenuPages', 
         pageNames: processedPageNames
       },
       response: false
     };  
     const path = `${basePath}`;
-    const pageNamesSubmissionResponse = await API.post(apiName, path,  myInit);
-    console.log('pageNamesSubmissionResponse', pageNamesSubmissionResponse);
-    return pageNamesSubmissionResponse;
+    const response = await API.post(apiName, path,  myInit);
+    console.log('pageNamesSubmissionResponse', response);
+    return response;
   }
   catch(err) {
     console.log('api response error', err.response);

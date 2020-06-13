@@ -5,7 +5,6 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import Box from '@material-ui/core/Box';
-import { resetWarningCache } from 'prop-types';
 import { API, Auth } from 'aws-amplify';
 
 const useStyles = makeStyles((theme) => ({
