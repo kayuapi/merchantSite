@@ -62,7 +62,7 @@ class AddRemoveLayout extends React.PureComponent {
       this.setState({items: [...this.state.items, ...this.state.affectedItems], affectedItems: null})
     }
 
-    if (!this.state.items[this.state.items.length-1].uiLocation.add) {
+    if (!this.state.items[this.state.items.length-1] || !this.state.items[this.state.items.length-1].uiLocation || !this.state.items[this.state.items.length-1].uiLocation.add) {
       if (this.state.affectedItems) {
         console.log('choice1');
         this.setState({
