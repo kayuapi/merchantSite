@@ -28,7 +28,7 @@ export function AddCard(props) {
     <Card className={classes.root}>
       <CardActionArea className={classes.center} onClick={props.onClick}>
         {/* <IconButton aria-label="add item"> */}
-          <Add />
+          <Add /><br /><br />Click to add dishes
         {/* </IconButton> */}
       </CardActionArea>
     </Card>
