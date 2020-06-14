@@ -24,7 +24,7 @@ import MenuEditWithForm from './MenuEditWithForm';
 // import Box from '@material-ui/core/Box';
 import { DevTool } from "react-hook-form-devtools";
 import { useForm, FormContext } from "react-hook-form";
-import Icon from '@material-ui/core/Icon';
+// import Icon from '@material-ui/core/Icon';
 import SaveIcon from '@material-ui/icons/Save';
 // import { API, Auth } from 'aws-amplify';
 import AddAndDeleteTab from './AddAndDeleteTab';
@@ -75,7 +75,7 @@ const useStyles = makeStyles(theme => ({
 //     'aria-controls': `simple-tabpanel-${index}`,
 //   };
 // }
-async function submitPage(items, pageId) {
+export async function submitPage(items, pageId) {
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin';
   items.forEach(element => {
@@ -105,8 +105,9 @@ async function submitPage(items, pageId) {
   }
 }
 
-async function submitPageNames(pageNames) {
-  const processedPageNames = pageNames.map(item=>item.value);
+export async function submitPageNames(pageNames) {
+  // const processedPageNames = pageNames.map(item=>item.value);
+  const processedPageNames = pageNames.map(item=>item);
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin';
   try {
@@ -133,6 +134,8 @@ async function saveData(data, setIsSubmitting) {
   setIsSubmitting(true);
   const pageNamesResponse = await submitPageNames(data.menuPage.categories);
   const pageResponse = await submitPage(data.menuPage.items, data.menuPage.pageId);
+  console.log('pageNaemsResponse', pageNamesResponse);
+  console.log('pageResponse', pageResponse);
   if (pageNamesResponse.success && pageResponse.success) {
     setIsSubmitting(false);
   }

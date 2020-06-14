@@ -17,6 +17,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+async function grabFromDb(item) {
+  const apiName = 'amplifyChmboxOrderingApi';
+  const basePath = '/uiplugin/object';
+  try {
+    const myInit = {
+      headers: {
+        // 'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+      },
+      response: false
+    };
+
+    const currentUserInfo = await Auth.currentUserInfo();
+    const path = `${basePath}/${currentUserInfo.username}/${item}`;
+    const retrievedItem = await API.get(apiName, path, myInit);
+    console.log('retrievedItem', retrievedItem);
+    return retrievedItem;
+  }
+  catch(err) {
+    console.log('api response error', err.response);
+  }
+}
+
+
 export const withHookHoc = (Component) => {
   return (props) => {
 
@@ -30,52 +53,36 @@ export const withHookHoc = (Component) => {
     });
 
     useEffect(()=> {
-      const myInit = {
-        headers: {
-        },
-        response: false
-      };
-      async function grabPage() {
-        const apiName = 'amplifyChmboxOrderingApi';
-        const basePath = '/uiplugin/object';
-        try {
-          const currentUserInfo = await Auth.currentUserInfo();
-          const path = `${basePath}/${currentUserInfo.id}/PluginMenu%23${props.pageId}`;
-          const page = await API.get(apiName, path, myInit);
-          if (page.items) {
-            reset({
-              menuPage: {
-                categories: props.pageNames,
-                items: page.items
-              }
-            });  
-          } else {
-            reset({
-              menuPage: {
-                categories: props.pageNames,
-                items: []
-              }
-            });            
-          }
-          console.log('withHookHoc: pageAPIResponse', page);
-          console.log('withHookHoc: getValues', getValues());
-          setLoaded(true);
-          // await API.post(apiName, '/uiplugin', {body: {shopId: `${currentUserInfo.id}12`, SK: 'PluginMenu#Page11', category: 'test'}});
+      grabFromDb(`PluginMenu%23${props.pageId}`).then((retrievedItem)=> {
+        if (retrievedItem.items) {
+          reset({
+            menuPage: {
+              categories: props.pageNames,
+              items: retrievedItem.items
+            }
+          });  
+        } else {
+          reset({
+            menuPage: {
+              categories: props.pageNames,
+              items: []
+            }
+          });            
         }
-        catch(err) {
-          console.log('api response error', err.response);
-        }
-      }
-      console.log('loaded page categories from internet...')
-      grabPage();
+        setLoaded(true);
+  
+
+      }).catch((err) => {
+        console.log('api response error', err.response);
+      });
     }, [props.pageNames, props.pageId, reset, getValues]);
 
 
 
     //for debug purpose
-    useEffect(() => {
-      console.log('withHookHoc: debug fields',fields);
-    }, [fields]);
+    // useEffect(() => {
+    //   console.log('withHookHoc: debug fields',fields);
+    // }, [fields]);
 
     return (
       <Container className={classes.cardGrid} maxWidth="sm">

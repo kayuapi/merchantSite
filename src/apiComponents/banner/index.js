@@ -68,7 +68,7 @@ async function grabFromDb(item) {
   try {
     const myInit = {
       headers: {
-        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+        // 'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
       },
       response: false
     };

@@ -13,6 +13,12 @@ import { Auth, API } from 'aws-amplify';
 import { IconButton } from '@material-ui/core';
 import { CircularProgress } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { submitPage, submitPageNames } from '../easyMenu';
 // import { DevTool } from "react-hook-form-devtools";
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
@@ -68,6 +74,8 @@ const AddAndDeleteTabContainer = ({ children }) => {
   return <AddAndDeleteTab {...methods} children={children} />;
 };
 
+
+
 const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty }, children }) => {
   // fixed window functionality
   const tabsRef = React.useRef();
@@ -81,7 +89,11 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
   const [scrollBtn, setScrollBtn] = useState("off");
   console.log('AddAndDeleteTab: render fields...');
   // const [myFields, setMyFields] = useState([]);
-
+  const [dialogState, setDialogState] = React.useState({
+    isOpen: false,
+    belongsToTab: '',
+  });
+  const [dialogIsSubmitting, setDialogIsSubmitting] = React.useState(false);
   useEffect(() => {
     const myInit = {
         headers: {
@@ -93,7 +105,7 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
         const basePath = '/uiplugin/object';
         try {
             const currentUserInfo = await Auth.currentUserInfo();
-            const path = `${basePath}/${currentUserInfo.id}/PluginMenuPages`;
+            const path = `${basePath}/${currentUserInfo.username}/PluginMenuPages`;
             const pageNamesResponse = await API.get(apiName, path, myInit);
             console.log('pageNamesResponse', pageNamesResponse);
             // setPageNames(pageNamesResponse.pageNames);
@@ -153,11 +165,10 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
   };
   
   //for debug purpose
-  useEffect(() => {
-    // setMyFields(fields);
-    console.log('AddAndDeleteTab: debug fields @after effect ',fields);
-    console.log('AddAndDeleteTab: debug fields @after effect ',getValues());
-  }, [fields, getValues]);
+  // useEffect(() => {
+  //   console.log('AddAndDeleteTab: debug fields @after effect ',fields);
+  //   console.log('AddAndDeleteTab: debug fields @after effect ',getValues());
+  // }, [fields, getValues]);
 
   // const [tabList, setTabList] = useState([
   //   {
@@ -191,22 +202,46 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
     return (
       <Close id={props.index.toString()} onClick={
         (e)=>{
-          e.stopPropagation();
-          // console.log('log e', e.target.id);
-          // console.log('log index', props.index);
-          setTabValue('0');
-          setPageNames({
-            ...pageNames,
-            data: pageNames.data.filter((el, ind) => ind !== props.index)
+          setDialogState({
+            isOpen: true,
+            belongsToTab: props.index.toString()
           });
-          console.log('addanddeletetab: ***',pageNames.data.filter((el, ind) => ind !== props.index))
-          // console.log('log tabValue', tabValue);
-          deleteTab(props.index);
-
+          // e.stopPropagation();
+          // setTabValue('0');
+          // setPageNames({
+          //   ...pageNames,
+          //   data: pageNames.data.filter((el, ind) => ind !== props.index)
+          // });
+          // console.log('addanddeletetab: ***',pageNames.data.filter((el, ind) => ind !== props.index))
+          // deleteTab(props.index);
         }      
       } />
     )
   });
+
+  async function handleDeleteTab(event, tabValue) {
+    // event.stopPropagation();
+    setDialogIsSubmitting(true);
+    const updatedTabData = pageNames.data.filter((el, ind) => ind !== Number(tabValue));
+    console.log('handleDeleteTab: pageNames', updatedTabData);
+    console.log(tabValue);
+    console.log(`Page${Number(tabValue)+1}`);
+    const pageResponse = await submitPage([], `Page${Number(tabValue)+1}`);
+    const pageNamesResponse = await submitPageNames(updatedTabData);
+    if (pageNamesResponse.success && pageResponse.success) {
+      setDialogIsSubmitting(false);
+      setDialogState({
+        isOpen: false,
+        belongsToTab: ''
+      });
+      setTabValue('0');
+      setPageNames({
+        ...pageNames,
+        data: updatedTabData
+      });
+      deleteTab(Number(tabValue));
+    }
+  }
 
   return (
     <>
@@ -231,7 +266,6 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
                     scrollButtons={scrollBtn}
                   >
                     {fields.map((tab, index) => {
-                      console.log("********", tab);
                       return(
                         <Tab
                           key={tab.id}
@@ -239,9 +273,7 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
                           label={<Controller 
                                     // key={tab.id}
                                     as={InputBase}
-                                    // name={`menuPages[${index}]`}
-                                    name={`menuPage.categories[${index}].value`}
-                                    // name="menuPages"
+                                    name={`menuPage.categories[${index}]`}
                                     control={control}
                                     classes={{root: classes.tabInput}}
                                     // defaultValue={`menuPages[${index}].value`}
@@ -267,6 +299,35 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
           </TabContext>
         </>
       }
+      <Dialog
+        open={dialogState.isOpen}
+        onClose={()=>setDialogState({
+          isOpen: false,
+          belongsToTab: ''
+        })}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete this page?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            This action is irreversible. Click 'YES' to confirm deleting the page.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={()=>setDialogState({
+              isOpen: false,
+              belongsToTab: ''
+            })} color="primary">
+            No
+          </Button>
+          <Button disabled={dialogIsSubmitting} color="primary"  onClick={(ev) => handleDeleteTab(ev, dialogState.belongsToTab)} autoFocus>
+            {dialogIsSubmitting && <span>Deleting...</span>}
+            {!dialogIsSubmitting && <span>Yes</span>}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

@@ -12,11 +12,11 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
+// import FastfoodIcon from '@material-ui/icons/Fastfood';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -26,7 +26,6 @@ import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-import CardActionArea from '@material-ui/core/CardActionArea';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
