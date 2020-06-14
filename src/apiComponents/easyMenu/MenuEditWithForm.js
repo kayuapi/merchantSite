@@ -9,6 +9,7 @@ import Add from "@material-ui/icons/Add";
 import CardActionArea from '@material-ui/core/CardActionArea';
 import Card from '@material-ui/core/Card';
 import AddCard from './AddCard';
+import { v4 as uuidv4 } from 'uuid';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 /**
@@ -239,8 +240,9 @@ class AddRemoveLayout extends React.PureComponent {
 
     this.setState({
       // Add a new item. It must have a unique key!
-      items: this.state.items.concat({ 
-        name: "newProduct"+this.state.newCounter, 
+      items: this.state.items.concat({
+        // name: "newProduct"+this.state.newCounter, 
+        name: "newProduct"+uuidv4(), 
         image: "", 
         // uiLocation: {x:(this.state.items.length * 2) % (this.state.cols || 12), y:Infinity, w:1, h:2 }, 
         uiLocation: {x:(this.state.items.length) % (this.state.cols || 12), y:Math.floor((this.state.items.length)/2), w:1, h:2 }, 
