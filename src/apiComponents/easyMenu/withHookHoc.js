@@ -46,8 +46,6 @@ export const withHookHoc = (Component) => {
     const classes = useStyles();
     const [loaded, setLoaded] = useState(false);
     const { handleSubmit, register, reset, getValues } = useFormContext();
-    console.log('withHookHoc rendering... props', props);
-    console.log('withHookHoc rendering... rhf getvalues', getValues());
     const { fields, append, remove } = useFieldArray({
       name: "menuPage.items"
     });
@@ -75,7 +73,7 @@ export const withHookHoc = (Component) => {
       }).catch((err) => {
         console.log('api response error', err.response);
       });
-    }, [props.pageNames, props.pageId, reset, getValues]);
+    }, [props.pageNames, props.pageId, reset]);
 
 
 

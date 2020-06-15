@@ -87,7 +87,6 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
   const [pageNames, setPageNames] = useState({loaded: false, data: []});
   const [tabValue, setTabValue] = useState('0');
   const [scrollBtn, setScrollBtn] = useState("off");
-  console.log('AddAndDeleteTab: render fields...');
   // const [myFields, setMyFields] = useState([]);
   const [dialogState, setDialogState] = React.useState({
     isOpen: false,
@@ -107,7 +106,6 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
             const currentUserInfo = await Auth.currentUserInfo();
             const path = `${basePath}/${currentUserInfo.username}/PluginMenuPages`;
             const pageNamesResponse = await API.get(apiName, path, myInit);
-            console.log('pageNamesResponse', pageNamesResponse);
             // setPageNames(pageNamesResponse.pageNames);
             reset({menuPage: {categories: pageNamesResponse.pageNames}});
             setPageNames({loaded: true, data: pageNamesResponse.pageNames});
@@ -223,9 +221,6 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
     // event.stopPropagation();
     setDialogIsSubmitting(true);
     const updatedTabData = pageNames.data.filter((el, ind) => ind !== Number(tabValue));
-    console.log('handleDeleteTab: pageNames', updatedTabData);
-    console.log(tabValue);
-    console.log(`Page${Number(tabValue)+1}`);
     const pageResponse = await submitPage([], `Page${Number(tabValue)+1}`);
     const pageNamesResponse = await submitPageNames(updatedTabData);
     if (pageNamesResponse.success && pageResponse.success) {

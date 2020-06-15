@@ -84,9 +84,7 @@ export function AdminProductVariantDisplay({
     // control,
     name: `menuPage.items[${index}].variants`
   });
-  console.log('index', index)
   // console.log('control', control);
-  console.log('fields', fields);
 
   // const [open, setOpen] = React.useState(false);
   // const handleClickOpen = () => {

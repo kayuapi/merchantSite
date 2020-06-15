@@ -138,9 +138,6 @@ export function AdminProductDisplay({
   register,
 
 }) {
-  console.log('###index is ', index);
-  console.log('###register is ', register);
-  console.log('###uilocation is', uiLocation);
   const inCartProductQty = 0;
 
   // useInjectReducer({ key: 'product', reducer });
@@ -155,7 +152,6 @@ export function AdminProductDisplay({
   };
 
   const { setValue: writeValue } = useFormContext();
-  console.log('YELLING DATA GRID', uiLocation);
   return (
     <>
       {/* <Grid item xs={6} sm={6} md={4}> */}
