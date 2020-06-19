@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Route } from 'react-router-dom';
 // import Typography from '@material-ui/core/Typography';
 // import {
@@ -24,20 +24,27 @@ import MenuEditWithForm from './MenuEditWithForm';
 // import Box from '@material-ui/core/Box';
 import { DevTool } from "react-hook-form-devtools";
 import { useForm, FormContext } from "react-hook-form";
-import Icon from '@material-ui/core/Icon';
+// import Icon from '@material-ui/core/Icon';
 import SaveIcon from '@material-ui/icons/Save';
 // import { API, Auth } from 'aws-amplify';
 import AddAndDeleteTab from './AddAndDeleteTab';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import { API, Auth } from 'aws-amplify';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import DraggableTabs from './DraggableTabs';
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+// import * as md from 'react-tabtab/lib/themes/material-design';
 const useStyles = makeStyles(theme => ({
   button: {
     'margin': theme.spacing(1),
+    
+  },
+  buttonContainer: {
+    'position': 'sticky',
+    top: 0,
+    left: 'auto',
+    right: 0,
+    background: 'ghostwhite',
+    zIndex: 2
   },
   root: {
     flexGrow: 1,
@@ -71,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 //     'aria-controls': `simple-tabpanel-${index}`,
 //   };
 // }
-async function submitPage(items, pageId) {
+export async function submitPage(items, pageId) {
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin';
   items.forEach(element => {
@@ -81,80 +88,132 @@ async function submitPage(items, pageId) {
     element.uiLocation.h = Number(element.uiLocation.h);
   });
   try {
-    const currentUserInfo = await Auth.currentUserInfo();
     const myInit = {
       headers: {
+        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
       },
       body: {
-        shopId: `${currentUserInfo.id}`, 
         SK: `PluginMenu#${pageId}`, 
         items: items
       },
       response: false
     };  
     const path = `${basePath}`;
-    const pageSubmissionResponse = await API.post(apiName, path,  myInit);
-    console.log('pageSubmissionResponse', pageSubmissionResponse);
-    return pageSubmissionResponse;
+    const response = await API.post(apiName, path,  myInit);
+    console.log('pageSubmissionResponse', response);
+    return response;
   }
   catch(err) {
     console.log('api response error', err.response);
   }
 }
 
-async function submitPageNames(pageNames) {
-  const processedPageNames = pageNames.map(item=>item.value);
+export async function submitPageNames(pageNames) {
+  // const processedPageNames = pageNames.map(item=>item.value);
+  const processedPageNames = pageNames.map(item=>item);
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin';
   try {
-    const currentUserInfo = await Auth.currentUserInfo();
     const myInit = {
       headers: {
+        'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
       },
       body: {
-        shopId: `${currentUserInfo.id}`, 
         SK: 'PluginMenuPages', 
         pageNames: processedPageNames
       },
       response: false
     };  
     const path = `${basePath}`;
-    const pageNamesSubmissionResponse = await API.post(apiName, path,  myInit);
-    console.log('pageNamesSubmissionResponse', pageNamesSubmissionResponse);
-    return pageNamesSubmissionResponse;
+    const response = await API.post(apiName, path,  myInit);
+    return response;
   }
   catch(err) {
     console.log('api response error', err.response);
   }
 }
 
-function saveData(data, handleClick) {
-  Promise.all([submitPageNames(data.menuPage.categories), submitPage(data.menuPage.items, data.menuPage.pageId)]).then((values) => {
-    handleClick();
-  })
+async function saveData(data, setIsSubmitting) {
+  setIsSubmitting(true);
+  const pageNamesResponse = await submitPageNames(data.menuPage.categories);
+  const pageResponse = await submitPage(data.menuPage.items, data.menuPage.pageId);
+  console.log('pageNaemsResponse', pageNamesResponse);
+  console.log('pageResponse', pageResponse);
+  if (pageNamesResponse.success && pageResponse.success) {
+    setIsSubmitting(false);
+  }
 }
+
+
+const handleSortCategoryModeToggle = (pageNames, isSortCategoryModeOn, setIsSortCategoryModeOn, setIsSubmittingCategory) => {
+  console.log('isSortCategoryModeOn', isSortCategoryModeOn);
+
+  if(!isSortCategoryModeOn) {
+    setIsSortCategoryModeOn(!isSortCategoryModeOn);
+    console.log('isSortCategoryModeOn', isSortCategoryModeOn);
+  } else {
+    setIsSubmittingCategory(true);
+    console.log('PAGENAME2', pageNames);
+    
+    submitPageNames(pageNames.data).then(pageNamesResponse => {
+      if (pageNamesResponse.success) {
+        setIsSubmittingCategory(false);
+        setIsSortCategoryModeOn(!isSortCategoryModeOn);
+      }
+    })
+
+  }
+};
 
 const EasyMenuPageShow = props => {    
     const classes = useStyles();
     const methods = useForm();
-    const [openSnackbar, setOpenSnackbar] = React.useState(false);
-    console.log('easymenu rendering');
-    const handleClick = () => {
-      setOpenSnackbar(true);
-    };
-    const handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
+    const { reset } = methods;
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmittingCategory, setIsSubmittingCategory] = useState(false);
+    const [isSortCategoryModeOn, setIsSortCategoryModeOn] = useState(false);
+    const [pageNames, setPageNames] = useState({loaded: false, data: []});
+
+    useEffect(() => {
+      const myInit = {
+          headers: {
+          },
+          response: false
+      };
+      async function grabPageNames() {
+          const apiName = 'amplifyChmboxOrderingApi';
+          const basePath = '/uiplugin/object';
+          try {
+              const currentUserInfo = await Auth.currentUserInfo();
+              localStorage.setItem('businessId', currentUserInfo.username); // need to refactor later (used for order memo)
+              const path = `${basePath}/${currentUserInfo.username}/PluginMenuPages`;
+              const pageNamesResponse = await API.get(apiName, path, myInit);
+              // setPageNames(pageNamesResponse.pageNames);
+              reset({menuPage: {categories: pageNamesResponse.pageNames}});
+              setPageNames({loaded: true, data: pageNamesResponse.pageNames});
+          }
+          catch(err) {
+              console.log('pageNames api response error', err.response);
+          }
       }
-      setOpenSnackbar(false);
-    };
-    const onSubmit = data => {console.log("data", data); saveData(data, handleClick)};
+      console.log('reseted');
+      grabPageNames();
+    }, [reset]);
+
+
+
+
+    console.log('easymenu rendering');
+    console.log('isSortCategoryModeOn', isSortCategoryModeOn);
+    const onSubmit = data => {console.log("data", data); saveData(data, setIsSubmitting)};
     return (
       <div className={classes.root}>
         <Container className={classes.cardGrid} maxWidth="md">
           <FormContext {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
+              <div className={classes.buttonContainer}>
               <Button
+                disabled={ isSubmitting }
                 type="submit"
                 variant="contained"
                 color="primary"
@@ -162,9 +221,23 @@ const EasyMenuPageShow = props => {
                 className={classes.button}
                 startIcon={<SaveIcon />}
               >
-                Save page
+                {isSubmitting && <span>Saving...</span>}
+                {!isSubmitting && <span>Save page</span>}
               </Button>
-              <AddAndDeleteTab formMethods={methods}>
+              <ToggleButton
+                value="check"
+                selected={isSortCategoryModeOn}
+                onChange={() => handleSortCategoryModeToggle(pageNames, isSortCategoryModeOn, setIsSortCategoryModeOn, setIsSubmittingCategory)}
+              >
+                {isSortCategoryModeOn && <span>Sort Category Mode: On</span>}
+                {isSortCategoryModeOn && isSubmittingCategory && <span>Submitting...</span>}
+                {!isSortCategoryModeOn && <span>Sort Category Mode: Off</span>}
+              </ToggleButton>
+              </div>
+
+              {isSortCategoryModeOn && <DraggableTabs tabs={pageNames} setPageNames2={setPageNames} />}
+
+              <AddAndDeleteTab formMethods={methods} pageNames={pageNames} setPageNames={setPageNames} isSortCategoryModeOn={isSortCategoryModeOn}>
                 {(pageNames) => (<>
                     <TabPanel value="0"><MenuEditWithForm pageNames={pageNames} pageId="Page1" /></TabPanel> 
                     <TabPanel value="1"><MenuEditWithForm pageNames={pageNames} pageId="Page2" /></TabPanel>
@@ -182,11 +255,6 @@ const EasyMenuPageShow = props => {
               </AddAndDeleteTab>
             </form>
           </FormContext>
-          <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="success">
-              This is a success message!
-            </Alert>
-          </Snackbar>
         </Container>
         <DevTool control={methods.control} />
       </div>

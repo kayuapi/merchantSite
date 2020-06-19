@@ -12,11 +12,11 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
+// import FastfoodIcon from '@material-ui/icons/Fastfood';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -26,7 +26,6 @@ import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-import CardActionArea from '@material-ui/core/CardActionArea';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -139,9 +138,6 @@ export function AdminProductDisplay({
   register,
 
 }) {
-  console.log('###index is ', index);
-  console.log('###register is ', register);
-  console.log('###uilocation is', uiLocation);
   const inCartProductQty = 0;
 
   // useInjectReducer({ key: 'product', reducer });
@@ -149,21 +145,13 @@ export function AdminProductDisplay({
 
   const [value, setValue] = useState(inCartProductQty);
 
-  const [open, setOpen] = React.useState(false);
   const [isVariantOpen, setVariantOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handlePlusMinusChange = () => {
     setVariantOpen(true);
   };
 
   const { setValue: writeValue } = useFormContext();
-  console.log('YELLING DATA GRID', uiLocation);
   return (
     <>
       {/* <Grid item xs={6} sm={6} md={4}> */}
@@ -176,18 +164,16 @@ export function AdminProductDisplay({
             <input hidden name={`menuPage.items[${index}].uiLocation.h`} type="number" readOnly value={uiLocation.h} ref={register()} />
 
             <input hidden name={`menuPage.items[${index}].image`} readOnly value={image} ref={register()} />
-              <CardActionArea onClick={handleClickOpen}>
-                <CardMedia
-                  component="img"
-                  alt={name}
-                  id={id}
-                  height="100"
-                  width="100"
-                  className={classes.cardMedia}
-                  image={image}
-                  title={name}
-                />
-              </CardActionArea>
+              <CardMedia
+                component="img"
+                alt={name}
+                id={id}
+                height="100"
+                width="100"
+                className={classes.cardMedia}
+                image={image}
+                title={name}
+              />
               <CardContent className={classes.content}>
                 <Controller
                   as={<InputBase />}
@@ -217,20 +203,18 @@ export function AdminProductDisplay({
               <input hidden name={`menuPage.items[${index}].uiLocation.h`} type="number" readOnly value={uiLocation.h} ref={register()} />
 
               <input hidden name={`menuPage.items[${index}].image`} ref={register()} />
-              <CardActionArea onClick={handleClickOpen}>
-                <CardMedia
-                  component={StorageInput}
-                  alt={name}
-                  id={id}
-                  height="100"
-                  width="100"
-                  index={index}
-                  className={classes.cardMedia}
-                  image={image}
-                  title={name}
-                  writeValue={writeValue}
-                />
-              </CardActionArea>
+              <CardMedia
+                component={StorageInput}
+                alt={name}
+                id={id}
+                height="100"
+                width="100"
+                index={index}
+                className={classes.cardMedia}
+                image={image}
+                title={name}
+                writeValue={writeValue}
+              />
               <CardContent className={classes.content}>
                 <Controller
                   as={<InputBase />}

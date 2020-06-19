@@ -7,11 +7,75 @@ See the License for the specific language governing permissions and limitations 
 */
 
 
-
+const {promisify} = require('util');
+const Axios = require('axios');
+var jsonwebtoken = require('jsonwebtoken');
 const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 var bodyParser = require('body-parser')
 var express = require('express')
+const jwkToPem = require('jwk-to-pem');
+
+
+
+
+const cognitoPoolId = process.env.COGNITO_POOL_ID || '';
+// const cognitoPoolId = 'ap-southeast-1_41Kg0kf0U'; // hardcoded in, todo: pass in through process env
+if (!cognitoPoolId) {
+  throw new Error('env var required for cognito pool');
+}
+const cognitoIssuer = `https://cognito-idp.ap-southeast-1.amazonaws.com/${cognitoPoolId}`;
+
+let cacheKeys;
+const getPublicKeys = async () => {
+  if (!cacheKeys) {
+    const url = `${cognitoIssuer}/.well-known/jwks.json`;
+    const publicKeys = await Axios.default.get(url);
+    cacheKeys = publicKeys.data.keys.reduce((agg, current) => {
+      const pem = jwkToPem(current);
+      agg[current.kid] = {instance: current, pem};
+      return agg;
+    }, {});
+    return cacheKeys;
+  } else {
+    return cacheKeys;
+  }
+};
+
+const verifyPromised = promisify(jsonwebtoken.verify.bind(jsonwebtoken));
+
+const getUserNameFromJwt = async (token) => {
+  let result;
+  try {
+    const tokenSections = (token || '').split('.');
+    if (tokenSections.length < 2) {
+      throw new Error('requested token is invalid');
+    }
+    const headerJSON = Buffer.from(tokenSections[0], 'base64').toString('utf8');
+    const header = JSON.parse(headerJSON);
+    const keys = await getPublicKeys();
+    const key = keys[header.kid];
+    if (key === undefined) {
+      throw new Error('claim made for unknown kid');
+    }
+    const claim = await verifyPromised(token, key.pem);
+    const currentSeconds = Math.floor( (new Date()).valueOf() / 1000);
+    if (currentSeconds > claim.exp || currentSeconds < claim.auth_time) {
+      throw new Error('claim is expired or invalid');
+    }
+    if (claim.iss !== cognitoIssuer) {
+      throw new Error('claim issuer is invalid');
+    }
+    if (claim.token_use !== 'id') {
+      throw new Error('claim use is not id');
+    }
+    result = {userName: claim['cognito:username'], isValid: true};
+  } catch (error) {
+    result = {userName: '', clientId: '', error: error.message, isValid: false};
+  }
+  return result;
+};
+
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -40,7 +104,7 @@ app.use(awsServerlessExpressMiddleware.eventContext())
 // Enable CORS for all methods
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-Chm-Authorization")
   next()
 });
 
@@ -85,6 +149,8 @@ app.get(path + hashKeyPath, function(req, res) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err});
     } else {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-Chm-Authorization");    
       res.json(data.Items);
     }
   });
@@ -97,7 +163,8 @@ app.get(path + hashKeyPath, function(req, res) {
 app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
   var params = {};
   if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    // params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    params[partitionKeyName] = req.params[partitionKeyName];
   } else {
     params[partitionKeyName] = req.params[partitionKeyName];
     try {
@@ -163,25 +230,41 @@ app.put(path, function(req, res) {
 /************************************
 * HTTP post method for insert object *
 *************************************/
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers['x-chm-authorization'];
+  if (bearerHeader) {
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+  } else {
+    // Forbidden
+    res.statusCode = 403;
+    res.json({error: 'Missing X-Chm-Authorization header', url: req.url, body: req.body});
+  }
+}
 
-app.post(path, function(req, res) {
-
+app.post(path, verifyToken, function(req, res) {
+  let dataFromJwt;
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-    req.body['shopId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    dataFromJwt = getUserNameFromJwt(req.token);
   }
-
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
-  }
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.statusCode = 500;
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
+  dataFromJwt.then((claim) => {
+    req.body['shopId'] = claim.userName;
+    let putItemParams = {
+      TableName: tableName,
+      Item: req.body
     }
+    dynamodb.put(putItemParams, (err, data) => {
+      if(err) {
+        res.statusCode = 500;
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'post call succeed!', url: req.url, data: data})
+      }
+    });
+  
   });
 });
 

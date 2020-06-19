@@ -5,6 +5,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
+import { Auth } from 'aws-amplify';
+
 // import {
 //     useTranslate,
 //     useDataProvider,
@@ -78,7 +80,8 @@ const OrderPageShow = props => {
     console.log('orderpage rendering ...');
     const classes = useStyles();
     const firestore = useFirestore();
-    const businessId = 'demo';
+    const businessId = localStorage.getItem('businessId');
+    // const businessId = 'demo';
     const listenedPath = {
       collection: 'businesses',
       doc: businessId,
@@ -90,6 +93,7 @@ const OrderPageShow = props => {
       ],
       storeAs: 'ReceivedOrdersCollection',
     };
+    
     useFirestoreConnect([listenedPath]);
     const receivedOrders = useSelector(
       state => state.firestore.data.ReceivedOrdersCollection,

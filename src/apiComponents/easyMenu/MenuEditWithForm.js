@@ -9,6 +9,7 @@ import Add from "@material-ui/icons/Add";
 import CardActionArea from '@material-ui/core/CardActionArea';
 import Card from '@material-ui/core/Card';
 import AddCard from './AddCard';
+import { v4 as uuidv4 } from 'uuid';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 /**
@@ -25,7 +26,7 @@ class AddRemoveLayout extends React.PureComponent {
 
   constructor(props) {      
     super(props);
-    console.log('PROPOS', props);
+    console.log('constructing menuEditWithForm...');
     this.state = {
       items: [
         ...this.props.fields, 
@@ -44,17 +45,15 @@ class AddRemoveLayout extends React.PureComponent {
       itemsLoaded: false,
       affectedItems: null
     };
-
+    this.onLayoutChange = this.onLayoutChange.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
     this.onBreakpointChange = this.onBreakpointChange.bind(this);
   }
-
   componentDidUpdate(prevProps, prevState) {
-    console.log('INVESTIGATE prev props', prevProps);
-    console.log('INVESTIGATE this props', this.props);
-
-    console.log('INVESTIGATE prev state', prevState);
-    console.log('INVESTIGATE this state', this.state);
+    // console.log('INVESTIGATE prev props', prevProps);
+    // console.log('INVESTIGATE this props', this.props);
+    // console.log('INVESTIGATE prev state', prevState);
+    // console.log('INVESTIGATE this state', this.state);
 
 
     if (this.state.affectedItems) {
@@ -62,7 +61,7 @@ class AddRemoveLayout extends React.PureComponent {
       this.setState({items: [...this.state.items, ...this.state.affectedItems], affectedItems: null})
     }
 
-    if (!this.state.items[this.state.items.length-1].uiLocation.add) {
+    if (!this.state.items[this.state.items.length-1] || !this.state.items[this.state.items.length-1].uiLocation || !this.state.items[this.state.items.length-1].uiLocation.add) {
       if (this.state.affectedItems) {
         console.log('choice1');
         this.setState({
@@ -82,83 +81,24 @@ class AddRemoveLayout extends React.PureComponent {
           itemsLoaded: true
         });
       } else {
-      // mutating list directly here for performance but not working
-      // this.state.items.push(
-      //   {
-      //     uiLocation: 
-      //     {
-      //       x: this.state.items.length % 2,
-      //       y:Infinity,
-      //       w:1,
-      //       h:2, 
-      //       add: true
-      //     }
-      //   }
-      // );
       console.log('choice2');
-      this.setState({
+      this.setState(state => ({
         items: 
-          [...this.state.items, {
+          [...state.items, {
             uiLocation: 
             {
-              x: this.state.items.length % 2,
+              x: state.items.length % 2,
               y:Infinity,
               w:1,
               h:2, 
               add: true
             }
           }],
-          // this.state.items.concat(
-          // {
-          //   uiLocation: 
-          //   {
-          //     x: this.state.items.length % 2,
-          //     y:Infinity,
-          //     w:1,
-          //     h:2, 
-          //     add: true
-          //   }
-          // }),
-        // Increment the counter to ensure key is always unique.
-        newCounter: this.state.newCounter + 1,
+        newCounter: state.newCounter + 1,
         itemsLoaded: true
-      });}
-
-
-
-
+      }));}
 
     }
-  
-    // if (prevState.items.length !== this.state.items.length) {
-    //   this.setState({
-    //     // Add a new item. It must have a unique key!
-    //     items: this.state.items.concat(
-    //       {
-    //         uiLocation: 
-    //         {
-    //           x: this.state.items.length % 2,
-    //           y:Infinity,
-    //           w:1,
-    //           h:2, 
-    //           add: true
-    //         }
-    //       }),
-    //     // Increment the counter to ensure key is always unique.
-    //     newCounter: this.state.newCounter + 1,
-    //     itemsLoaded: true
-    //   });
-
-    // }
-  
-
-    // console.log('component did update debug', this.props.fields);
-    // console.log('component did update debug', prevProps.fields);
-    // if (prevProps.fields.title !== this.props.fields) {
-    //   this.setState(({
-    //     items: this.props.fields
-    //   }))
-    // }
   }
 
   createElement(el, ind) {
@@ -166,7 +106,8 @@ class AddRemoveLayout extends React.PureComponent {
       position: "absolute",
       right: "2px",
       top: 0,
-      cursor: "pointer"
+      cursor: "pointer",
+      fontSize: "x-large"
     };
     let productName;
     if (el.uiLocation) {
@@ -176,7 +117,6 @@ class AddRemoveLayout extends React.PureComponent {
       el={...el, uiLocation: {add: false}};
     }
     // const productName = el.name;
-    console.log('creating element');
       return (
         <div key={productName} data-grid={el.uiLocation}>
           {el.uiLocation.add ? (
@@ -214,57 +154,51 @@ class AddRemoveLayout extends React.PureComponent {
     }
   
 
-  createAddElement(position) {
-    console.log('MY POSITION IS ', position)
-    console.log('MY col POSITION IS ', this.state.cols)
-    console.log('MY X POSITION', (position) % (this.state.cols))
-    const xPosition = (position) % (this.state.cols);
-    return (
-      <div key="add-Item" data-grid={{x:xPosition, y:Infinity, w:1, h:2 }}>
-        <AddCard onClick={this.onAddItem} />
-      </div>          
-    );
-  }
+  // createAddElement(position) {
+  //   console.log('MY POSITION IS ', position)
+  //   console.log('MY col POSITION IS ', this.state.cols)
+  //   console.log('MY X POSITION', (position) % (this.state.cols))
+  //   const xPosition = (position) % (this.state.cols);
+  //   return (
+  //     <div key="add-Item" data-grid={{x:xPosition, y:Infinity, w:1, h:2 }}>
+  //       <AddCard onClick={this.onAddItem} />
+  //     </div>          
+  //   );
+  // }
 
 
   onAddItem() {
     /*eslint no-console: 0*/
-    console.log("adding", "n" + this.state.newCounter);
-    console.log('x location', this.state.items.length % this.state.cols);
-    console.log('items length', this.state.items.length);
-    console.log('column ', this.state.cols);
-    console.log('test', {x: this.state.items%this.state.cols})
-    const addCart= this.state.items.pop();
+    // const addCart= this.state.items.pop();
 
-    this.setState({
+    this.setState(state => {
+      state.items.pop();
+      return ({
       // Add a new item. It must have a unique key!
-      items: this.state.items.concat({ 
-        name: "newProduct"+this.state.newCounter, 
-        image: "", 
-        // uiLocation: {x:(this.state.items.length * 2) % (this.state.cols || 12), y:Infinity, w:1, h:2 }, 
-        uiLocation: {x:(this.state.items.length) % (this.state.cols || 12), y:Math.floor((this.state.items.length)/2), w:1, h:2 }, 
-        price: "", 
-        variants: [{}, {}]
-      }
+        items: state.items.concat({
+          // name: "newProduct"+this.state.newCounter, 
+          name: "newProduct"+uuidv4(), 
+          image: "", 
+          // uiLocation: {x:(this.state.items.length * 2) % (this.state.cols || 12), y:Infinity, w:1, h:2 }, 
+          uiLocation: {x:(state.items.length) % (state.cols || 12), y:Math.floor((state.items.length)/2), w:1, h:2 }, 
+          price: "", 
+          variants: [{}, {}]
+        }
       // , {
       //   uiLocation: 
       //   {
-      //     x: (this.state.items.length+1) % (this.state.cols || 12),
+      //     x: (state.items.length+1) % 2,
       //     y:Infinity,
       //     w:1,
       //     h:2, 
       //     add: true
       //   }
       // }
-
-      
       ),
       // Increment the counter to ensure key is always unique.
-      newCounter: this.state.newCounter + 1,
+      newCounter: state.newCounter + 1,
       itemsLoaded: true
-    });
-
-    console.log('ITEMS:', this.state.items);
+    })});
   }
 
 
@@ -277,65 +211,78 @@ class AddRemoveLayout extends React.PureComponent {
   }
 
   onLayoutChange(layout) {
-    this.props.onLayoutChange(layout);
-    this.setState({ layout: layout });
+    // this.props.onLayoutChange(layout);
+    // layout = layout.map(layoutlette => {
+    //   layoutlette.x = ;
+    //   layoutlette.y = ;
+
+    // })
+    this.setState(state => {
+      if (state.layout && state.layout.length !== state.items.length) {
+        layout.forEach((layoutlette,ind, a) => {
+          layoutlette['x'] = state.items[ind].uiLocation.x;
+          layoutlette['y'] = state.items[ind].uiLocation.y*2;
+        });  
+      }
+      return(
+        { layout: layout }
+      );
+    
+    });
   }
 
   onRemoveItem(i) {
     console.log("removing", i);
     this.props.remove(i);
     // this.setState({ items: _.reject(this.state.items, { name: i }) });
-    const items = this.adjustUiLocation2(i);
-    console.log('INVESTINGATING REMOEING ITEMS', items);
-    // this.setState({ items: this.adjustUiLocation(i) });
-    this.setState(()=>({ items: items.unaffectedItems, affectedItems: items.affectedItems }));
+    this.setState((state) => {
+      const afterState = this.adjustUiLocation(state,i);
+      return afterState 
+    });
+
+    // const items = this.adjustUiLocation2(i);
+    // console.log('INVESTINGATING REMOEING ITEMS', items);
+    // this.setState(()=>({ items: items.unaffectedItems, affectedItems: items.affectedItems }));
   }
 
-  adjustUiLocation2(i) {
+  // adjustUiLocation2(i) {
 
-    const addCart= this.state.items.pop();
-    console.log('IMPORTANT STATE ITEMS', this.state.items);
-    const droppedIndex = _.findIndex(this.state.items, { name: i });
-    const unaffectedItems = _.slice(this.state.items, 0, droppedIndex);
-    console.log('IMPORTANT UNAFFECTEDITEMS', unaffectedItems);
-    const affectingItems = this.state.items[droppedIndex];
-    console.log('IMPORTANT AFFECTINGITEMS', affectingItems);
-    const affectedItems = _.drop(this.state.items, droppedIndex+1);
-    console.log('IMPORTANT AFFECTEDITEMS', affectedItems);
-    affectedItems.forEach((el)=> {
-      if (el.uiLocation.x === 0) {
-        el.uiLocation.y -= 1; // adjustUiLocationY
-      } 
-      el.uiLocation.x = Number(!el.uiLocation.x) // adjustUiLocationX
-    }); 
-    console.log('IMPORTANT AFFECTEDITEMS2222222222', affectedItems);
+  //   const addCart= this.state.items.pop();
+  //   console.log('IMPORTANT STATE ITEMS', this.state.items);
+  //   const droppedIndex = _.findIndex(this.state.items, { name: i });
+  //   const unaffectedItems = _.slice(this.state.items, 0, droppedIndex);
+  //   console.log('IMPORTANT UNAFFECTEDITEMS', unaffectedItems);
+  //   const affectingItems = this.state.items[droppedIndex];
+  //   console.log('IMPORTANT AFFECTINGITEMS', affectingItems);
+  //   const affectedItems = _.drop(this.state.items, droppedIndex+1);
+  //   console.log('IMPORTANT AFFECTEDITEMS', affectedItems);
+  //   affectedItems.forEach((el)=> {
+  //     if (el.uiLocation.x === 0) {
+  //       el.uiLocation.y -= 1; // adjustUiLocationY
+  //     } 
+  //     el.uiLocation.x = Number(!el.uiLocation.x) // adjustUiLocationX
+  //   }); 
+  //   console.log('IMPORTANT AFFECTEDITEMS2222222222', affectedItems);
 
-    console.log('IMPORTANT AFFECTEDITEMS', [...unaffectedItems, ...affectedItems]);
-    return { unaffectedItems: [...unaffectedItems], affectedItems: [...affectedItems] };
-  }
+  //   console.log('IMPORTANT AFFECTEDITEMS', [...unaffectedItems, ...affectedItems]);
+  //   return { unaffectedItems: [...unaffectedItems], affectedItems: [...affectedItems] };
+  // }
 
   
-  adjustUiLocation(i) {
+  adjustUiLocation(state, i) {
 
-    const addCart= this.state.items.pop();
-    console.log('IMPORTANT STATE ITEMS', this.state.items);
-    const droppedIndex = _.findIndex(this.state.items, { name: i });
-    const unaffectedItems = _.slice(this.state.items, 0, droppedIndex);
-    console.log('IMPORTANT UNAFFECTEDITEMS', unaffectedItems);
-    const affectingItems = this.state.items[droppedIndex];
-    console.log('IMPORTANT AFFECTINGITEMS', affectingItems);
-    const affectedItems = _.drop(this.state.items, droppedIndex+1);
-    console.log('IMPORTANT AFFECTEDITEMS', affectedItems);
+    state.items.pop(); // remove the add card
+    const droppedIndex = _.findIndex(state.items, { name: i });
+    const unaffectedItems = _.slice(state.items, 0, droppedIndex);
+    // const affectingItems = state.items[droppedIndex];
+    const affectedItems = _.drop(state.items, droppedIndex+1);
     affectedItems.forEach((el)=> {
       if (el.uiLocation.x === 0) {
         el.uiLocation.y -= 1; // adjustUiLocationY
       } 
       el.uiLocation.x = Number(!el.uiLocation.x) // adjustUiLocationX
     }); 
-    console.log('IMPORTANT AFFECTEDITEMS2222222222', affectedItems);
-
-    console.log('IMPORTANT AFFECTEDITEMS', [...unaffectedItems, ...affectedItems]);
-    return [...unaffectedItems, ...affectedItems];
+    return {items: [...unaffectedItems, ...affectedItems]};
   }
 
   render() {
@@ -346,7 +293,7 @@ class AddRemoveLayout extends React.PureComponent {
         </IconButton> */}
         <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} />
         <ResponsiveReactGridLayout
-        //   onLayoutChange={this.onLayoutChange}
+          onLayoutChange={this.onLayoutChange}
           onBreakpointChange={this.onBreakpointChange}
           isDraggable={false}
           draggableCancel="input,textarea, button"

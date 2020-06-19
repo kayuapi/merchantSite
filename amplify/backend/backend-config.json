@@ -1,56 +1,56 @@
 {
-	"auth": {
-		"adminfrontendamplify7fe7cf92": {
-			"service": "Cognito",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": []
-		}
-	},
-	"storage": {
-		"amplifyChmboxorderingDdb": {
-			"service": "DynamoDB",
-			"providerPlugin": "awscloudformation"
-		},
-		"amplifyChmboxorderingStorage": {
-			"service": "S3",
-			"providerPlugin": "awscloudformation"
-		}
-	},
-	"function": {
-		"adminfrontendamplify4cb2a585": {
-			"build": true,
-			"providerPlugin": "awscloudformation",
-			"service": "Lambda",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "amplifyChmboxorderingDdb",
-					"attributes": [
-						"Name",
-						"Arn"
-					],
-					"attributeEnvMap": {
-						"Name": "TABLE_NAME",
-						"Arn": "TABLE_ARN"
-					}
-				}
-			]
-		}
-	},
-	"api": {
-		"amplifyChmboxOrderingApi": {
-			"service": "API Gateway",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "adminfrontendamplify4cb2a585",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			]
-		}
-	}
+    "auth": {
+        "adminfrontendamplify7fe7cf92": {
+            "service": "Cognito",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": []
+        }
+    },
+    "storage": {
+        "amplifyChmboxorderingDdb": {
+            "service": "DynamoDB",
+            "providerPlugin": "awscloudformation"
+        },
+        "amplifyChmboxorderingStorage": {
+            "service": "S3",
+            "providerPlugin": "awscloudformation"
+        }
+    },
+    "function": {
+        "adminfrontendamplify4cb2a585": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda",
+            "dependsOn": [
+                {
+                    "category": "storage",
+                    "resourceName": "amplifyChmboxorderingDdb",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ],
+                    "attributeEnvMap": {
+                        "Name": "TABLE_NAME",
+                        "Arn": "TABLE_ARN"
+                    }
+                }
+            ]
+        }
+    },
+    "api": {
+        "amplifyChmboxOrderingApi": {
+            "service": "API Gateway",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": [
+                {
+                    "category": "function",
+                    "resourceName": "adminfrontendamplify4cb2a585",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                }
+            ]
+        }
+    }
 }

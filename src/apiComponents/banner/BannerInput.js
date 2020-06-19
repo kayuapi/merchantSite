@@ -2,7 +2,7 @@ import React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
-import { Storage, Auth } from 'aws-amplify';
+import { Storage, Auth, API } from 'aws-amplify';
 import Typography from '@material-ui/core/Typography';
 import awsmobile from '../../aws-exports';
 
@@ -20,6 +20,35 @@ function LinearProgressWithLabel(props) {
       </Box>
     );
 }
+
+
+async function uploadImageMetaToDb(imagePath, imageDisplayType) {
+    const apiName = 'amplifyChmboxOrderingApi';
+    const basePath = '/uiplugin';
+    try {
+      const myInit = {
+        headers: {
+          'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+        },
+        body: {
+          SK: 'Banner',
+          image: imagePath,
+          imageDisplayType: imageDisplayType
+        },
+        response: false
+      };
+      const path = `${basePath}`;
+      const pageSubmissionResponse = await API.post(apiName, path, myInit);
+      console.log('pageSubmissionResponse', pageSubmissionResponse);
+      return pageSubmissionResponse;
+    }
+    catch(err) {
+      console.log('api response error', err.response);
+    }
+  }
+  
+
+
 LinearProgressWithLabel.propTypes = {
     /**
      * The value of the progress indicator for the determinate and buffer variants.
@@ -40,16 +69,22 @@ class S3ImageUpload extends React.Component {
         this.onChange = this.onChange.bind(this);
     }
     componentDidMount() {
+        this.mounted = true;
+
         Auth.currentUserInfo().then(userInfo => {
-            const uriEncodedUserInfo = encodeURIComponent(userInfo.id);
-            console.log('userInfo Id', userInfo.id);
-            console.log('uri component', uriEncodedUserInfo);
+            // const uriEncodedUserInfo = encodeURIComponent(userInfo.id);
+            // console.log('userInfo Id', userInfo.id);
+            // console.log('uri component', uriEncodedUserInfo);
             const uploadedImageUrl = `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/${userInfo.id}/`;
             // this.setState({uploadedImageUrl: `https://amplify-chmboxordering-bucket191430-dev.s3-ap-southeast-1.amazonaws.com/protected/${userInfo.id}/`});
-            this.setState({uploadedImageUrl: uploadedImageUrl});
-        })
+            if (this.mounted) {
+                this.setState({uploadedImageUrl: uploadedImageUrl});
+            }
+        })    
     }
-
+    componentWillUnmount() {
+        this.mounted = false;
+    }
     onChange(e) {
         let that = this;
         console.log('INSIDE STORAGEINPUT: PROPS', this.props);
@@ -71,15 +106,15 @@ class S3ImageUpload extends React.Component {
             },
         })
         .then (result => {
-            // let imageUrl = Storage.get(result)
             const uploadedImageUrl = encodeURI(this.state.uploadedImageUrl+result['key']);
-            this.props.writeValue(`menuPage.items[${this.props.index}].image`, uploadedImageUrl);
             this.setState({ uploadedPercentage: 100, uploadedImageUrl: uploadedImageUrl}, () => {
                 setTimeout(() => {
                     this.setState({ uploaded: true, uploadedPercentage: 0})
                 }, 500);
             });
-            console.log('uploadedImageUrl', this.state.uploadedImageUrl);
+            return uploadImageMetaToDb(uploadedImageUrl, this.state.imageDisplayType);
+        }).then(result => {
+
         })
         .catch(err => console.log(err));
     }
