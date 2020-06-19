@@ -185,6 +185,7 @@ const EasyMenuPageShow = props => {
           const basePath = '/uiplugin/object';
           try {
               const currentUserInfo = await Auth.currentUserInfo();
+              localStorage.setItem('businessId', currentUserInfo.username); // need to refactor later (used for order memo)
               const path = `${basePath}/${currentUserInfo.username}/PluginMenuPages`;
               const pageNamesResponse = await API.get(apiName, path, myInit);
               // setPageNames(pageNamesResponse.pageNames);
