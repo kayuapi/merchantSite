@@ -66,25 +66,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const AddAndDeleteTabContainer = ({ children }) => {
+const AddAndDeleteTabContainer = ({ children, isSortCategoryModeOn, pageNames, setPageNames }) => {
   console.log('AddAndDeleteTabContainer: render fields...');
 
   const methods = useFormContext();
-
-  return <AddAndDeleteTab {...methods} children={children} />;
+  console.log('inininin', isSortCategoryModeOn);
+  return <AddAndDeleteTab {...methods} children={children} isSortCategoryModeOn={isSortCategoryModeOn} pageNames={pageNames} setPageNames={setPageNames} />;
 };
 
 
 
-const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty }, children }) => {
+const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty }, children, isSortCategoryModeOn, pageNames, setPageNames }) => {
   // fixed window functionality
   const tabsRef = React.useRef();
-  
+  console.log('ininin2', isSortCategoryModeOn);
   const classes = useStyles();
   // const { handleSubmit, reset, control } = useForm();
   // const { reset, control } = useFormContext();
   // const [tabLoaded, setTabLoaded] = useState(false);
-  const [pageNames, setPageNames] = useState({loaded: false, data: []});
+
+
+  // const [pageNames, setPageNames] = useState({loaded: false, data: []});
   const [tabValue, setTabValue] = useState('0');
   const [scrollBtn, setScrollBtn] = useState("off");
   // const [myFields, setMyFields] = useState([]);
@@ -93,30 +95,30 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
     belongsToTab: '',
   });
   const [dialogIsSubmitting, setDialogIsSubmitting] = React.useState(false);
-  useEffect(() => {
-    const myInit = {
-        headers: {
-        },
-        response: false
-    };
-    async function grabPageNames() {
-        const apiName = 'amplifyChmboxOrderingApi';
-        const basePath = '/uiplugin/object';
-        try {
-            const currentUserInfo = await Auth.currentUserInfo();
-            const path = `${basePath}/${currentUserInfo.username}/PluginMenuPages`;
-            const pageNamesResponse = await API.get(apiName, path, myInit);
-            // setPageNames(pageNamesResponse.pageNames);
-            reset({menuPage: {categories: pageNamesResponse.pageNames}});
-            setPageNames({loaded: true, data: pageNamesResponse.pageNames});
-        }
-        catch(err) {
-            console.log('pageNames api response error', err.response);
-        }
-    }
-    console.log('reseted');
-    grabPageNames();
-  }, [reset]);
+  // useEffect(() => {
+  //   const myInit = {
+  //       headers: {
+  //       },
+  //       response: false
+  //   };
+  //   async function grabPageNames() {
+  //       const apiName = 'amplifyChmboxOrderingApi';
+  //       const basePath = '/uiplugin/object';
+  //       try {
+  //           const currentUserInfo = await Auth.currentUserInfo();
+  //           const path = `${basePath}/${currentUserInfo.username}/PluginMenuPages`;
+  //           const pageNamesResponse = await API.get(apiName, path, myInit);
+  //           // setPageNames(pageNamesResponse.pageNames);
+  //           reset({menuPage: {categories: pageNamesResponse.pageNames}});
+  //           setPageNames({loaded: true, data: pageNamesResponse.pageNames});
+  //       }
+  //       catch(err) {
+  //           console.log('pageNames api response error', err.response);
+  //       }
+  //   }
+  //   console.log('reseted');
+  //   grabPageNames();
+  // }, [reset]);
 
   // fixed window functionality
   function updateScrollButton() {
@@ -241,7 +243,7 @@ const AddAndDeleteTab = memo(({ reset, control, getValues, formState: { dirty },
   return (
     <>
       {!pageNames.loaded && <CircularProgress />}
-      {pageNames.loaded &&
+      {pageNames.loaded && !isSortCategoryModeOn &&
         <>
           <TabContext value={tabValue}>
             <AppBar position="sticky" className={classes.appBar}>

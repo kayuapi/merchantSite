@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Route } from 'react-router-dom';
 // import Typography from '@material-ui/core/Typography';
 // import {
@@ -28,8 +28,11 @@ import { useForm, FormContext } from "react-hook-form";
 import SaveIcon from '@material-ui/icons/Save';
 // import { API, Auth } from 'aws-amplify';
 import AddAndDeleteTab from './AddAndDeleteTab';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import { API, Auth } from 'aws-amplify';
+import DraggableTabs from './DraggableTabs';
 
+// import * as md from 'react-tabtab/lib/themes/material-design';
 const useStyles = makeStyles(theme => ({
   button: {
     'margin': theme.spacing(1),
@@ -141,11 +144,66 @@ async function saveData(data, setIsSubmitting) {
   }
 }
 
+
+const handleSortCategoryModeToggle = (pageNames, isSortCategoryModeOn, setIsSortCategoryModeOn, setIsSubmittingCategory) => {
+  console.log('isSortCategoryModeOn', isSortCategoryModeOn);
+
+  if(!isSortCategoryModeOn) {
+    setIsSortCategoryModeOn(!isSortCategoryModeOn);
+    console.log('isSortCategoryModeOn', isSortCategoryModeOn);
+  } else {
+    setIsSubmittingCategory(true);
+    console.log('PAGENAME2', pageNames);
+    
+    submitPageNames(pageNames.data).then(pageNamesResponse => {
+      if (pageNamesResponse.success) {
+        setIsSubmittingCategory(false);
+        setIsSortCategoryModeOn(!isSortCategoryModeOn);
+      }
+    })
+
+  }
+};
+
 const EasyMenuPageShow = props => {    
     const classes = useStyles();
     const methods = useForm();
+    const { reset } = methods;
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmittingCategory, setIsSubmittingCategory] = useState(false);
+    const [isSortCategoryModeOn, setIsSortCategoryModeOn] = useState(false);
+    const [pageNames, setPageNames] = useState({loaded: false, data: []});
+
+    useEffect(() => {
+      const myInit = {
+          headers: {
+          },
+          response: false
+      };
+      async function grabPageNames() {
+          const apiName = 'amplifyChmboxOrderingApi';
+          const basePath = '/uiplugin/object';
+          try {
+              const currentUserInfo = await Auth.currentUserInfo();
+              const path = `${basePath}/${currentUserInfo.username}/PluginMenuPages`;
+              const pageNamesResponse = await API.get(apiName, path, myInit);
+              // setPageNames(pageNamesResponse.pageNames);
+              reset({menuPage: {categories: pageNamesResponse.pageNames}});
+              setPageNames({loaded: true, data: pageNamesResponse.pageNames});
+          }
+          catch(err) {
+              console.log('pageNames api response error', err.response);
+          }
+      }
+      console.log('reseted');
+      grabPageNames();
+    }, [reset]);
+
+
+
+
     console.log('easymenu rendering');
+    console.log('isSortCategoryModeOn', isSortCategoryModeOn);
     const onSubmit = data => {console.log("data", data); saveData(data, setIsSubmitting)};
     return (
       <div className={classes.root}>
@@ -165,8 +223,20 @@ const EasyMenuPageShow = props => {
                 {isSubmitting && <span>Saving...</span>}
                 {!isSubmitting && <span>Save page</span>}
               </Button>
+              <ToggleButton
+                value="check"
+                selected={isSortCategoryModeOn}
+                onChange={() => handleSortCategoryModeToggle(pageNames, isSortCategoryModeOn, setIsSortCategoryModeOn, setIsSubmittingCategory)}
+              >
+                {isSortCategoryModeOn && <span>Sort Category Mode: On</span>}
+                {isSortCategoryModeOn && isSubmittingCategory && <span>Submitting...</span>}
+                {!isSortCategoryModeOn && <span>Sort Category Mode: Off</span>}
+              </ToggleButton>
               </div>
-              <AddAndDeleteTab formMethods={methods}>
+
+              {isSortCategoryModeOn && <DraggableTabs tabs={pageNames} setPageNames2={setPageNames} />}
+
+              <AddAndDeleteTab formMethods={methods} pageNames={pageNames} setPageNames={setPageNames} isSortCategoryModeOn={isSortCategoryModeOn}>
                 {(pageNames) => (<>
                     <TabPanel value="0"><MenuEditWithForm pageNames={pageNames} pageId="Page1" /></TabPanel> 
                     <TabPanel value="1"><MenuEditWithForm pageNames={pageNames} pageId="Page2" /></TabPanel>
