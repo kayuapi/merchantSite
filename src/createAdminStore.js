@@ -2,13 +2,18 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import { routerMiddleware, connectRouter } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
+import elegantMenuReducer from './apiComponents/easyMenu/reducer';
+import categoryTabsReducer from './apiComponents/easyMenu/CategoryTabs/reducer';
+import categoryTabsSaga from './apiComponents/easyMenu/CategoryTabs/saga';
+import menuItemsPanelReducer from './apiComponents/easyMenu/MenuItemsPanel/reducer';
+import menuItemsPanelSaga from './apiComponents/easyMenu/MenuItemsPanel/saga';
 import {
     adminReducer,
     adminSaga,
     USER_LOGOUT,
 } from 'react-admin';
-import { firebaseReducer } from 'react-redux-firebase';
-import { firestoreReducer } from 'redux-firestore';
+// import { firebaseReducer } from 'react-redux-firebase';
+// import { firestoreReducer } from 'redux-firestore';
 
 export default ({
     authProvider,
@@ -18,8 +23,11 @@ export default ({
     const reducer = combineReducers({
         admin: adminReducer,
         router: connectRouter(history),
-        firebase: firebaseReducer,
-        firestore: firestoreReducer,
+        // firebase: firebaseReducer,
+        // firestore: firestoreReducer,
+        elegantMenu: elegantMenuReducer,
+        elegantMenuCategory: categoryTabsReducer,
+        elegantMenuItemsPanel: menuItemsPanelReducer,
         // { /* add your own reducers here */ },
     });
     const resettableAppReducer = (state, action) =>
@@ -30,6 +38,8 @@ export default ({
             [
                 adminSaga(dataProvider, authProvider),
                 // add your own sagas here
+                categoryTabsSaga,
+                menuItemsPanelSaga,
             ].map(fork)
         );
     };

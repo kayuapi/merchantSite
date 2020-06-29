@@ -31,7 +31,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import InputBase from '@material-ui/core/InputBase';
-import { useFieldArray, Controller } from "react-hook-form";
+import { useFieldArray, Controller, useFormContext } from "react-hook-form";
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -74,33 +74,38 @@ const useStyles = makeStyles(theme => ({
 export function AdminProductVariantDisplay({ 
     // control, 
     index, 
-    register, 
     isOpen, 
-    handleClose 
+    setVariantOpen,
+    append,
+    fields,
+    remove,
+    setValue
   }) {
   // useInjectReducer({ key: 'product', reducer });
   const classes = useStyles();
-  const { fields, append, remove } = useFieldArray({
-    // control,
-    name: `menuPage.items[${index}].variants`
+  const { getValues, watch } = useFormContext();
+  const { fields: fieldsAlt, append: appendAlt, remove: removeAlt } = useFieldArray({
+    name: `menuPage.items[${index}].variantsAlt`
   });
-  // console.log('control', control);
 
-  // const [open, setOpen] = React.useState(false);
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
+  console.log('ttttFields', fields);
+  const watchVariants = watch();
+  console.log('WATCHING', watchVariants);
+  const handleClose = () => {
+    const updatedVariant = fields.reduce((acc, obj, ind) => {
+      acc[`menuPage.items[${index}].variants[${ind}].name`] = 'tta';
+      acc[`menuPage.items[${index}].variants[${ind}].price`] = getValues(`menuPage.items[${index}].variantsAlt[${ind}].price`);
+      return acc;
+    }, {});
+    console.log('UPDATED_VAIANT', [updatedVariant]);
+    setValue([updatedVariant]);
+    setVariantOpen(false);
+  }
 
   return (
     <>
       <Dialog
         open={isOpen}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
           {/* <FormattedMessage {...messages.dialogTitle} /> */}
@@ -132,7 +137,7 @@ export function AdminProductVariantDisplay({
                           <TableCell className={classes.tablecell}>
                               <Controller
                                   as={<InputBase multiline />}
-                                  name={`menuPage.items[${index}].variants[${nestedIndex}].name`}
+                                  name={`menuPage.items[${index}].variantsAlt[${nestedIndex}].name`}
                                   defaultValue={itemNest.name}
                                   // control={control}
                                   placeholder="Enter a product variant name"
@@ -141,7 +146,7 @@ export function AdminProductVariantDisplay({
                           <TableCell align="center" className={classes.priceCell}>
                               <Controller
                                   as={<InputBase multiline />}
-                                  name={`menuPage.items[${index}].variants[${nestedIndex}].price`}
+                                  name={`menuPage.items[${index}].variantsAlt[${nestedIndex}].price`}
                                   defaultValue={itemNest.price}
                                   placeholder="Enter a price"
                                   // control={control}
@@ -196,13 +201,6 @@ export function AdminProductVariantDisplay({
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* <SimpleDialog
-        open={open}
-        onClose={handleClose}
-        title={title}
-        image={image}
-      /> */}
     </>
   );
 }

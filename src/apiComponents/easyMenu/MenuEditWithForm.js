@@ -1,21 +1,31 @@
+/**
+ * How this works?
+ * Upon events such as onAddItem, onRemoveItem, remove <AddCard /> by popping it off from state.items
+ * Append <AddCard /> by adding it to state.items when component updates again
+ * 
+ */
 import React from "react";
 import { WidthProvider, Responsive } from "react-grid-layout";
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import _ from "lodash";
 import makeLayout from "./test-hook.jsx";
 import AdminProductDisplay from './AdminProductDisplay';
 import { withHookHoc } from './withHookHoc';
-import { IconButton } from '@material-ui/core';
-import Add from "@material-ui/icons/Add";
-import CardActionArea from '@material-ui/core/CardActionArea';
-import Card from '@material-ui/core/Card';
 import AddCard from './AddCard';
 import { v4 as uuidv4 } from 'uuid';
+import { loadMenuItems } from "./actions.js";
+import { createStructuredSelector } from 'reselect';
+import { 
+  makeSelectMenuItems, 
+  makeSelectMenuItemsLoading, 
+  makeSelectMenuItemsError
+} from './selectors';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-/**
- * This layout demonstrates how to use a grid with a dynamic number of elements.
- */
-class AddRemoveLayout extends React.PureComponent {
+
+export class AddRemoveLayout extends React.PureComponent {
   static defaultProps = {
     className: "layout",
     breakpoints: {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0},
@@ -26,8 +36,12 @@ class AddRemoveLayout extends React.PureComponent {
 
   constructor(props) {      
     super(props);
+    console.log('PROPS FIELDS ARE', this.props.fields);
+
+    this.props.loadMenuItems(this.props.fields);
     console.log('constructing menuEditWithForm...');
     this.state = {
+      menuItems: this.props.menuItems,
       items: [
         ...this.props.fields, 
         {
@@ -53,8 +67,8 @@ class AddRemoveLayout extends React.PureComponent {
     // console.log('INVESTIGATE prev props', prevProps);
     // console.log('INVESTIGATE this props', this.props);
     // console.log('INVESTIGATE prev state', prevState);
-    // console.log('INVESTIGATE this state', this.state);
-
+    console.log('INVESTIGATE this state', this.state);
+    
 
     if (this.state.affectedItems) {
       console.log('HEREHEREHERE', [...this.state.items, ...this.state.affectedItems]);
@@ -169,14 +183,21 @@ class AddRemoveLayout extends React.PureComponent {
 
   onAddItem() {
     /*eslint no-console: 0*/
-    // const addCart= this.state.items.pop();
-
+    
+    this.props.addMenuItem({
+      id: uuidv4(),
+      name: "newProduct"+uuidv4(),
+      image: "",
+      uiLocation: {x:(state.items.length) % (state.cols || 12), y:Math.floor((state.items.length)/2), w:1, h:2 },
+      price: "",
+      variants: [{}]
+    });
     this.setState(state => {
       state.items.pop();
       return ({
       // Add a new item. It must have a unique key!
         items: state.items.concat({
-          // name: "newProduct"+this.state.newCounter, 
+          id: uuidv4(),
           name: "newProduct"+uuidv4(), 
           image: "", 
           // uiLocation: {x:(this.state.items.length * 2) % (this.state.cols || 12), y:Infinity, w:1, h:2 }, 
@@ -288,9 +309,7 @@ class AddRemoveLayout extends React.PureComponent {
   render() {
     return (
       <div>
-        {/* <IconButton onClick={this.onAddItem} aria-label="add item">
-          <Add />
-        </IconButton> */}
+
         <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} />
         <ResponsiveReactGridLayout
           onLayoutChange={this.onLayoutChange}
@@ -316,6 +335,32 @@ class AddRemoveLayout extends React.PureComponent {
   }
 }
 
+AddRemoveLayout.propTypes = {
+  menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  menuItemsLoading: PropTypes.bool,
+  menuItemsError: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+
+  loadMenuItems: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = createStructuredSelector({
+  menuItems: makeSelectMenuItems(),
+  menuItemsLoading: makeSelectMenuItemsLoading(),
+  menuItemsError: makeSelectMenuItemsError(),
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+    loadMenuItems: menuItems => dispatch(loadMenuItems(menuItems)),
+    addMenuItem: menuItem => dispatch(loadMenuItems(menuItem)),
+  };
+}
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
+
 // import("./test-hook.jsx").then(fn => fn.default(AddRemoveLayout));
 // export default makeLayout(AddRemoveLayout);
-export default withHookHoc(AddRemoveLayout);
+export default compose(withHookHoc, withConnect)(AddRemoveLayout);

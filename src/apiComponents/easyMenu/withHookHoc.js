@@ -45,7 +45,7 @@ export const withHookHoc = (Component) => {
 
     const classes = useStyles();
     const [loaded, setLoaded] = useState(false);
-    const { handleSubmit, register, reset, getValues } = useFormContext();
+    const { handleSubmit, register, reset, getValues, setValue } = useFormContext();
     const { fields, append, remove } = useFieldArray({
       name: "menuPage.items"
     });
@@ -53,6 +53,7 @@ export const withHookHoc = (Component) => {
     useEffect(()=> {
       grabFromDb(`PluginMenu%23${props.pageId}`).then((retrievedItem)=> {
         if (retrievedItem.items) {
+          console.log('with hook hoc resetted with retrieved items')
           reset({
             menuPage: {
               categories: props.pageNames,
@@ -60,6 +61,7 @@ export const withHookHoc = (Component) => {
             }
           });  
         } else {
+          console.log('with hook hoc resetted WITHOUT retrieved items')
           reset({
             menuPage: {
               categories: props.pageNames,
@@ -86,6 +88,7 @@ export const withHookHoc = (Component) => {
       <Container className={classes.cardGrid} maxWidth="sm">
         {!loaded && <CircularProgress />}
         {loaded && 
+          // need to pass in react-hook-form methods because <Component /> is a class component and cannot use hook. 
           <Component 
             handleSubmit={handleSubmit} 
             register={register} 
@@ -94,6 +97,7 @@ export const withHookHoc = (Component) => {
             fields={fields} 
             append={append} 
             remove={remove} 
+            setValue={setValue}
             {...props} />
         }
       </Container>

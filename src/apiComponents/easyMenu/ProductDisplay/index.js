@@ -26,13 +26,12 @@ import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
+// import DialogTitle from '@material-ui/core/DialogTitle';
+// import Dialog from '@material-ui/core/Dialog';
+// import DialogActions from '@material-ui/core/DialogActions';
 import InputBase from '@material-ui/core/InputBase';
 // import { useInjectReducer } from 'utils/injectReducer';
 import { Controller, useFormContext, useFieldArray } from "react-hook-form";
-import AdminProductVariantDisplay from '../AdminProductVariantDisplay';
 
 import StorageInput from '../../playground/StorageInput';
 
@@ -98,7 +97,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function AdminProductDisplay({
+export function ProductDisplay({
   id,
   item: { name, price, image, variants, uiLocation },
   index,
@@ -106,38 +105,15 @@ export function AdminProductDisplay({
   // control,
   // register,
 }) {
-
-  const { fields, append, remove } = useFieldArray({
-    name: `menuPage.items[${index}].variants`
-  });
-  console.log('INDEX IS: ', index);
-  console.log('rendering adminProductDisplay: ', fields);
-  console.log('rendering adminProductDisplay: variants: ', variants);
   const classes = useStyles();
-  const { register } = useFormContext();
   const [isVariantOpen, setVariantOpen] = React.useState(false);
 
   const handlePlusMinusChange = () => {
     setVariantOpen(true);
   };
-
-  const { setValue: writeValue } = useFormContext();
   return (
     <>
       <Card className={classes.root}>
-        <input hidden name={`menuPage.items[${index}].uiLocation.x`} type="number" readOnly value={uiLocation.x} ref={register()} />
-        <input hidden name={`menuPage.items[${index}].uiLocation.y`} type="number" readOnly value={uiLocation.y} ref={register()} />
-        <input hidden name={`menuPage.items[${index}].uiLocation.w`} type="number" readOnly value={uiLocation.w} ref={register()} />
-        <input hidden name={`menuPage.items[${index}].uiLocation.h`} type="number" readOnly value={uiLocation.h} ref={register()} />
-
-        {fields.map((itemNest, nestedIndex) => (
-          <div key={itemNest.id}>
-            <input hidden name={`menuPage.items[${index}].variants[${nestedIndex}].name`} type="text" defaultValue={itemNest.name} ref={register()} />
-            <input hidden name={`menuPage.items[${index}].variants[${nestedIndex}].price`} type="text" defaultValue={itemNest.price} ref={register()} />          
-          </div>
-        ))}
-
-        <input hidden name={`menuPage.items[${index}].image`} ref={register()} />
         {image ? (
           <CardMedia
             component="img"
@@ -159,10 +135,9 @@ export function AdminProductDisplay({
             className={classes.cardMedia}
             image={image}
             title={name}
-            writeValue={writeValue}
+            // writeValue={writeValue}
           />)}
         <CardContent className={classes.content}>
-          {/* <Controller />'s control props is optional when using <FormContext /> */}
           <Controller
             as={<InputBase />}
             name={`menuPage.items[${index}].name`}
@@ -215,38 +190,15 @@ export function AdminProductDisplay({
           </Grid>
         </CardActions>
       </Card>
-
-      <AdminProductVariantDisplay 
-        index={index} 
-        isOpen={isVariantOpen} 
-        setVariantOpen={setVariantOpen}
-        append={append}
-        fields={fields}
-        remove={remove}
-        setValue={setValue}
-      />
     </>
   );
 }
 
-AdminProductDisplay.propTypes = {
+ProductDisplay.propTypes = {
   item: PropTypes.object,
   id: PropTypes.any,
 };
 
-function mapDispatchToProps(dispatch) {
-  return {
-    // addProduct: item => dispatch(addProductToCart(item)),
-    // removeProduct: item => dispatch(removeProductFromCart(item)),
-  };
-}
-
-// const withConnect = connect(
-//   null,
-//   mapDispatchToProps,
-// );
-
 export default compose(
-  // withConnect,
   memo,
-)(AdminProductDisplay);
+)(ProductDisplay);

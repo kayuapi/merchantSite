@@ -185,7 +185,8 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 
   let getItemParams = {
     TableName: tableName,
-    Key: params
+    Key: params,
+    ProjectionExpression: 'pageNames, menuItems'
   }
 
   dynamodb.get(getItemParams,(err, data) => {
