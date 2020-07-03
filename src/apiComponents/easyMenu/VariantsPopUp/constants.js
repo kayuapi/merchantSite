@@ -1,0 +1,6 @@
+export const ADD_VARIANT_ENTRY = 'app/ElegantMenu/ADD_VARIANT_ENTRY';
+export const REMOVE_VARIANT_ENTRY = 'app/ElegantMenu/DELETE_VARIANT_ENTRY';
+export const STORE_VARIANT_ENTRIES_TO_PRODUCTS = 'app/ElegantMenu/STORE_VARIANT_ENTRIES_TO_PRODUCTS';
+
+export const OPEN_VARIANTS_POPUP = 'app/ElegantMenu/OPEN_VARIANTS_POPUP';
+export const CLOSE_VARIANTS_POPUP = 'app/ElegantMenu/CLOSE_VARIANTS_POPUP';

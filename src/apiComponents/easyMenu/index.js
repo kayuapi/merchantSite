@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import CategoryTabs from './CategoryTabs';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import DraggableTabs from './CategoryTabsSortModeOn';
+
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItemsPanel from './MenuItemsPanel';
 import { useForm, FormContext } from "react-hook-form";
-
+import { DevTool } from "react-hook-form-devtools";
+import { createStructuredSelector } from 'reselect';
+import { makeSelectCategorySortModeOn } from './Control/selectors';
+import AlertToContinue from './AlertToContinue';
+import Control from './Control';
 // import * as md from 'react-tabtab/lib/themes/material-design';
 const useStyles = makeStyles(theme => ({
   button: {
@@ -45,23 +53,45 @@ const useStyles = makeStyles(theme => ({
 }
 ));
 
-const EasyMenuPageShow = props => {    
-    const classes = useStyles();
-    const methods = useForm();
-    console.log('easymenu rendering');
-    return (
-      <div className={classes.root}>
+const EasyMenuPageShow = ({
+  isCategorySortModeOn,
+}) => {    
+  const classes = useStyles();
+  const methods = useForm();
+  console.log('easymenu rendering');
+  return (
+    <div className={classes.root}>
+      <Container className={classes.cardGrid} maxWidth="md">
         <FormContext {...methods}>
           <form>
-            <Container className={classes.cardGrid} maxWidth="md">
+            <Control />
+            { isCategorySortModeOn && 
+              <DraggableTabs />
+            }
+            { !isCategorySortModeOn && 
               <CategoryTabs>
                 <MenuItemsPanel />
               </CategoryTabs>
-            </Container>
+            }
           </form>
         </FormContext>
-      </div>
-    )
+      </Container>
+      <AlertToContinue />
+      <DevTool control={methods.control} />
+    </div>
+  )
 };
 
-export default EasyMenuPageShow;
+EasyMenuPageShow.propTypes = {
+  isCategorySortModeOn: PropTypes.bool,
+}
+
+const mapStateToProps = createStructuredSelector({
+  isCategorySortModeOn: makeSelectCategorySortModeOn(),
+})
+
+const withConnect = connect(
+  mapStateToProps,
+)
+
+export default withConnect(EasyMenuPageShow);

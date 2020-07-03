@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-const selectElegantMenuDomain = state => state.elegantMenuCategory || initialState;
+const selectElegantMenuDomain = state => state.elegantMenu.categoryTabs || initialState;
+const selectCategories = state => state.elegantMenu.categoryTabs.categories || initialState;
 
 const makeSelectCategories = () =>
   createSelector(
@@ -33,17 +34,25 @@ const makeSelectCategoriesSaving = () =>
     substate => substate.categoriesSaving,
   );
 
-const makeSelectCurrentCategory = () =>
+const makeSelectCurrentCategoryId = () =>
   createSelector(
     selectElegantMenuDomain,
-    substate => substate.currentCategory,
+    substate => substate.currentCategoryId,
   );
 
+const makeSelectCurrentCategoryFromId = (id) =>
+  createSelector(
+    selectCategories,
+    substate => substate.filter(category => category.id === id)[0] ? substate.filter(category => category.id === id)[0].name : '',
+  );
+  
 export { 
+  selectCategories,
   makeSelectCategories, 
   makeSelectCategoriesLoading,
   makeSelectCategoriesError,
   makeSelectCanAddCategory,
   makeSelectCategoriesSaving,
-  makeSelectCurrentCategory,
+  makeSelectCurrentCategoryId,
+  makeSelectCurrentCategoryFromId,
 };

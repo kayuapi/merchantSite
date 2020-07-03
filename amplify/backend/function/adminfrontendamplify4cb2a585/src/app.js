@@ -273,13 +273,16 @@ app.post(path, verifyToken, function(req, res) {
 * HTTP remove method to delete object *
 ***************************************/
 
-app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+app.delete(path + '/object' + hashKeyPath + sortKeyPath, verifyToken, function(req, res) {
+  let dataFromJwt;
   var params = {};
   if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    // params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    params[partitionKeyName] = req.params[partitionKeyName];
+    dataFromJwt = getUserNameFromJwt(req.token);
   } else {
     params[partitionKeyName] = req.params[partitionKeyName];
-     try {
+    try {
       params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
     } catch(err) {
       res.statusCode = 500;
@@ -295,18 +298,35 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
     }
   }
 
-  let removeItemParams = {
-    TableName: tableName,
-    Key: params
-  }
-  dynamodb.delete(removeItemParams, (err, data)=> {
-    if(err) {
-      res.statusCode = 500;
-      res.json({error: err, url: req.url});
-    } else {
-      res.json({url: req.url, data: data});
+  dataFromJwt.then((claim) => {
+    params[partitionKeyName] = claim.userName;
+    let removeItemParams = {
+      TableName: tableName,
+      Key: params
     }
+    dynamodb.delete(removeItemParams, (err, data) => {
+      if(err) {
+        res.statusCode = 500;
+        res.json({error: err, url: req.url});
+      } else{
+        res.json({success: 'delete call succeed!', url: req.url, data: data})
+      }
+    });
+  
   });
+
+  // let removeItemParams = {
+  //   TableName: tableName,
+  //   Key: params
+  // }
+  // dynamodb.delete(removeItemParams, (err, data)=> {
+  //   if(err) {
+  //     res.statusCode = 500;
+  //     res.json({error: err, url: req.url});
+  //   } else {
+  //     res.json({url: req.url, data: data});
+  //   }
+  // });
 });
 app.listen(3000, function() {
     console.log("App started")

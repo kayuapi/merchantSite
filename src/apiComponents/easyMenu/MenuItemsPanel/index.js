@@ -17,23 +17,33 @@ import Container from '@material-ui/core/Container';
 import { CircularProgress } from '@material-ui/core';
 import AddCard from '../AddCard';
 import ProductDisplay from '../ProductDisplay';
-// import AddCard from './AddCard';
 import { v4 as uuidv4 } from 'uuid';
-import { loadMenuItems, addMenuItem } from "./actions.js";
+import { loadMenuItems, addMenuItem, removeMenuItem } from "./actions.js";
 import { createStructuredSelector } from 'reselect';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   selectMenuItems,
+  selectMenuItemsLayout,
   makeSelectMenuItems, 
   makeSelectMenuItemsWithAddItem,
   makeSelectMenuItemsLoading, 
   makeSelectMenuItemsError,
 } from './selectors';
 import {
-  makeSelectCurrentCategory,
+  makeSelectCurrentCategoryId,
 } from '../CategoryTabs/selectors';
 import TabPanel from "@material-ui/lab/TabPanel";
 import { store } from '../../../App';
+import VariantsPopUp from "../VariantsPopUp";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+const useStyles = makeStyles(theme => ({
+  cardGrid: {
+    // paddingTop: theme.spacing(8),
+    // paddingBottom: theme.spacing(8),
+  },
+}));
+
 
 const createElement = (el, ind) => {
   console.log('creating element', el);
@@ -56,7 +66,7 @@ const createElement = (el, ind) => {
     <div key={el.id} data-grid={el.uiLocation}>
       {el.uiLocation.add ? (
         <AddCard onClick={()=> {
-          const menuItemsCount = selectMenuItems(store.getState()).length;
+          const menuItemsCount = selectMenuItems(store.getState()) ? selectMenuItems(store.getState()).length : 0;
           store.dispatch(
             addMenuItem({
               id: uuidv4(),
@@ -87,46 +97,57 @@ const createElement = (el, ind) => {
         <span
           className="remove"
           style={removeStyle}
-          // onClick={this.onRemoveItem.bind(this, productName)}
+          onClick={() => store.dispatch(removeMenuItem(el.id))}
         >
         x
-      </span>
+        </span>
       )}
     </div>
   );        
 }
 
-const onLayoutChange = (layout) => {
-  console.log('layout change', layout);
-}
 
 export const AddRemoveLayout = ({
-  currentCategory,
+  currentCategoryId,
   menuItems,
   menuItemsWithAddItem,
   menuItemsLoading,
   menuItemsError,
   loadMenuItems,
   addMenuItem,
+  removeMenuItem,
 }) => {
+  console.log('tab menu current category', currentCategoryId);
+  const onLayoutChange = (layout) => {
+    console.log('layout change', layout);
+    const newLayout = selectMenuItemsLayout(store.getState())
+    console.log('going to use layout', newLayout);
+    setLayout(prev => newLayout);
+    // return ({ layout: newLayout });
+  }
+
+  const classes = useStyles();
+  const [layout, setLayout] = React.useState([]);
   console.log('menu items are', menuItems);
   useEffect(() => {
-    if (currentCategory !== '') {
-      loadMenuItems(currentCategory);
-    }
-  }, [currentCategory, loadMenuItems]);
+    // if (currentCategoryId !== '') {
+    //   loadMenuItems();
+    // }
+    loadMenuItems();
+  }, [currentCategoryId, loadMenuItems]);
 
   if (menuItemsLoading) {
     return <CircularProgress />
   }
   else {
     return (
-      <TabPanel value={currentCategory}>
-        <Container maxWidth="sm">
+      <TabPanel value={currentCategoryId}>
+        <Container className={classes.cardGrid} maxWidth="sm">
           {/* <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} /> */}
-          <div>
+          <div style={{position: "relative"}}>
           <ResponsiveReactGridLayout
             onLayoutChange={onLayoutChange}
+            layouts={{lg: layout, md: layout, sm: layout, xs: layout, xxs: layout}}
             // onBreakpointChange={this.onBreakpointChange}
             breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
             cols={{ lg: 2, md: 2, sm: 2, xs: 2, xxs: 2 }}
@@ -140,13 +161,14 @@ export const AddRemoveLayout = ({
           </ResponsiveReactGridLayout> 
           </div>           
         </Container>
+        <VariantsPopUp />
       </TabPanel>
     )
   }
 }
 
 AddRemoveLayout.propTypes = {
-  currentCategory: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  currentCategoryId: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   menuItemsWithAddItem: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   menuItemsLoading: PropTypes.bool,
@@ -154,10 +176,11 @@ AddRemoveLayout.propTypes = {
 
   loadMenuItems: PropTypes.func.isRequired,
   addMenuItem: PropTypes.func.isRequired,
+  removeMenuItem: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  currentCategory: makeSelectCurrentCategory(),
+  currentCategoryId: makeSelectCurrentCategoryId(),
   menuItems: makeSelectMenuItems(),
   menuItemsWithAddItem: makeSelectMenuItemsWithAddItem(),
   menuItemsLoading: makeSelectMenuItemsLoading(),
@@ -166,8 +189,9 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadMenuItems: menuItems => dispatch(loadMenuItems(menuItems)),
+    loadMenuItems: () => dispatch(loadMenuItems()),
     addMenuItem: () => dispatch(addMenuItem()),
+    removeMenuItem: () => dispatch(removeMenuItem()),
   };
 }
 

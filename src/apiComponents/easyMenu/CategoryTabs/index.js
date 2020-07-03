@@ -8,6 +8,8 @@ import { compose } from 'redux';
 import { 
   loadCategories,
   switchCategory,
+  addCategory,
+  deleteCategory,
 } from "./actions.js";
 import { createStructuredSelector } from 'reselect';
 import { 
@@ -16,7 +18,7 @@ import {
   makeSelectCategoriesError,
   makeSelectCanAddCategory,
   makeSelectCategoriesSaving,
-  makeSelectCurrentCategory,
+  makeSelectCurrentCategoryId,
 } from './selectors';
 import { AppBar, Tab, Grid, Button, InputBase } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -27,6 +29,10 @@ import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
 import { IconButton } from '@material-ui/core';
 import { CircularProgress } from '@material-ui/core';
+import { openAlertToContinue } from '../AlertToContinue/actions';
+import { makeSelectElegantMenuCanSaveTabAndPanel } from '../Control/selectors';
+import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
+
 // import { DevTool } from "react-hook-form-devtools";
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
@@ -79,9 +85,13 @@ const CategoryTabs = ({
   categoriesError,
   canAddCategory,
   categoriesSaving,
-  currentCategory,
+  canSaveTabAndPanel,
+  currentCategoryId,
   loadCategories,
-  switchCategory,
+  dispatchSwitchCategory,
+  openAlertToContinue,
+  addCategory,
+  dispatchDeleteCategory,
   children,
 }) => {
   const classes = useStyles();
@@ -111,23 +121,52 @@ const CategoryTabs = ({
     }
   })
   
-  const handleTabChange = (event, category) => {
-    switchCategory(category);
+  const handleTabChange = (event, categoryId) => {
+    if (canSaveTabAndPanel){
+      const actionToDispatch = switchCategory(categoryId);
+      openAlertToContinue(actionToDispatch);
+    } else {
+      dispatchSwitchCategory(categoryId)
+    }
   };
+
+  const addNewCategory = () => {
+    if (canSaveTabAndPanel) {
+      openAlertToContinue(addCategory());
+    } else {
+      addCategory();
+    }
+  }
   const [scrollBtn, setScrollBtn] = useState("off");
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
 
+  const MyCloseIcon = React.forwardRef((props, ref) => {
+    return (
+      <Close id={props.categoryId} onClick={(e) => {
+          e.stopPropagation();
+          const actionToDispatch = deleteCategory(props.categoryId);
+          console.log('action to dispatch when close', actionToDispatch);
+          openAlertToContinue(actionToDispatch);
+        }} 
+      />
+    )
+  });
+
   return (
     <>
       { categoriesLoading && <CircularProgress /> }
       { categories && (
-        <TabContext value={currentCategory}>
+        <TabContext value={currentCategoryId}>
           <AppBar position="sticky" className={classes.appBar}>    
             <Grid className={classes.gridContainer} container alignItems="center" justify="center">
               <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
-                <IconButton className={classes.addPageButton} aria-label="add page">
+                <IconButton 
+                  className={classes.addPageButton} 
+                  onClick={addNewCategory} 
+                  aria-label="add page"
+                >
                   <Add />
                 </IconButton>
               </Grid>
@@ -142,16 +181,16 @@ const CategoryTabs = ({
                     {categories.map((category, index) => {
                       return(
                         <Tab
-                          key={category}
-                          value={category}
+                          key={category.id}
+                          value={category.id}
                           label={<Controller 
                                   as={InputBase}
                                   name={`menuPage.categories[${index}]`}
                                   classes={{root: classes.tabInput}}
-                                  defaultValue={category}
+                                  defaultValue={category.name}
                                   placeholder="New category"
                                 />}
-                          // icon={<MyCloseIcon index={index} />}
+                          icon={<MyCloseIcon categoryId={category.id} />}
                           classes={{ root: classes.tabRoot, wrapper: classes.myTab2 }}
                         />
                       )}
@@ -169,29 +208,40 @@ const CategoryTabs = ({
   )};
 
 CategoryTabs.propTypes = {
+  canAddCategory: PropTypes.bool,
+  canSaveTabAndPanel: PropTypes.bool,
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   categoriesLoading: PropTypes.bool,
   categoriesError: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  canAddCategory: PropTypes.bool,
   categoriesSaving: PropTypes.bool,
-  currentCategory: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  currentCategory: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  
   loadCategories: PropTypes.func.isRequired,
-  switchCategory: PropTypes.func.isRequired,
+  dispatchSwitchCategory: PropTypes.func.isRequired,
+  dispatchDeleteCategory: PropTypes.func.isRequired,
+  addCategory: PropTypes.func.isRequired,
+  openAlertToContinue: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
+  canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   categories: makeSelectCategories(),
   categoriesLoading: makeSelectCategoriesLoading(),
   categoriesError: makeSelectCategoriesError(),
   canAddCategory: makeSelectCanAddCategory(),
   categoriesSaving: makeSelectCategoriesSaving(),
-  currentCategory: makeSelectCurrentCategory(),
+  currentCategoryId: makeSelectCurrentCategoryId(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     loadCategories: () => dispatch(loadCategories()),
-    switchCategory: category => dispatch(switchCategory(category)),
+    dispatchSwitchCategory: category => dispatch(switchCategory(category)),
+    addCategory: () => dispatch(addCategory()),
+    dispatchDeleteCategory: categoryId => dispatch(deleteCategory(categoryId)),
+    dispatchDeleteMenuItems: menuItems => dispatch(deleteMenuItems(menuItems)),
+    openAlertToContinue: (actionCreator, actionCreatorArgument) => dispatch(openAlertToContinue(actionCreator, actionCreatorArgument)),
+
   };
 }
 

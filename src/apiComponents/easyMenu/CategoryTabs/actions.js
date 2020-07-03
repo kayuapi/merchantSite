@@ -5,6 +5,7 @@ import {
   LOAD_CATEGORIES_ERROR,
   ADD_CATEGORY,
   ADD_CATEGORY_ERROR,
+  DELETE_CATEGORY,
   SAVE_CATEGORY,
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
@@ -44,6 +45,14 @@ export function categoryAddingError(error) {
   }
 }
 
+export function deleteCategory(categoryId) {
+  return {
+    type: DELETE_CATEGORY,
+    categoryId,
+  }
+}
+
+
 // Save category
 export function saveCategory() {
   return {
@@ -64,9 +73,9 @@ export function categoriesSavingError(error) {
 }
 
 // Switch category tab
-export function switchCategory(category) {
+export function switchCategory(categoryId) {
   return {
     type: SWITCH_CATEGORY,
-    category,
+    categoryId,
   }
 }

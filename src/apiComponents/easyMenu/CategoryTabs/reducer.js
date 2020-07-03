@@ -5,6 +5,7 @@ import {
   LOAD_CATEGORIES_ERROR,
   ADD_CATEGORY,
   ADD_CATEGORY_ERROR,
+  DELETE_CATEGORY,
   SAVE_CATEGORY,
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
@@ -17,7 +18,7 @@ export const initialState = {
   categoriesError: false,
   canAddCategory: true,
   categoriesSaving: false,
-  currentCategory: false,
+  currentCategoryId: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -35,7 +36,7 @@ const categoriesReducer = (state = initialState, action) =>
         draft.categories = action.categories;
         draft.categoriesLoading = false;
         if (action.categories) {
-          draft.currentCategory = action.categories[0];
+          draft.currentCategoryId = action.categories[0].id;
         }
         break;
       }
@@ -59,6 +60,11 @@ const categoriesReducer = (state = initialState, action) =>
         draft.categoriesError = action.error;
         break;
       }
+
+      case DELETE_CATEGORY: {
+        draft.categories = draft.categories.filter(category => category.id !== action.categoryId);
+        break;
+      }
       
       case SAVE_CATEGORY: {
         draft.categoriesSaving = true;
@@ -78,7 +84,7 @@ const categoriesReducer = (state = initialState, action) =>
       }
       
       case SWITCH_CATEGORY: {
-        draft.currentCategory = action.category;
+        draft.currentCategoryId = action.categoryId;
         break;
       }
     }

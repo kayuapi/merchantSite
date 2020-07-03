@@ -25,13 +25,12 @@ import TextField from '@material-ui/core/TextField';
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-
-// import DialogTitle from '@material-ui/core/DialogTitle';
-// import Dialog from '@material-ui/core/Dialog';
-// import DialogActions from '@material-ui/core/DialogActions';
+import { openVariantsPopUp } from '../VariantsPopUp/actions';
+import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
 import InputBase from '@material-ui/core/InputBase';
 // import { useInjectReducer } from 'utils/injectReducer';
 import { Controller, useFormContext, useFieldArray } from "react-hook-form";
+import { store } from '../../../App';
 
 import StorageInput from '../../playground/StorageInput';
 
@@ -97,6 +96,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const handlePlusMinusChange = (menuItemId) => {
+  console.log('MENUITEMID IS', menuItemId);
+  // obtain variants from menuItem with the amentioned menuItemId
+  const variants = selectMenuItemsVariants(store.getState(), menuItemId);
+  console.log('variants are', variants);
+  store.dispatch(openVariantsPopUp(menuItemId, variants));
+};
+
 export function ProductDisplay({
   id,
   item: { name, price, image, variants, uiLocation },
@@ -106,11 +113,6 @@ export function ProductDisplay({
   // register,
 }) {
   const classes = useStyles();
-  const [isVariantOpen, setVariantOpen] = React.useState(false);
-
-  const handlePlusMinusChange = () => {
-    setVariantOpen(true);
-  };
   return (
     <>
       <Card className={classes.root}>
@@ -172,7 +174,7 @@ export function ProductDisplay({
             <Grid item xs={6} className={classes.gridItem}>
               <IconButton
                 className={classes.gridItem2}
-                onClick={handlePlusMinusChange}
+                onClick={() => {handlePlusMinusChange(id)}}
                 edge="start"
               >
                 <AddIcon />

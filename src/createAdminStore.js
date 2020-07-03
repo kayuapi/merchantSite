@@ -2,11 +2,16 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import { routerMiddleware, connectRouter } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import elegantMenuReducer from './apiComponents/easyMenu/reducer';
+import elegantMenuReducer from './apiComponents/easyMenu/reducers';
 import categoryTabsReducer from './apiComponents/easyMenu/CategoryTabs/reducer';
 import categoryTabsSaga from './apiComponents/easyMenu/CategoryTabs/saga';
 import menuItemsPanelReducer from './apiComponents/easyMenu/MenuItemsPanel/reducer';
 import menuItemsPanelSaga from './apiComponents/easyMenu/MenuItemsPanel/saga';
+import controlReducer from './apiComponents/easyMenu/Control/reducer';
+import controlSaga from './apiComponents/easyMenu/Control/saga';
+import categoryTabsSortModeReducer from './apiComponents/easyMenu/CategoryTabsSortModeOn/reducer';
+import variantsPopUpReducer from './apiComponents/easyMenu/VariantsPopUp/reducer';
+import alertToContinueReducer from './apiComponents/easyMenu/AlertToContinue/reducer';
 import {
     adminReducer,
     adminSaga,
@@ -26,8 +31,12 @@ export default ({
         // firebase: firebaseReducer,
         // firestore: firestoreReducer,
         elegantMenu: elegantMenuReducer,
-        elegantMenuCategory: categoryTabsReducer,
-        elegantMenuItemsPanel: menuItemsPanelReducer,
+        // elegantMenuCategory: categoryTabsReducer,
+        // elegantMenuItemsPanel: menuItemsPanelReducer,
+        // elegantMenuControl: controlReducer,
+        // elegantMenuCategoryTabsSMO: categoryTabsSortModeReducer,
+        // elegantMenuVariantsPopUp: variantsPopUpReducer,
+        // alertToContinue: alertToContinueReducer,
         // { /* add your own reducers here */ },
     });
     const resettableAppReducer = (state, action) =>
@@ -40,6 +49,7 @@ export default ({
                 // add your own sagas here
                 categoryTabsSaga,
                 menuItemsPanelSaga,
+                controlSaga,
             ].map(fork)
         );
     };
