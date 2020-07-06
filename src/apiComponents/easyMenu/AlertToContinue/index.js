@@ -17,45 +17,7 @@ import { makeSelectIsAlertToContinueOn, makeSelectActionToDispatch, makeSelectCa
 import { makeSelectCurrentCategoryFromId } from '../CategoryTabs/selectors';
 import { SWITCH_CATEGORY, DELETE_CATEGORY } from '../CategoryTabs/constants';
 import { store } from '../../../App';
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    'margin': theme.spacing(1),
-    
-  },
-  buttonContainer: {
-    'position': 'sticky',
-    top: 0,
-    left: 'auto',
-    right: 0,
-    background: 'ghostwhite',
-    zIndex: 2
-  },
-  root: {
-    flexGrow: 1,
-    width: '100%',
-    bottom: theme.spacing(10),
-  },
-  appBar: {
-    display: 'flex',
-    flexDirection: 'row',
-    // flex: '1 1 auto',
-  },
-  cardGrid: {
-    paddingTop: theme.spacing(5),
-    paddingBottom: theme.spacing(5),
-    height: '100%',
-    padding: '0 0 0 0',
-  },
-  input: {
-    width: 'auto',
-    color: 'white',
-  },
-  iconButton: {
-    color: 'white',
-  }
-}
-));
+import DeleteTabDialogAction from './DeleteTabDialogAction';
 
 const getCategoryNameFromId = (categoryId) => {
   return makeSelectCurrentCategoryFromId(categoryId)(store.getState());
@@ -68,8 +30,8 @@ const AlertToContinue = ({
   closeAlertToContinue,
   categoryToDeleteFromId,
 }) => {
-  const classes = useStyles();
   console.log('AlertToContinue rendering');
+  
   return (
     <Dialog
       open={isAlertToContinueOn}
@@ -91,20 +53,35 @@ const AlertToContinue = ({
           <span>The tab and all menu items in the tabs will be deleted, please press 'Continue' to confirm.</span>}
         </DialogContentText>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={closeAlertToContinue} color="primary">
-          Cancel
-        </Button>
-        <Button 
-          onClick={()=> {
-            dispatch(actionToDispatch); 
-            closeAlertToContinue();
-          }} 
-          color="primary" 
-          autoFocus>
-          Continue
-        </Button>
-      </DialogActions>
+      {actionToDispatch.type === DELETE_CATEGORY && 
+        <DeleteTabDialogAction />}
+        
+      {actionToDispatch.type === SWITCH_CATEGORY &&
+        <DialogActions>
+          <Button onClick={closeAlertToContinue} color="primary">
+            Cancel
+          </Button>
+          <Button 
+            onClick={()=> {
+              dispatch(actionToDispatch); 
+              closeAlertToContinue();
+            }} 
+            color="primary" 
+            autoFocus>
+            Continue without saving
+          </Button>
+          <Button 
+            onClick={()=> {
+              dispatch(actionToDispatch); 
+              closeAlertToContinue();
+            }} 
+            color="primary" 
+            autoFocus>
+            Continue with saving
+          </Button>
+        </DialogActions>  
+      }
+      
     </Dialog>    
   )
 };

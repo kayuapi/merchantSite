@@ -13,9 +13,12 @@ import {
 } from './constants';
 
 // Save tab and panel
-export function saveTabAndPanel() {
+export function saveTabAndPanel(categories, currentCategory, menuItems) {
   return {
     type: SAVE_TAB_AND_PANEL,
+    categories,
+    currentCategory,
+    menuItems,
   }
 }
 export function tabAndPanelSaved() {

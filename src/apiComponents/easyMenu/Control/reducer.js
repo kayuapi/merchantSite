@@ -12,7 +12,7 @@ import {
 } from './constants';
 
 export const initialState = {
-  canSaveTabAndPanel: true,
+  canSaveTabAndPanel: false,
   tabAndPanelSaving: false,
   tabAndPanelError: false,
   categorySortModeOn: false,

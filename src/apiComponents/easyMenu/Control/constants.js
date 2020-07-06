@@ -2,6 +2,11 @@ export const SAVE_TAB_AND_PANEL = 'app/ElegantMenu/SAVE_TAB_AND_PANEL';
 export const SAVE_TAB_AND_PANEL_SUCCESS = 'app/ElegantMenu/SAVE_TAB_AND_PANEL_SUCCESS';
 export const SAVE_TAB_AND_PANEL_ERROR = 'app/ElegantMenu/SAVE_TAB_AND_PANEL_ERROR';
 
+export const DELETE_TAB_AND_PANEL = 'app/ElegantMenu/SAVE_TAB_AND_PANEL';
+export const DELETE_TAB_AND_PANEL_SUCCESS = 'app/ElegantMenu/SAVE_TAB_AND_PANEL_SUCCESS';
+export const DELETE_TAB_AND_PANEL_ERROR = 'app/ElegantMenu/SAVE_TAB_AND_PANEL_ERROR';
+
+
 export const SAVE_TAB = 'app/ElegantMenu/SAVE_TAB';
 export const SAVE_TAB_SUCCESS = 'app/ElegantMenu/SAVE_TAB_SUCCESS';
 export const SAVE_TAB_ERROR = 'app/ElegantMenu/SAVE_TAB_ERROR';

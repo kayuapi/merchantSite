@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useFormContext } from "react-hook-form";
 import { createStructuredSelector } from 'reselect';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -15,6 +16,17 @@ import {
   makeSelectTabSaving,
   makeSelectTabSavingError,
 } from './selectors';
+
+import {
+  makeSelectCurrentCategory,
+  makeSelectCategories,
+} from '../CategoryTabs/selectors';
+
+import {
+  makeSelectMenuItems,
+} from '../MenuItemsPanel/selectors';
+
+
 import { 
   saveTabAndPanel, 
   saveTab, 
@@ -35,6 +47,12 @@ const useStyles = makeStyles(theme => ({
 ));
 
 const Control = ({
+  currentCategory,
+  categories,
+  menuItems,
+
+
+
   canSaveTabAndPanel,
   tabAndPanelSaving,
   tabAndPanelError,
@@ -50,16 +68,24 @@ const Control = ({
 }) => {    
   const classes = useStyles();
   console.log('control rendering');
+  const { formState: { dirtyFields} } = useFormContext();
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
+  console.log('dirty', isDirty); 
+  
+  console.log('dirty fields', dirtyFields); 
   return (
     <div className={classes.buttonContainer}>
       <Button
-        disabled={ !canSaveTabAndPanel }
+        disabled={ !isDirty }
         type="submit"
         variant="contained"
         color="primary"
         size="large"
         className={classes.button}
         startIcon={<SaveIcon />}
+        onClick={() => {
+          saveTabAndPanel(categories, currentCategory, menuItems);
+        }}
       >
         {tabAndPanelSaving && <span>Saving...</span>}
         {!tabAndPanelSaving && <span>Save page</span>}
@@ -68,7 +94,7 @@ const Control = ({
         value="check"
         selected={isCategorySortModeOn}
         onChange={() => {
-          if (canSaveTabAndPanel) {
+          if (isDirty) {
             openAlertToContinue(toggleCategorySortModeController);
           } else {
             toggleCategorySortModeController();
@@ -85,6 +111,12 @@ const Control = ({
 
 
 Control.propTypes = {
+  currentCategory: PropTypes.object.isRequired,
+  categories: PropTypes.array.isRequired,
+  menuItems: PropTypes.array.isRequired,
+
+
+
   canSaveTabAndPanel: PropTypes.bool,
   tabAndPanelSaving: PropTypes.bool,
   tabAndPanelError: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -100,17 +132,25 @@ Control.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
+  currentCategory: makeSelectCurrentCategory(),
+  categories: makeSelectCategories(),
+  menuItems: makeSelectMenuItems(),
+
+
+
+
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   tabAndPanelSaving: makeSelectTabAndPanelSaving(),
   tabAndPanelError: makeSelectTabAndPanelError(),
   isCategorySortModeOn: makeSelectCategorySortModeOn(),
   isCategoryTabSaving: makeSelectTabSaving(),
   isCategoryTabSavingFailure: makeSelectTabSavingError(),
+
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    saveTabAndPanel: () => dispatch(saveTabAndPanel()),
+    saveTabAndPanel: (categories, currentCategory, menuItems) => dispatch(saveTabAndPanel(categories, currentCategory, menuItems)),
     saveTab: () => dispatch(saveTab()),
     toggleCategorySortModeController: () => dispatch(toggleCategorySortModeController()),
     openAlertToContinue: (actionToContinue) => dispatch(openAlertToContinue(actionToContinue)),

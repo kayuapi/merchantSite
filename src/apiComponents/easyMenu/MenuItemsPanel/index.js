@@ -97,7 +97,10 @@ const createElement = (el, ind) => {
         <span
           className="remove"
           style={removeStyle}
-          onClick={() => store.dispatch(removeMenuItem(el.id))}
+          onClick={() => {
+            
+            store.dispatch(removeMenuItem(el.id));
+          }}
         >
         x
         </span>

@@ -3,6 +3,13 @@ import { initialState } from './reducer';
 
 const selectElegantMenuControlDomain = state => state.elegantMenu.control || initialState;
 
+const makeSelectCategorySortModeOn = () =>
+  createSelector(
+    selectElegantMenuControlDomain,
+    substate => substate.categorySortModeOn,
+  );
+
+
 const makeSelectElegantMenuCanSaveTabAndPanel = () =>
   createSelector(
     selectElegantMenuControlDomain,
@@ -21,11 +28,7 @@ const makeSelectTabAndPanelError = () =>
     substate => substate.tabAndPanelError,
   );
 
-const makeSelectCategorySortModeOn = () =>
-  createSelector(
-    selectElegantMenuControlDomain,
-    substate => substate.categorySortModeOn,
-  );
+
 
 const makeSelectTabSaving = () =>
   createSelector(

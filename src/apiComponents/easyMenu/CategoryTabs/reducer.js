@@ -6,11 +6,15 @@ import {
   ADD_CATEGORY,
   ADD_CATEGORY_ERROR,
   DELETE_CATEGORY,
+  DELETE_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_ERROR,
   SAVE_CATEGORY,
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
+  REMOVE_CATEGORY_NEWLY_ADDED,
 } from './constants';
+import { selectCategories } from './selectors';
 
 export const initialState = {
   categories: false,
@@ -19,6 +23,7 @@ export const initialState = {
   canAddCategory: true,
   categoriesSaving: false,
   currentCategoryId: false,
+  categoryDeleting: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -50,7 +55,7 @@ const categoriesReducer = (state = initialState, action) =>
         if (!draft.categories) {
           draft.categories = [''];
         } else {
-          draft.categories.push('');
+          draft.categories.push(action.category);
         }
         draft.canAddCategory = false;
         draft.categoriesError = false;
@@ -62,9 +67,27 @@ const categoriesReducer = (state = initialState, action) =>
       }
 
       case DELETE_CATEGORY: {
-        draft.categories = draft.categories.filter(category => category.id !== action.categoryId);
+        draft.categoryDeleting = true;
+        draft.categoriesError = false;
         break;
       }
+      case DELETE_CATEGORY_SUCCESS: {
+        draft.categories = draft.categories.filter(category => category.id !== action.categoryId);
+        draft.categoryDeleting = false;
+        break;
+      }
+      case DELETE_CATEGORY_ERROR: {
+        draft.categoryDeleting = false;
+        draft.categoriesError = action.error;
+        break;
+      }
+
+      case REMOVE_CATEGORY_NEWLY_ADDED: {
+        const selectedCategoryIndex = draft.categories.findIndex(category => category.id === action.categoryId);
+        draft.categories[selectedCategoryIndex].newlyAdded = null;
+        break;
+      }
+
       
       case SAVE_CATEGORY: {
         draft.categoriesSaving = true;

@@ -84,7 +84,7 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
         break;
       }
       case ADD_MENU_ITEM: {
-        draft.menuItems.push(action.menuItem)
+        draft.menuItems.push(action.menuItem);
         break;
       }
       case REMOVE_MENU_ITEM: {

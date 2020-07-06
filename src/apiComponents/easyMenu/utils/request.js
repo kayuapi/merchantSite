@@ -77,6 +77,51 @@ export async function saveCategoriesToDb(categories) {
   }
 }
 
+export async function saveCategoriesAndMenuItemsToDb(categories, currentCategoryName, menuItems) {
+  const apiName = 'amplifyChmboxOrderingApi';
+  const path = '/uiplugin/save';
+  const myInit = {
+    headers: {
+      'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+    },
+    body: {
+      categories: {
+        SK: 'PluginMenuPages',
+        pageNames: categories,
+      },
+      menuItems: {
+        SK: `PluginMenu#${currentCategoryName}`, 
+        items: menuItems
+      }
+    },    
+    response: false
+  };  
+  return await API.post(apiName, path,  myInit);
+}
+
+export async function deleteCategoriesAndMenuItemsFromDb(categories, deletedCategoryName) {
+  const apiName = 'amplifyChmboxOrderingApi';
+  const path = '/uiplugin/delete';
+  const myInit = {
+    headers: {
+      'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+    },
+    body: {
+      categories: {
+        SK: 'PluginMenuPages',
+        pageNames: categories,
+      },
+      deletedCategoryName: {
+        SK: `PluginMenu#${deletedCategoryName}`,
+      }
+    },    
+    response: false
+  };  
+  return await API.post(apiName, path,  myInit);
+}
+
+
+
 export async function deleteFromDb(item) {
   // const processedPageNames = pageNames.map(item=>item.value);
   const apiName = 'amplifyChmboxOrderingApi';

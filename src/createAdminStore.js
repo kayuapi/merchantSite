@@ -2,16 +2,10 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import { routerMiddleware, connectRouter } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import elegantMenuReducer from './apiComponents/easyMenu/reducers';
-import categoryTabsReducer from './apiComponents/easyMenu/CategoryTabs/reducer';
 import categoryTabsSaga from './apiComponents/easyMenu/CategoryTabs/saga';
-import menuItemsPanelReducer from './apiComponents/easyMenu/MenuItemsPanel/reducer';
 import menuItemsPanelSaga from './apiComponents/easyMenu/MenuItemsPanel/saga';
-import controlReducer from './apiComponents/easyMenu/Control/reducer';
 import controlSaga from './apiComponents/easyMenu/Control/saga';
-import categoryTabsSortModeReducer from './apiComponents/easyMenu/CategoryTabsSortModeOn/reducer';
-import variantsPopUpReducer from './apiComponents/easyMenu/VariantsPopUp/reducer';
-import alertToContinueReducer from './apiComponents/easyMenu/AlertToContinue/reducer';
+import { createInjectorsEnhancer } from "redux-injectors";
 import {
     adminReducer,
     adminSaga,
@@ -25,31 +19,41 @@ export default ({
     dataProvider,
     history,
 }) => {
-    const reducer = combineReducers({
+    // const reducer = combineReducers({
+    //     admin: adminReducer,
+    //     router: connectRouter(history),
+    //     // firebase: firebaseReducer,
+    //     // firestore: firestoreReducer,
+    //     // elegantMenu: elegantMenuReducer,
+    //     // { /* add your own reducers here */ },
+    // });
+
+    // const resettableAppReducer = (state, action) =>
+    //     reducer(action.type !== USER_LOGOUT ? state : undefined, action);
+
+    const createReducer = (injectedReducers = {}) => {
+      console.log('inject reducer', {...injectedReducers});
+      const rootReducer = combineReducers({
+        ...injectedReducers,
+        // other non-injected reducers can go here...
         admin: adminReducer,
         router: connectRouter(history),
-        // firebase: firebaseReducer,
-        // firestore: firestoreReducer,
-        elegantMenu: elegantMenuReducer,
-        // elegantMenuCategory: categoryTabsReducer,
-        // elegantMenuItemsPanel: menuItemsPanelReducer,
-        // elegantMenuControl: controlReducer,
-        // elegantMenuCategoryTabsSMO: categoryTabsSortModeReducer,
-        // elegantMenuVariantsPopUp: variantsPopUpReducer,
-        // alertToContinue: alertToContinueReducer,
-        // { /* add your own reducers here */ },
-    });
-    const resettableAppReducer = (state, action) =>
-        reducer(action.type !== USER_LOGOUT ? state : undefined, action);
+        // elegantMenu: controlReducer,
+      });
+      const resettableAppReducer = (state, action) =>
+        rootReducer(action.type !== USER_LOGOUT ? state : undefined, action);
+
+      return resettableAppReducer
+    };
 
     const saga = function* rootSaga() {
         yield all(
             [
                 adminSaga(dataProvider, authProvider),
                 // add your own sagas here
-                categoryTabsSaga,
-                menuItemsPanelSaga,
-                controlSaga,
+                // categoryTabsSaga,
+                // menuItemsPanelSaga,
+                // controlSaga,
             ].map(fork)
         );
     };
@@ -66,16 +70,21 @@ export default ({
         compose;
   
     const store = createStore(
-        resettableAppReducer,
+        // resettableAppReducer,
+        createReducer(),
         // { /* set your initial state here */ }, initialstate = {}
         {},
         composeEnhancers(
-            applyMiddleware(
-                sagaMiddleware,
-                routerMiddleware(history),
-                // add your own middlewares here
-            ),
+          applyMiddleware(
+            sagaMiddleware,
+            routerMiddleware(history),
+            // add your own middlewares here
+          ),
             // add your own enhancers here
+          createInjectorsEnhancer({
+            createReducer,
+            runSaga: sagaMiddleware.run,
+          }),
         ),        
     );
     sagaMiddleware.run(saga);

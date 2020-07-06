@@ -1,16 +1,22 @@
 // added wrapper style and change label to inputbase
 // src: https://codesandbox.io/s/addanddelete-tabs-mui-howk8?file=/src/AddAndDeleteTab.js
 
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+
 import { 
   loadCategories,
   switchCategory,
   addCategory,
   deleteCategory,
 } from "./actions.js";
+import { openAlertToContinue } from '../AlertToContinue/actions';
+import { useFormContext } from "react-hook-form";
+
+import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
+
 import { createStructuredSelector } from 'reselect';
 import { 
   makeSelectCategories, 
@@ -20,32 +26,24 @@ import {
   makeSelectCategoriesSaving,
   makeSelectCurrentCategoryId,
 } from './selectors';
-import { AppBar, Tab, Grid, Button, InputBase } from "@material-ui/core";
+import { makeSelectElegantMenuCanSaveTabAndPanel } from '../Control/selectors';
+import { v4 as uuidv4 } from 'uuid';
+
+import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@material-ui/core";
+
 import Add from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import { Controller } from "react-hook-form";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
-import { IconButton } from '@material-ui/core';
-import { CircularProgress } from '@material-ui/core';
-import { openAlertToContinue } from '../AlertToContinue/actions';
-import { makeSelectElegantMenuCanSaveTabAndPanel } from '../Control/selectors';
-import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
 
-// import { DevTool } from "react-hook-form-devtools";
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
 // Since I am building an app with react hook only,
 // I tried converting it to React Hooks and its works like this
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    marginTop: "60px",
-    width: "100%",
-    backgroundColor: "#fff"
-  },
   appBar: {
     color: "inherit",
     backgroundColor: "a09b87",
@@ -96,6 +94,9 @@ const CategoryTabs = ({
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
+  const { formState: { dirtyFields} } = useFormContext();
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
+
   const updateScrollButton = () => {
     const container = tabsRef.current;
     if (!container) {
@@ -122,7 +123,7 @@ const CategoryTabs = ({
   })
   
   const handleTabChange = (event, categoryId) => {
-    if (canSaveTabAndPanel){
+    if (isDirty && !(categoryId === currentCategoryId)){
       const actionToDispatch = switchCategory(categoryId);
       openAlertToContinue(actionToDispatch);
     } else {
@@ -131,10 +132,15 @@ const CategoryTabs = ({
   };
 
   const addNewCategory = () => {
-    if (canSaveTabAndPanel) {
-      openAlertToContinue(addCategory());
+    const newCategory = {
+      id: uuidv4(),
+      name: '',
+      newlyAdded: true, // this field is useful so that when deleting newlyAdded category, network request is not sent
+    }
+    if (isDirty) {
+      openAlertToContinue(addCategory(newCategory));
     } else {
-      addCategory();
+      addCategory(newCategory);
     }
   }
   const [scrollBtn, setScrollBtn] = useState("off");
@@ -237,7 +243,7 @@ function mapDispatchToProps(dispatch) {
   return {
     loadCategories: () => dispatch(loadCategories()),
     dispatchSwitchCategory: category => dispatch(switchCategory(category)),
-    addCategory: () => dispatch(addCategory()),
+    addCategory: (category) => dispatch(addCategory(category)),
     dispatchDeleteCategory: categoryId => dispatch(deleteCategory(categoryId)),
     dispatchDeleteMenuItems: menuItems => dispatch(deleteMenuItems(menuItems)),
     openAlertToContinue: (actionCreator, actionCreatorArgument) => dispatch(openAlertToContinue(actionCreator, actionCreatorArgument)),

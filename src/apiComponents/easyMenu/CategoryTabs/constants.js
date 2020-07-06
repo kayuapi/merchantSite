@@ -8,11 +8,14 @@ export const LOAD_CATEGORIES_ERROR = 'app/ElegantMenu/LOAD_CATEGORIES_ERROR';
 export const ADD_CATEGORY = 'app/ElegantMenu/ADD_CATEGORY';
 export const ADD_CATEGORY_ERROR = 'app/ElegantMenu/ADD_CATEGORY_ERROR';
 
-// non-network action has no success status
 export const DELETE_CATEGORY = 'app/ElegantMenu/DELETE_CATEGORY';
+export const DELETE_CATEGORY_SUCCESS = 'app/ElegantMenu/DELETE_CATEGORY_SUCCESS';
+export const DELETE_CATEGORY_ERROR = 'app/ElegantMenu/DELETE_CATEGORY_ERROR';
 
 export const SAVE_CATEGORY = 'app/ElegantMenu/SAVE_CATEGORY';
 export const SAVE_CATEGORY_SUCCESS = 'app/ElegantMenu/SAVE_CATEGORY_SUCCESS';
 export const SAVE_CATEGORY_ERROR = 'app/ElegantMenu/SAVE_CATEGORY_ERROR';
 
 export const SWITCH_CATEGORY = 'app/ElegantMenu/SWITCH_CATEGORY';
+
+export const REMOVE_CATEGORY_NEWLY_ADDED = 'app/ElegantMenu/REMOVE_CATEGORY_NEWLY_ADDED'

@@ -11,7 +11,8 @@ import {
   modifyStateToClean,
   modifyStateToDirty, 
 } from './actions';
-import { saveCategoriesToDb, savePanelToDb } from '../utils/request';
+import { removeCategoryNewlyAdded } from '../CategoryTabs/actions';
+import { saveCategoriesToDb, savePanelToDb, saveCategoriesAndMenuItemsToDb } from '../utils/request';
 import { 
   selectCategories, 
   makeSelectCategories, 
@@ -22,20 +23,20 @@ import { makeSelectSMOCategoryTabs } from '../CategoryTabsSortModeOn/selectors';
 import { makeSelectMenuItems } from '../MenuItemsPanel/selectors';
 
 // import { store } from '../../../App';
+// saveCategorySortModeOn
 
+// newlyAdded
 
-export function* saveTabAndPanel() {
+export function* saveTabAndPanel(action) {
   try {
-    const categoriesToBeSavedToDb = yield select(makeSelectCategories());
-    const { success: categoriesSubmittedSuccess } = yield call(saveCategoriesToDb, categoriesToBeSavedToDb);
-
-    const items = yield select(makeSelectMenuItems());
-    const categoryId = yield select(makeSelectCurrentCategoryId());
-    const category = yield select(makeSelectCurrentCategoryFromId(categoryId));
-    const { success: panelSubmittedSuccess } = yield call(savePanelToDb, items, category);
-
-    if (categoriesSubmittedSuccess && panelSubmittedSuccess) {
+    const { success } = yield call(saveCategoriesAndMenuItemsToDb, action.categories, action.currentCategory.name, action.menuItems);
+    if (success) {
       yield put(tabAndPanelSaved());
+
+      // saved tab is no longer newly added - newly added field is added to facilitate deletion of newly added tab without network call
+      yield put(removeCategoryNewlyAdded(action.currentCategory.id));
+    } else {
+      throw new Error({message: "error"});
     }
   } catch (err) {
     yield put(tabAndPanelSavingError(err));

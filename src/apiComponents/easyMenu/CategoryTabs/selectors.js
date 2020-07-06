@@ -40,12 +40,25 @@ const makeSelectCurrentCategoryId = () =>
     substate => substate.currentCategoryId,
   );
 
+const makeSelectCurrentCategory = () =>
+  createSelector(
+    selectElegantMenuDomain,
+    substate => substate.currentCategory,
+  );
+
+
 const makeSelectCurrentCategoryFromId = (id) =>
   createSelector(
     selectCategories,
     substate => substate.filter(category => category.id === id)[0] ? substate.filter(category => category.id === id)[0].name : '',
   );
   
+const makeSelectCategoryDeleting = () =>
+  createSelector(
+    selectElegantMenuDomain,
+    substate => substate.categoryDeleting,
+  );
+
 export { 
   selectCategories,
   makeSelectCategories, 
@@ -55,4 +68,6 @@ export {
   makeSelectCategoriesSaving,
   makeSelectCurrentCategoryId,
   makeSelectCurrentCategoryFromId,
+  makeSelectCategoryDeleting,
+  makeSelectCurrentCategory,
 };
