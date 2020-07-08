@@ -5,8 +5,8 @@ import { createStructuredSelector } from 'reselect';
 
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
-import { closeAlertToContinue } from './actions';
-import { makeSelectActionToDispatch } from './selectors';
+import { closeAlertToContinue } from '../actions';
+import { makeSelectActionToDispatch } from '../selectors';
 import { makeSelectCategoryDeleting } from '../../CategoryTabs/selectors';
 
 

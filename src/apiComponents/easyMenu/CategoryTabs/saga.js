@@ -1,13 +1,13 @@
 import { call, put, takeLatest, all } from 'redux-saga/effects';
 import { LOAD_CATEGORIES, DELETE_CATEGORY } from './constants';
-import { categoriesLoaded, categoriesLoadingError, categoryDeleted, categoryDeletingError } from './actions';
+import { categoriesLoaded, categoriesLoadingError, categoryDeleted, categoryDeletingError, switchCategory } from './actions';
 import { closeAlertToContinue } from '../AlertToContinue/actions';
 import { grabFromDb, deleteCategoriesAndMenuItemsFromDb } from '../utils/request';
 
 export function* getCategories() {
   try {
     const itemsToBeGrabbedFromDb = `PluginMenuPages`;
-    const {pageNames: categories} = yield call(grabFromDb, itemsToBeGrabbedFromDb);
+    const {categories} = yield call(grabFromDb, itemsToBeGrabbedFromDb);
     console.log('noted', categories);
     yield put(categoriesLoaded(categories));
   } catch (err) {
@@ -29,9 +29,10 @@ export function* deleteCategory(action) {
       success = true;
     }
     if (success) {
+      // // alert to continue will always pop up when delete category, so it needs to be closed 
       yield put(categoryDeleted(action.deletedCategory.id));
-      // alert to continue will always pop up when delete category, so it needs to be closed 
-      yield put(closeAlertToContinue);
+      yield put(switchCategory(action.categories[0].id));
+      yield put(closeAlertToContinue());
     } else {
       throw new Error({message: "error"});
     }

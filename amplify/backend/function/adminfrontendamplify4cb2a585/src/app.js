@@ -364,6 +364,7 @@ app.post(`${path}/delete`, verifyToken, function(req, res) {
     dataFromJwt = getUserNameFromJwt(req.token);
   }
   dataFromJwt.then((claim) => {
+    req.body.categories[partitionKeyName] = claim.userName;
     req.body.deletedCategoryName[partitionKeyName] = claim.userName;
 
     let params = {

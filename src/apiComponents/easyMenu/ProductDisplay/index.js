@@ -7,6 +7,8 @@
 import React, { memo, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 // import { connect, useSelector } from 'react-redux';
 // import { FormattedMessage } from 'react-intl';
 import { compose } from 'redux';
@@ -26,13 +28,14 @@ import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { openVariantsPopUp } from '../VariantsPopUp/actions';
+import { updateMenuItemName, updateMenuItemPrice } from '../MenuItemsPanel/actions';
 import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
 import InputBase from '@material-ui/core/InputBase';
 // import { useInjectReducer } from 'utils/injectReducer';
-import { Controller, useFormContext, useFieldArray } from "react-hook-form";
+import { Controller, useFieldArray } from "react-hook-form";
 import { store } from '../../../App';
 
-import StorageInput from '../../playground/StorageInput';
+import StorageInput from '../../playground/RHFStorageInput';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,6 +50,8 @@ const useStyles = makeStyles(theme => ({
     // paddingTop: '56.25%', // 16:9
     // width: 'auto',
     // height: 'auto',
+    width: '80%',
+    'align-self': 'center',
     'object-fit': 'contain',
   },
   textField: {
@@ -105,12 +110,9 @@ const handlePlusMinusChange = (menuItemId) => {
 };
 
 export function ProductDisplay({
-  id,
-  item: { name, price, image, variants, uiLocation },
+  item: { id, name, price, image, variants, uiLocation },
   index,
-  setValue
-  // control,
-  // register,
+  dispatch,
 }) {
   const classes = useStyles();
   return (
@@ -130,7 +132,7 @@ export function ProductDisplay({
           <CardMedia
             component={StorageInput}
             alt={name}
-            id={id}
+            menuItemId={id}
             height="100"
             width="100"
             index={index}
@@ -141,20 +143,36 @@ export function ProductDisplay({
           />)}
         <CardContent className={classes.content}>
           <Controller
-            as={<InputBase />}
             name={`menuPage.items[${index}].name`}
             defaultValue={name}
-            placeholder="Enter a product name"
-            classes={{input: classes.productTitleInput}}
-            inputProps={{ 'aria-label': 'put product title' }}
+            render={({onChange, onBlur, value}) => (
+              <InputBase
+                onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value)); onBlur();}}
+                onChange={onChange}
+                value={value}
+                placeholder="Enter a product name"
+                classes={{input: classes.productTitleInput}}
+                inputProps={{'aria-label': 'put product title' }} 
+              />
+            )}
           />
           <Controller
-            as={<InputBase />}
             name={`menuPage.items[${index}].price`}
             defaultValue={price}
-            placeholder="Enter a product price"
-            classes={{input: classes.priceInput}}
-            inputProps={{ 'aria-label': 'put a price' }}
+            render={({onChange, onBlur, value}) => (
+            <InputBase
+              onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); onBlur();}}
+              onChange={onChange}
+              value={value}
+              placeholder="Enter a product price"
+              classes={{input: classes.priceInput}}
+              inputProps={{ 'aria-label': 'put a price' }}  
+            />
+          )}
+            
+
+
+
           />
         </CardContent>
 
@@ -199,8 +217,20 @@ export function ProductDisplay({
 ProductDisplay.propTypes = {
   item: PropTypes.object,
   id: PropTypes.any,
+  dispatch: PropTypes.func,
 };
 
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch
+  }
+}
+const withConnect = connect(
+  null,
+  mapDispatchToProps,
+)
+
 export default compose(
+  withConnect,
   memo,
 )(ProductDisplay);

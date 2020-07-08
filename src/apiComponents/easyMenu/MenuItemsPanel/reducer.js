@@ -8,6 +8,10 @@ import {
   DELETE_MENU_ITEMS_ERROR,
   ADD_MENU_ITEM,
   REMOVE_MENU_ITEM,
+  UPDATE_MENU_ITEM_NAME,
+  UPDATE_MENU_ITEM_PRICE,
+  UPDATE_MENU_ITEM_IMAGE,
+  UPDATE_MENU_ITEMS_LOCATION,
   UPDATE_MENU_ITEM_VARIANTS,
 } from './constants';
 import _ from "lodash";
@@ -91,6 +95,61 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
         draft.menuItems = deleteAndAdjustUILocation(draft.menuItems, action.menuItemId);
         break;
       }
+
+      case UPDATE_MENU_ITEM_NAME: {
+        let k = [];
+        draft.menuItems.forEach(menuItem => {
+          if (menuItem.id === action.menuItemId) {
+            menuItem.name = action.menuItemName;
+          }
+          k.push(menuItem);
+        });
+        draft.menuItems = k;
+        break;
+      }
+
+      case UPDATE_MENU_ITEM_PRICE: {
+        let k = [];
+        draft.menuItems.forEach(menuItem => {
+          if (menuItem.id === action.menuItemId) {
+            menuItem.price = action.menuItemPrice;
+          }
+          k.push(menuItem);
+        });
+        draft.menuItems = k;
+        break;
+      }
+
+      case UPDATE_MENU_ITEM_IMAGE: {
+        let k = [];
+        draft.menuItems.forEach(menuItem => {
+          if (menuItem.id === action.menuItemId) {
+            menuItem.image = action.menuItemImage;
+          }
+          k.push(menuItem);
+        });
+        draft.menuItems = k;
+        break;
+      }
+
+      case UPDATE_MENU_ITEMS_LOCATION: {
+        let k = [];
+        draft.menuItems.forEach(menuItem => {
+          const foundIndex = action.menuItemIdAndLocationArray.findIndex(x => x.i === menuItem.id);
+          const updatedUiLocation = {
+            x: action.menuItemIdAndLocationArray[foundIndex].x,
+            y: action.menuItemIdAndLocationArray[foundIndex].y,
+            w: action.menuItemIdAndLocationArray[foundIndex].w,
+            h: action.menuItemIdAndLocationArray[foundIndex].h,
+          };
+          menuItem.uiLocation = updatedUiLocation;
+          k.push(menuItem);
+        });
+        draft.menuItems = k;
+        break;
+      }
+
+
       case UPDATE_MENU_ITEM_VARIANTS: {
         let k = [];
         draft.menuItems.forEach(menuItem => {

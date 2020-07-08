@@ -109,7 +109,7 @@ export async function deleteCategoriesAndMenuItemsFromDb(categories, deletedCate
     body: {
       categories: {
         SK: 'PluginMenuPages',
-        pageNames: categories,
+        categories,
       },
       deletedCategoryName: {
         SK: `PluginMenu#${deletedCategoryName}`,

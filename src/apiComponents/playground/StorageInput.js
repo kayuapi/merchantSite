@@ -29,6 +29,7 @@ LinearProgressWithLabel.propTypes = {
 };
 
 class S3ImageUpload extends React.Component {
+    _isMounted=false;
     constructor(props) {
         super(props);
         this.state = {
@@ -39,12 +40,16 @@ class S3ImageUpload extends React.Component {
         this.onChange = this.onChange.bind(this);
     }
     componentDidMount() {
-        
-        Auth.currentUserInfo().then(userInfo => {
-            const uploadedImageUrl = `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/${userInfo.id}/`;
-            // this.setState({uploadedImageUrl: `https://amplify-chmboxordering-bucket191430-dev.s3-ap-southeast-1.amazonaws.com/protected/${userInfo.id}/`});
+      this._isMounted = true;
+      Auth.currentUserInfo().then(userInfo => {
+          const uploadedImageUrl = `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/${userInfo.id}/`;
+          if (this._isMounted) {
             this.setState({uploadedImageUrl: uploadedImageUrl});
-        })
+          }
+      })
+    }
+    componentWillUnmount() {
+      this._isMounted = false;
     }
     onChange(e) {
         let that = this;

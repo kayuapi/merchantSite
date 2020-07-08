@@ -152,7 +152,10 @@ const CategoryTabs = ({
     return (
       <Close id={props.categoryId} onClick={(e) => {
           e.stopPropagation();
-          const actionToDispatch = deleteCategory(props.categoryId);
+          const deletedCategory = categories.filter(category=>category.id === props.categoryId)[0];
+          const updatedCategories = categories.filter(category=>category.id !== props.categoryId);
+          console.log('updatedCategories', updatedCategories);
+          const actionToDispatch = deleteCategory(updatedCategories, deletedCategory);
           console.log('action to dispatch when close', actionToDispatch);
           openAlertToContinue(actionToDispatch);
         }} 
@@ -163,7 +166,7 @@ const CategoryTabs = ({
   return (
     <>
       { categoriesLoading && <CircularProgress /> }
-      { categories && (
+      { categories && currentCategoryId && (
         <TabContext value={currentCategoryId}>
           <AppBar position="sticky" className={classes.appBar}>    
             <Grid className={classes.gridContainer} container alignItems="center" justify="center">

@@ -111,9 +111,9 @@ const Control = ({
 
 
 Control.propTypes = {
-  currentCategory: PropTypes.object.isRequired,
-  categories: PropTypes.array.isRequired,
-  menuItems: PropTypes.array.isRequired,
+  currentCategory: PropTypes.object,
+  categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
 
 
 

@@ -19,6 +19,7 @@ import AddCard from '../AddCard';
 import ProductDisplay from '../ProductDisplay';
 import { v4 as uuidv4 } from 'uuid';
 import { loadMenuItems, addMenuItem, removeMenuItem } from "./actions.js";
+import { updateMenuItemsLocation } from '../MenuItemsPanel/actions';
 import { createStructuredSelector } from 'reselect';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -119,10 +120,12 @@ export const AddRemoveLayout = ({
   loadMenuItems,
   addMenuItem,
   removeMenuItem,
+  updateMenuItemsLocation,
 }) => {
   console.log('tab menu current category', currentCategoryId);
   const onLayoutChange = (layout) => {
     console.log('layout change', layout);
+    // updateMenuItemsLocation(layout);
     const newLayout = selectMenuItemsLayout(store.getState())
     console.log('going to use layout', newLayout);
     setLayout(prev => newLayout);
@@ -180,6 +183,7 @@ AddRemoveLayout.propTypes = {
   loadMenuItems: PropTypes.func.isRequired,
   addMenuItem: PropTypes.func.isRequired,
   removeMenuItem: PropTypes.func.isRequired,
+  updateMenuItemsLocation: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -195,6 +199,7 @@ function mapDispatchToProps(dispatch) {
     loadMenuItems: () => dispatch(loadMenuItems()),
     addMenuItem: () => dispatch(addMenuItem()),
     removeMenuItem: () => dispatch(removeMenuItem()),
+    updateMenuItemsLocation: (layout) => dispatch(updateMenuItemsLocation(layout)),
   };
 }
 
