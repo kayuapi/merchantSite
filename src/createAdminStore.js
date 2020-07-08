@@ -32,7 +32,6 @@ export default ({
     //     reducer(action.type !== USER_LOGOUT ? state : undefined, action);
 
     const createReducer = (injectedReducers = {}) => {
-      console.log('inject reducer', {...injectedReducers});
       const rootReducer = combineReducers({
         ...injectedReducers,
         // other non-injected reducers can go here...

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext } from "react-hook-form";
 import { createStructuredSelector } from 'reselect';
 import PropTypes from 'prop-types';
@@ -33,6 +33,9 @@ import {
   toggleCategorySortModeController,
 } from './actions';
 import { openAlertToContinue } from '../AlertToContinue/actions';
+import { updatePrefixUploadedUrlWithUserId } from '../MenuItemsPanel/actions';
+
+import { Auth } from 'aws-amplify';
 
 const useStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -65,14 +68,24 @@ const Control = ({
   toggleCategorySortModeController,
 
   openAlertToContinue,
+  updatePrefixUploadedUrlWithUserId,
 }) => {    
   const classes = useStyles();
   console.log('control rendering');
   const { formState: { dirtyFields} } = useFormContext();
   const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
-  console.log('dirty', isDirty); 
-  
-  console.log('dirty fields', dirtyFields); 
+
+  useEffect(() => {
+    async function getUserId() {
+      const userInfo = await Auth.currentUserInfo();
+      return userInfo.id;
+    };
+    getUserId().then(userId => {
+      console.log('userId', userId);
+      updatePrefixUploadedUrlWithUserId(userId);
+    });
+  }, [updatePrefixUploadedUrlWithUserId]);
+
   return (
     <div className={classes.buttonContainer}>
       <Button
@@ -129,6 +142,7 @@ Control.propTypes = {
   toggleCategorySortModeController: PropTypes.func.isRequired,
 
   openAlertToContinue: PropTypes.func,
+  updatePrefixUploadedUrlWithUserId: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -154,6 +168,7 @@ function mapDispatchToProps(dispatch) {
     saveTab: () => dispatch(saveTab()),
     toggleCategorySortModeController: () => dispatch(toggleCategorySortModeController()),
     openAlertToContinue: (actionToContinue) => dispatch(openAlertToContinue(actionToContinue)),
+    updatePrefixUploadedUrlWithUserId: (userId) => dispatch(updatePrefixUploadedUrlWithUserId(userId)),
   };
 }
 

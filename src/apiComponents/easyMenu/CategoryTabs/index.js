@@ -127,6 +127,7 @@ const CategoryTabs = ({
       const actionToDispatch = switchCategory(categoryId);
       openAlertToContinue(actionToDispatch);
     } else {
+      console.log('here', categoryId);
       dispatchSwitchCategory(categoryId)
     }
   };
@@ -245,7 +246,7 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     loadCategories: () => dispatch(loadCategories()),
-    dispatchSwitchCategory: category => dispatch(switchCategory(category)),
+    dispatchSwitchCategory: categoryId => dispatch(switchCategory(categoryId)),
     addCategory: (category) => dispatch(addCategory(category)),
     dispatchDeleteCategory: categoryId => dispatch(deleteCategory(categoryId)),
     dispatchDeleteMenuItems: menuItems => dispatch(deleteMenuItems(menuItems)),

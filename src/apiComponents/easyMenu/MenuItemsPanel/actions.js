@@ -1,5 +1,6 @@
 
 import { 
+  UPDATE_PREFIX_UPLOADED_URL,
   LOAD_MENU_ITEMS,
   LOAD_MENU_ITEMS_SUCCESS,
   LOAD_MENU_ITEMS_ERROR,
@@ -15,6 +16,12 @@ import {
   UPDATE_MENU_ITEM_VARIANTS,
 } from './constants';
 
+export function updatePrefixUploadedUrlWithUserId(userId) {
+  return {
+    type: UPDATE_PREFIX_UPLOADED_URL,
+    userId,
+  }
+}
 // Menu items
 export function loadMenuItems() {
   return {

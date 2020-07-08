@@ -13,8 +13,8 @@ import MenuItemsPanel from './MenuItemsPanel';
 
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
-
-import { useForm, FormProvider } from "react-hook-form";
+import InputBase from '@material-ui/core/InputBase';
+import { useForm, FormProvider, Controller } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 
 import { createStructuredSelector } from 'reselect';
@@ -62,6 +62,17 @@ const EasyMenuPageShow = ({
                 <MenuItemsPanel />
               </CategoryTabs>
             }
+            <Controller
+              name={`menuPageIsDirty`}
+              defaultValue={''}
+              render={({onChange, onBlur, value}) => (
+                <InputBase
+                  type="hidden"
+                  readOnly
+                />
+              )}
+            />
+
           </form>
           <AlertToContinue />
         </FormProvider>

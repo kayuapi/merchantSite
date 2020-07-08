@@ -1,5 +1,6 @@
 import produce from 'immer';
 import { 
+  UPDATE_PREFIX_UPLOADED_URL,
   LOAD_MENU_ITEMS,
   LOAD_MENU_ITEMS_SUCCESS,
   LOAD_MENU_ITEMS_ERROR,
@@ -15,12 +16,13 @@ import {
   UPDATE_MENU_ITEM_VARIANTS,
 } from './constants';
 import _ from "lodash";
-
+import awsmobile from '../../../aws-exports';
 
 export const initialState = {
   metaData: {
     menuItemsLength: 0
   }, 
+  _prefixUploadedUrl: `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/`,
   menuItems: [],
   menuItemsLoading: false,
   menuItemsLoadingError: false,
@@ -55,7 +57,7 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case LOAD_MENU_ITEMS: {
-        draft.menuItems = false;
+        draft.menuItems = [];
         draft.menuItemsLoading = true;
         draft.menuItemsLoadingError = false;
         break;
@@ -160,6 +162,11 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
         });
         console.log('k is', k);
         draft.menuItems = k;
+        break;
+      }
+
+      case UPDATE_PREFIX_UPLOADED_URL: {
+        draft._prefixUploadedUrl = draft._prefixUploadedUrl+action.userId+'/';
         break;
       }
     }

@@ -1,4 +1,6 @@
 // saga actions
+export const UPDATE_PREFIX_UPLOADED_URL = 'app/ElegantMenu/UPDATE_PREFIX_UPLOADED_URL';
+
 // Menu items
 export const LOAD_MENU_ITEMS = 'app/ElegantMenu/LOAD_MENU_ITEMS';
 export const LOAD_MENU_ITEMS_SUCCESS = 'app/ElegantMenu/LOAD_MENU_ITEMS_SUCCESS';

@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import awsmobile from '../../aws-exports';
 import { useFormContext } from 'react-hook-form';
 import { updateMenuItemImage } from '../easyMenu/MenuItemsPanel/actions';
+import { makeSelectPrefixUploadedUrl } from '../easyMenu/MenuItemsPanel/selectors';
+import { createStructuredSelector } from 'reselect';
 
 function LinearProgressWithLabel(props) {
 
@@ -35,39 +37,35 @@ LinearProgressWithLabel.propTypes = {
      */
     value: PropTypes.number.isRequired,
 };
+const userId = async () => {
+  return (await Auth.currentUserInfo()).id;
+}
 
-const S3ImageUpload = ({ menuItemId, index, dispatch }) => {
+const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl }) => {
   const [localState, setLocalState] = useState({
     uploadedPercentage: 0,
     uploaded: false
   });
-  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(prefixUploadedUrl);
   const { register, setValue } = useFormContext();
   // grab uploadedImageUrl on componentMount
-  useEffect(() => {
-    Auth.currentUserInfo().then(userInfo => {
-      const uploadedImageUrl = `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/${userInfo.id}/`;
-      setUploadedImageUrl(state => uploadedImageUrl);
-    });
-  }, []);
 
-  useEffect(() => {
-    if (localState.uploadedPercentage === 100) {
-      setTimeout(() => {
-        setLocalState(state => ({
-          uploaded: true,
-          uploadedPercentage: 0
-        }));
-        dispatch(updateMenuItemImage(menuItemId, uploadedImageUrl));
-      }, 500);
-    }
-  }, [dispatch, localState, menuItemId, uploadedImageUrl]);
+
+  // useEffect(() => {
+  //   if (localState.uploadedPercentage === 100) {
+  //     setTimeout(() => {
+  //       setLocalState(state => ({
+  //         uploaded: true,
+  //         uploadedPercentage: 0
+  //       }));
+
+  //     }, 500);
+  //   }
+  // }, [localState]);
 
   const onChange = (e, uploadedImageUrlOnChange) => {
     const file = e.target.files[0];
     const fileName = file.name;
-    console.log('target', e.target);
-    console.log('files', e.target.files);
 
     Storage.put(fileName, file, {
         level: 'protected',
@@ -88,29 +86,38 @@ const S3ImageUpload = ({ menuItemId, index, dispatch }) => {
         // let imageUrl = Storage.get(result)
         const uploadedImageUrl = encodeURI(uploadedImageUrlOnChange+result['key']);
         setValue(`menuPage.items[${index}].image`, uploadedImageUrl, { shouldDirty: true });
+        setTimeout(() => {
+          setLocalState(state => ({
+            uploaded: true,
+            uploadedPercentage: 0
+          }));
+        }, 500);
+        dispatch(updateMenuItemImage(menuItemId, uploadedImageUrl));
         setUploadedImageUrl(state => uploadedImageUrl);
         setLocalState(state => ({ 
           ...localState,
           uploadedPercentage: 100
         }));
-        console.log('uploadedImageUrl', uploadedImageUrl);
     })
     .catch(err => console.log(err));
   }
 
   return (
     <div style={{textAlign: 'center'}}>
-      {!localState.uploaded && <input style={{height: '100px', width: '100%'}}
-          type="file" accept='image/*'
+      {<input style={{height: '100px', width: '100%'}}
+          type={!localState.uploaded ? "file" : "hidden"} accept='image/*'
           onChange={(evt) => onChange(evt, uploadedImageUrl)}
       />}
-      {console.log('render url', uploadedImageUrl)}
-      { localState.uploaded && <img height="100" width="100" style={{objectFit: 'contain'}} alt={uploadedImageUrl} src={uploadedImageUrl} />}
+      { localState.uploaded && <img height="100" width="80%" style={{objectFit: 'contain'}} alt={uploadedImageUrl} src={uploadedImageUrl} />}
       { localState.uploadedPercentage > 0 && <LinearProgressWithLabel value={localState.uploadedPercentage} /> }
       <input ref={register} hidden name={`menuPage.items[${index}].image`} />
     </div>
   );
 }
+
+const mapStateToProps = createStructuredSelector({
+  prefixUploadedUrl: makeSelectPrefixUploadedUrl(),
+});
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -119,7 +126,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 const withConnect = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )
 export default compose(withConnect)(S3ImageUpload);

@@ -33,7 +33,6 @@ const selectMenuItemsLayout = state => {
       w: 1,
       h: 2,
     }];
-    console.log('hey2', thingWithAddCard);
     return thingWithAddCard;
   } else {
     return [{
@@ -45,6 +44,18 @@ const selectMenuItemsLayout = state => {
     }]
   }
 }
+
+const makeSelectPrefixUploadedUrl = () =>
+  createSelector(
+    selectMenuItemsLayout,
+    substate => substate._prefixUploadedUrl,
+  );
+
+const makeSelectMenuItemsLayout = () =>
+  createSelector(
+    selectMenuItemsLayout,
+    substate => substate,
+  );
 
 const makeSelectMenuItems = () =>
   createSelector(
@@ -99,8 +110,10 @@ export {
   selectMenuItems,
   selectMenuItemsLayout,
   selectMenuItemsVariants,
+  makeSelectMenuItemsLayout,
   makeSelectMenuItems,
   makeSelectMenuItemsLoading,
   makeSelectMenuItemsError,
   makeSelectMenuItemsWithAddItem,
+  makeSelectPrefixUploadedUrl,
 };

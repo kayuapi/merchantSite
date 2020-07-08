@@ -32,7 +32,7 @@ import { updateMenuItemName, updateMenuItemPrice } from '../MenuItemsPanel/actio
 import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
 import InputBase from '@material-ui/core/InputBase';
 // import { useInjectReducer } from 'utils/injectReducer';
-import { Controller, useFieldArray } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { store } from '../../../App';
 
 import StorageInput from '../../playground/RHFStorageInput';
@@ -110,7 +110,7 @@ const handlePlusMinusChange = (menuItemId) => {
 };
 
 export function ProductDisplay({
-  item: { id, name, price, image, variants, uiLocation },
+  item: { id, name, price, image, variants, uiLocation: {x, y} },
   index,
   dispatch,
 }) {
@@ -118,7 +118,20 @@ export function ProductDisplay({
   return (
     <>
       <Card className={classes.root}>
-        {image ? (
+
+          <CardMedia
+            component={StorageInput}
+            alt={name}
+            menuItemId={id}
+            height="100"
+            width="100"
+            index={index}
+            className={classes.cardMedia}
+            image={image}
+            title={name}
+            // writeValue={writeValue}
+          />
+        {/* {image ? (
           <CardMedia
             component="img"
             alt={name}
@@ -140,7 +153,7 @@ export function ProductDisplay({
             image={image}
             title={name}
             // writeValue={writeValue}
-          />)}
+          />)} */}
         <CardContent className={classes.content}>
           <Controller
             name={`menuPage.items[${index}].name`}
@@ -160,20 +173,17 @@ export function ProductDisplay({
             name={`menuPage.items[${index}].price`}
             defaultValue={price}
             render={({onChange, onBlur, value}) => (
-            <InputBase
-              onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); onBlur();}}
-              onChange={onChange}
-              value={value}
-              placeholder="Enter a product price"
-              classes={{input: classes.priceInput}}
-              inputProps={{ 'aria-label': 'put a price' }}  
-            />
-          )}
-            
-
-
-
+              <InputBase
+                onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); onBlur();}}
+                onChange={onChange}
+                value={value}
+                placeholder="Enter a product price"
+                classes={{input: classes.priceInput}}
+                inputProps={{ 'aria-label': 'put a price' }}  
+              />
+            )}
           />
+
         </CardContent>
 
         <CardActions className={classes.controls}>

@@ -8,7 +8,6 @@ export function* getCategories() {
   try {
     const itemsToBeGrabbedFromDb = `PluginMenuPages`;
     const {categories} = yield call(grabFromDb, itemsToBeGrabbedFromDb);
-    console.log('noted', categories);
     yield put(categoriesLoaded(categories));
   } catch (err) {
     yield put(categoriesLoadingError(err));
