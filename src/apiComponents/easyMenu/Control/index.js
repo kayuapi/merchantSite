@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFormContext } from "react-hook-form";
 import { createStructuredSelector } from 'reselect';
-import PropTypes from 'prop-types';
+import PropTypes, { resetWarningCache } from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import SaveIcon from '@material-ui/icons/Save';
@@ -15,8 +15,12 @@ import {
   makeSelectCategorySortModeOn,
   makeSelectTabSaving,
   makeSelectTabSavingError,
+  makeSelectSavedSuccessfully,
 } from './selectors';
 
+import {
+  resetSavedSuccessfully,
+} from './actions';
 import {
   makeSelectCurrentCategory,
   makeSelectCategories,
@@ -53,9 +57,6 @@ const Control = ({
   currentCategory,
   categories,
   menuItems,
-
-
-
   canSaveTabAndPanel,
   tabAndPanelSaving,
   tabAndPanelError,
@@ -63,8 +64,10 @@ const Control = ({
   isCategoryTabSaving,
   isCategoryTabSavingFailure,
 
+  savedSuccessfully,
+  resetSavedSuccessfully,
+
   saveTabAndPanel,
-  saveTab,
   toggleCategorySortModeController,
 
   openAlertToContinue,
@@ -72,8 +75,19 @@ const Control = ({
 }) => {    
   const classes = useStyles();
   console.log('control rendering');
-  const { formState: { dirtyFields} } = useFormContext();
+  const { formState: { dirtyFields}, reset } = useFormContext();
   const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
+
+
+
+  useEffect(() => {
+    console.log('resetting');
+    if (savedSuccessfully) {
+      console.log('reset succesfully');
+      reset({}, {isDirty: false, dirtyFields: false});
+      resetSavedSuccessfully();
+    }
+  }, [reset, resetSavedSuccessfully, savedSuccessfully]);
 
   useEffect(() => {
     async function getUserId() {
@@ -81,7 +95,6 @@ const Control = ({
       return userInfo.id;
     };
     getUserId().then(userId => {
-      console.log('userId', userId);
       updatePrefixUploadedUrlWithUserId(userId);
     });
   }, [updatePrefixUploadedUrlWithUserId]);
@@ -89,7 +102,7 @@ const Control = ({
   return (
     <div className={classes.buttonContainer}>
       <Button
-        disabled={ !isDirty }
+        disabled={ !isDirty || tabAndPanelSaving }
         type="submit"
         variant="contained"
         color="primary"
@@ -100,11 +113,13 @@ const Control = ({
           saveTabAndPanel(categories, currentCategory, menuItems);
         }}
       >
-        {tabAndPanelSaving && <span>Saving...</span>}
-        {!tabAndPanelSaving && <span>Save page</span>}
+        {!isDirty && <span>Saved</span>}
+        {isDirty && tabAndPanelSaving && <span>Saving...</span>}
+        {isDirty && !tabAndPanelSaving && <span>Save page</span>}
       </Button>
       <ToggleButton
         value="check"
+        disabled={ tabAndPanelSaving }
         selected={isCategorySortModeOn}
         onChange={() => {
           if (isDirty) {
@@ -127,8 +142,8 @@ Control.propTypes = {
   currentCategory: PropTypes.object,
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-
-
+  savedSuccessfully: PropTypes.bool,
+  resetSavedSuccessfully: PropTypes.func,
 
   canSaveTabAndPanel: PropTypes.bool,
   tabAndPanelSaving: PropTypes.bool,
@@ -151,7 +166,7 @@ const mapStateToProps = createStructuredSelector({
   menuItems: makeSelectMenuItems(),
 
 
-
+  savedSuccessfully: makeSelectSavedSuccessfully(),
 
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   tabAndPanelSaving: makeSelectTabAndPanelSaving(),
@@ -169,6 +184,8 @@ function mapDispatchToProps(dispatch) {
     toggleCategorySortModeController: () => dispatch(toggleCategorySortModeController()),
     openAlertToContinue: (actionToContinue) => dispatch(openAlertToContinue(actionToContinue)),
     updatePrefixUploadedUrlWithUserId: (userId) => dispatch(updatePrefixUploadedUrlWithUserId(userId)),
+
+    resetSavedSuccessfully: () => dispatch(resetSavedSuccessfully()),
   };
 }
 

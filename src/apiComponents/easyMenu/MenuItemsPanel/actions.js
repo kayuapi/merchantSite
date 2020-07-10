@@ -14,7 +14,36 @@ import {
   UPDATE_MENU_ITEM_IMAGE,
   UPDATE_MENU_ITEMS_LOCATION,
   UPDATE_MENU_ITEM_VARIANTS,
+  SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
+  UPDATE_DIRTINESS,
 } from './constants';
+
+import { isEqual } from 'lodash';
+import { store } from '../../../App';
+import { selectPrvMenuItemsInCloud } from './selectors';
+
+export function updateDirtiness(menuItemId, fields) {
+  const matchedMenuItem = selectPrvMenuItemsInCloud(store.getState()).filter(menuItem => menuItem.id === menuItemId)[0];
+  const key = Object.keys(fields)[0];
+  let _isDirty;
+  if (matchedMenuItem) {
+    let { [key]: value } = matchedMenuItem;
+    _isDirty = !isEqual(fields[key], value);
+  } else {
+    _isDirty = !isEqual(fields[key], []);
+  }
+  return {
+    type: UPDATE_DIRTINESS,
+    _isDirty,
+  }
+}
+
+export function syncPrvMenuItemsInCloudAfterSavingSuccessfully(_menuItems) {
+  return {
+    type: SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
+    _menuItems,
+  }
+}
 
 export function updatePrefixUploadedUrlWithUserId(userId) {
   return {

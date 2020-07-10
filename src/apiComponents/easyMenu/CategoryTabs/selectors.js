@@ -37,7 +37,7 @@ const makeSelectCategoriesSaving = () =>
 const makeSelectCurrentCategoryId = () =>
   createSelector(
     selectElegantMenuDomain,
-    substate => substate.currentCategoryId,
+    substate => substate.currentCategory.id,
   );
 
 const makeSelectCurrentCategory = () =>

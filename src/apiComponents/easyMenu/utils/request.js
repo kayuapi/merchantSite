@@ -64,7 +64,7 @@ export async function saveCategoriesToDb(categories) {
       },
       body: {
         SK: 'PluginMenuPages', 
-        pageNames: processedPageNames
+        categories: processedPageNames
       },
       response: false
     };  
@@ -87,11 +87,11 @@ export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory
     body: {
       categories: {
         SK: 'PluginMenuPages',
-        pageNames: categories,
+        categories,
       },
       menuItems: {
         SK: `PluginMenu#${currentCategoryName}`, 
-        items: menuItems
+        menuItems,
       }
     },    
     response: false

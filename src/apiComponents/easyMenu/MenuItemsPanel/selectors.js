@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const selectElegantMenuItemsPanelDomain = state => state.elegantMenu.menuItemsPanel || initialState;
 const selectMenuItems = state => state.elegantMenu.menuItemsPanel.menuItems;
+const selectPrvMenuItemsInCloud = state => state.elegantMenu.menuItemsPanel._menuItemsInCloud;
 const selectMenuItemsVariants = (state, menuItemId) => {
   console.log('wtf now', state.elegantMenu.menuItemsPanel.menuItems.filter(({id})=> id === menuItemId));
   return state.elegantMenu.menuItemsPanel.menuItems.filter(({id})=> id === menuItemId)[0].variants ?
@@ -29,7 +30,7 @@ const selectMenuItemsLayout = state => {
     const thingWithAddCard = [...thing, {
       i: "777de917-038b-4704-bb3e-22a02d29365e",
       x: thing.length % 2,
-      y: Math.floor(thing.length / 2),
+      y: Math.floor(thing.length / 2) * 2,
       w: 1,
       h: 2,
     }];
@@ -47,7 +48,7 @@ const selectMenuItemsLayout = state => {
 
 const makeSelectPrefixUploadedUrl = () =>
   createSelector(
-    selectMenuItemsLayout,
+    selectElegantMenuItemsPanelDomain,
     substate => substate._prefixUploadedUrl,
   );
 
@@ -74,7 +75,7 @@ const makeSelectMenuItemsWithAddItem = () =>
         uiLocation: {
           add: true,
           x: substate.menuItems.length % 2,
-          y: Math.floor(substate.menuItems.length / 2),
+          y: Math.floor(substate.menuItems.length / 2) * 2,
           w: 1,
           h: 2,
         }
@@ -108,6 +109,7 @@ const makeSelectMenuItemsError = () =>
 
 export { 
   selectMenuItems,
+  selectPrvMenuItemsInCloud,
   selectMenuItemsLayout,
   selectMenuItemsVariants,
   makeSelectMenuItemsLayout,

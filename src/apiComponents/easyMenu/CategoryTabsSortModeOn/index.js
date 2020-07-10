@@ -38,7 +38,7 @@ export class CategoryTabsSortModeOn extends Component {
     const {tabs, activeIndex} = this.state;
     const tabsTemplate = [];
     tabs.forEach((tab, index) => {
-      tabsTemplate.push(<DragTab key={index} label={'abc'}>{tab}</DragTab>)
+      tabsTemplate.push(<DragTab key={index} label={'abc'}>{tab.name}</DragTab>)
     })
     return (
       <Tabs activeIndex={activeIndex}

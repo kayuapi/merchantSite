@@ -5,15 +5,27 @@ import { createStructuredSelector } from 'reselect';
 
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
-import { closeAlertToContinue } from './actions';
-import { makeSelectActionToDispatch } from './selectors';
-import { makeSelectCategoryDeleting } from '../../CategoryTabs/selectors';
+import { closeAlertToContinue } from '../actions';
+import { makeSelectActionToDispatch } from '../selectors';
+import {
+  makeSelectCurrentCategory,
+  makeSelectCategories,
+} from '../../CategoryTabs/selectors';
+import {
+  makeSelectMenuItems,
+} from '../../MenuItemsPanel/selectors';
 
+import { makeSelectTabAndPanelSaving } from '../../Control/selectors';
+import { saveTabAndPanel } from '../../Control/actions';
 
-const DeleteTabDialogAction = ({
+const SwitchTabDialogAction = ({
+  currentCategory,
+  categories,
+  menuItems,
   actionToDispatch,
-  isTabDeleting,
+  isTabAndPanelSaving,
   closeAlertToContinue,
+  saveTabAndPanel,
   dispatch,
 }) => {
   return (
@@ -22,7 +34,7 @@ const DeleteTabDialogAction = ({
         Cancel
       </Button>
       <Button
-        disabled={isTabDeleting}
+        disabled={isTabAndPanelSaving}
         onClick={()=> {
           dispatch(actionToDispatch);
         }} 
@@ -31,32 +43,44 @@ const DeleteTabDialogAction = ({
           continue without Saving
       </Button>
       <Button
-        disabled={isTabDeleting}
+        disabled={isTabAndPanelSaving}
         onClick={()=> {
+          saveTabAndPanel(categories, currentCategory, menuItems);
           dispatch(actionToDispatch);
         }} 
         color="primary" 
         autoFocus>
-          continue with Saving
+          {isTabAndPanelSaving && <span>Saving...</span>}
+          {!isTabAndPanelSaving && <span>continue with Saving</span>}
       </Button>
     </DialogActions>
   )
 };
 
-DeleteTabDialogAction.propTypes = {
+SwitchTabDialogAction.propTypes = {
+  currentCategory: PropTypes.object,
+  categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+
   actionToDispatch: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  isTabDeleting: PropTypes.bool.isRequired,
+  isTabAndPanelSaving: PropTypes.bool.isRequired,
   closeAlertToContinue: PropTypes.func,
+  saveTabAndPanel: PropTypes.func,
   dispatch: PropTypes.func,
 }
 
 const mapStateToProps = createStructuredSelector({
+  currentCategory: makeSelectCurrentCategory(),
+  categories: makeSelectCategories(),
+  menuItems: makeSelectMenuItems(),
+
   actionToDispatch: makeSelectActionToDispatch(),
-  isTabDeleting: makeSelectCategoryDeleting(),
+  isTabAndPanelSaving: makeSelectTabAndPanelSaving(),
 })
 
 function mapDispatchToProps(dispatch) {
   return {
+    saveTabAndPanel: (categories, currentCategory, menuItems) => dispatch(saveTabAndPanel(categories, currentCategory, menuItems)),
     closeAlertToContinue: () => dispatch(closeAlertToContinue()),
     dispatch,
   };
@@ -67,4 +91,4 @@ const withConnect = connect(
   mapDispatchToProps,
 )
 
-export default withConnect(DeleteTabDialogAction);
+export default withConnect(SwitchTabDialogAction);

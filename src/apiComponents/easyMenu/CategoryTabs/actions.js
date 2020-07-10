@@ -13,6 +13,7 @@ import {
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
   REMOVE_CATEGORY_NEWLY_ADDED,
+  UPDATE_CATEGORY_NAME,
 } from './constants';
 
 // Load categories
@@ -89,10 +90,10 @@ export function categoriesSavingError(error) {
 }
 
 // Switch category tab
-export function switchCategory(categoryId) {
+export function switchCategory(category) {
   return {
     type: SWITCH_CATEGORY,
-    categoryId,
+    category,
   }
 }
 
@@ -100,5 +101,13 @@ export function removeCategoryNewlyAdded(categoryId) {
   return {
     type: REMOVE_CATEGORY_NEWLY_ADDED,
     categoryId,
+  }
+}
+
+export function updateCategoryName(categoryId, categoryName) {
+  return {
+    type: UPDATE_CATEGORY_NAME,
+    categoryId,
+    categoryName,
   }
 }

@@ -110,7 +110,7 @@ const handlePlusMinusChange = (menuItemId) => {
 };
 
 export function ProductDisplay({
-  item: { id, name, price, image, variants, uiLocation: {x, y} },
+  item: { id, name, price, image, variants=[{id: 'abc', name:'abcname', price:'rm5'}], uiLocation: {x, y} },
   index,
   dispatch,
 }) {
@@ -119,44 +119,21 @@ export function ProductDisplay({
     <>
       <Card className={classes.root}>
 
-          <CardMedia
-            component={StorageInput}
-            alt={name}
-            menuItemId={id}
-            height="100"
-            width="100"
-            index={index}
-            className={classes.cardMedia}
-            image={image}
-            title={name}
-            // writeValue={writeValue}
-          />
-        {/* {image ? (
-          <CardMedia
-            component="img"
-            alt={name}
-            id={id}
-            height="100"
-            width="100"
-            className={classes.cardMedia}
-            image={image}
-            title={name}
-          />): (
-          <CardMedia
-            component={StorageInput}
-            alt={name}
-            menuItemId={id}
-            height="100"
-            width="100"
-            index={index}
-            className={classes.cardMedia}
-            image={image}
-            title={name}
-            // writeValue={writeValue}
-          />)} */}
+        <CardMedia
+          component={StorageInput}
+          alt={name}
+          menuItemId={id}
+          height="100"
+          width="100"
+          index={index}
+          className={classes.cardMedia}
+          downloadedImage={image}
+          image={image}
+          title={name}
+        />
         <CardContent className={classes.content}>
           <Controller
-            name={`menuPage.items[${index}].name`}
+            name={`menuPage.menuItems[${index}].name`}
             defaultValue={name}
             render={({onChange, onBlur, value}) => (
               <InputBase
@@ -170,7 +147,7 @@ export function ProductDisplay({
             )}
           />
           <Controller
-            name={`menuPage.items[${index}].price`}
+            name={`menuPage.menuItems[${index}].price`}
             defaultValue={price}
             render={({onChange, onBlur, value}) => (
               <InputBase

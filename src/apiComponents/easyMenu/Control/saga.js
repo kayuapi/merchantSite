@@ -21,20 +21,30 @@ import {
 } from '../CategoryTabs/selectors';
 import { makeSelectSMOCategoryTabs } from '../CategoryTabsSortModeOn/selectors';
 import { makeSelectMenuItems } from '../MenuItemsPanel/selectors';
-
-// import { store } from '../../../App';
+import { closeAlertToContinue } from '../AlertToContinue/actions';
+import { syncPrvMenuItemsInCloudAfterSavingSuccessfully } from '../MenuItemsPanel/actions';
+import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
+import { store } from '../../../App';
 // saveCategorySortModeOn
 
 // newlyAdded
 
 export function* saveTabAndPanel(action) {
   try {
+    console.log('saving');
+    console.log('action', action);
     const { success } = yield call(saveCategoriesAndMenuItemsToDb, action.categories, action.currentCategory.name, action.menuItems);
     if (success) {
       yield put(tabAndPanelSaved());
-
+      yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
       // saved tab is no longer newly added - newly added field is added to facilitate deletion of newly added tab without network call
-      yield put(removeCategoryNewlyAdded(action.currentCategory.id));
+      if (action.currentCategory.newlyAdded) {
+        yield put(removeCategoryNewlyAdded(action.currentCategory.id));
+      }
+      console.log('selectElegantMenuAlertToContinueIsAlertOn(store.getState())', selectElegantMenuAlertToContinueIsAlertOn(store.getState()));
+      if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {
+        yield put(closeAlertToContinue());
+      }
     } else {
       throw new Error({message: "error"});
     }

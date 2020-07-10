@@ -47,12 +47,14 @@ const EasyMenuPageShow = ({
 }) => {    
   const classes = useStyles();
   const methods = useForm();
+  const onSubmit = (data, e) => {
+  }
   const { isDirty, isSubmitting, touched, submitCount } = methods.formState;
   return (
     <div className={classes.root}>
       <Container className={classes.cardGrid} maxWidth="md">
         <FormProvider {...methods}>
-          <form>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
             <Control />
             { isCategorySortModeOn && 
               <DraggableTabs />

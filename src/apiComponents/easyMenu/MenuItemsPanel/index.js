@@ -127,10 +127,10 @@ export const AddRemoveLayout = ({
     loadMenuItems();
     // reset({}, {dirtyFields: false, dirty: false});
     // return () => ac.abort();
-  }, [loadMenuItems]);
+  }, [currentCategoryId, loadMenuItems]);
 
   const { reset, setValue } = useFormContext();
-  console.log('rendering menuitemspanel');
+  console.log('rendering menuitemspanel', menuItemsWithAddItem);
   const onLayoutChange = (layout) => {
     updateMenuItemsLocation(layout);
     // const newLayout = selectMenuItemsLayout(store.getState())

@@ -37,11 +37,9 @@ LinearProgressWithLabel.propTypes = {
      */
     value: PropTypes.number.isRequired,
 };
-const userId = async () => {
-  return (await Auth.currentUserInfo()).id;
-}
 
-const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl }) => {
+const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloadedImage: image }) => {
+  console.log('image', image);
   const [localState, setLocalState] = useState({
     uploadedPercentage: 0,
     uploaded: false
@@ -64,6 +62,7 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl }) => {
   // }, [localState]);
 
   const onChange = (e, uploadedImageUrlOnChange) => {
+
     const file = e.target.files[0];
     const fileName = file.name;
 
@@ -83,8 +82,8 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl }) => {
         },
     })
     .then (result => {
-        // let imageUrl = Storage.get(result)
         const uploadedImageUrl = encodeURI(uploadedImageUrlOnChange+result['key']);
+        console.log('uploadedImageUrl', uploadedImageUrl);
         setValue(`menuPage.items[${index}].image`, uploadedImageUrl, { shouldDirty: true });
         setTimeout(() => {
           setLocalState(state => ({
@@ -104,13 +103,15 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl }) => {
 
   return (
     <div style={{textAlign: 'center'}}>
-      {<input style={{height: '100px', width: '100%'}}
+      {!image && <input style={{height: '100px', width: '100%'}}
           type={!localState.uploaded ? "file" : "hidden"} accept='image/*'
           onChange={(evt) => onChange(evt, uploadedImageUrl)}
       />}
-      { localState.uploaded && <img height="100" width="80%" style={{objectFit: 'contain'}} alt={uploadedImageUrl} src={uploadedImageUrl} />}
-      { localState.uploadedPercentage > 0 && <LinearProgressWithLabel value={localState.uploadedPercentage} /> }
-      <input ref={register} hidden name={`menuPage.items[${index}].image`} />
+      {!image && localState.uploaded && <img height="100" width="80%" style={{objectFit: 'contain'}} alt={uploadedImageUrl} src={uploadedImageUrl} />}
+      {!image && localState.uploadedPercentage > 0 && <LinearProgressWithLabel value={localState.uploadedPercentage} /> }
+      {/* used to check dirtiness */}
+      {<input ref={register} hidden name={`menuPage.items[${index}].image`} />}
+      {image && <img height="100" width="80%" style={{objectFit: 'contain'}} alt={image} src={image} />}
     </div>
   );
 }

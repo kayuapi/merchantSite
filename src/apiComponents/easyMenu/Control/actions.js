@@ -10,6 +10,7 @@ import {
   TOGGLE_CATEGORY_SORT_MODE_CONTROLLER,
   MODIFY_STATE_TO_DIRTY,
   MODIFY_STATE_TO_CLEAN,
+  RESET_SAVED_SUCCESSFULLY,
 } from './constants';
 
 // Save tab and panel
@@ -72,6 +73,12 @@ export function modifyStateToClean() {
 export function modifyStateToDirty() {
   return {
     type: MODIFY_STATE_TO_DIRTY,
+  }
+}
+
+export function resetSavedSuccessfully() {
+  return {
+    type: RESET_SAVED_SUCCESSFULLY,
   }
 }
 

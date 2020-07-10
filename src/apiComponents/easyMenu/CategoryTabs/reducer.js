@@ -13,6 +13,7 @@ import {
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
   REMOVE_CATEGORY_NEWLY_ADDED,
+  UPDATE_CATEGORY_NAME,
 } from './constants';
 import { selectCategories } from './selectors';
 
@@ -22,7 +23,7 @@ export const initialState = {
   categoriesError: false,
   canAddCategory: true,
   categoriesSaving: false,
-  currentCategoryId: false,
+  currentCategory: {},
   categoryDeleting: false,
 };
 
@@ -41,7 +42,7 @@ const categoriesReducer = (state = initialState, action) =>
         draft.categories = action.categories;
         draft.categoriesLoading = false;
         if (action.categories) {
-          draft.currentCategoryId = action.categories[0].id;
+          draft.currentCategory = action.categories[0];
         }
         break;
       }
@@ -107,7 +108,15 @@ const categoriesReducer = (state = initialState, action) =>
       }
       
       case SWITCH_CATEGORY: {
-        draft.currentCategoryId = action.categoryId;
+        draft.currentCategory = action.category;
+        break;
+      }
+
+      case UPDATE_CATEGORY_NAME: {
+        // only categoryName can be updated, update it in both currentCategory and categories
+        const selectedCategoryIndex = draft.categories.findIndex(category => category.id === action.categoryId);
+        draft.categories[selectedCategoryIndex].name = action.categoryName;
+        draft.currentCategory.name = action.categoryName;
         break;
       }
     }

@@ -48,6 +48,12 @@ const makeSelectIsCategoryStateAndMenuItemsPanelDirty = () =>
     substate => substate.canSaveTabAndPanel,
   );
 
+const makeSelectSavedSuccessfully = () =>
+  createSelector(
+    selectElegantMenuControlDomain,
+    substate => substate._savedSuccessfully,
+  );
+
 export { 
   makeSelectElegantMenuCanSaveTabAndPanel, 
   makeSelectTabAndPanelSaving,
@@ -56,5 +62,6 @@ export {
   makeSelectTabSaving,
   makeSelectTabSavingError,
   makeSelectIsCategoryStateAndMenuItemsPanelDirty,
+  makeSelectSavedSuccessfully,
 };
 

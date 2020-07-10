@@ -4,14 +4,18 @@ import {
   SAVE_TAB_AND_PANEL_SUCCESS,
   SAVE_TAB_AND_PANEL_ERROR,
   SAVE_TAB,
+  SAVE_TAB_SUCCESS,
   SAVE_TAB_ERROR,
   TOGGLE_CATEGORY_SORT_MODE,
   TOGGLE_CATEGORY_SORT_MODE_CONTROLLER,
   MODIFY_STATE_TO_CLEAN,
   MODIFY_STATE_TO_DIRTY,
+  RESET_SAVED_SUCCESSFULLY,
 } from './constants';
 
 export const initialState = {
+  // _savedSuccessfully is used to make save page ui button works
+  _savedSuccessfully: false,
   canSaveTabAndPanel: false,
   tabAndPanelSaving: false,
   tabAndPanelError: false,
@@ -35,6 +39,7 @@ const controlReducer = (state = initialState, action) =>
         draft.canSaveTabAndPanel = false;
         draft.tabAndPanelSaving = false;
         draft.tabAndPanelError = false;
+        draft._savedSuccessfully = true;
         break;
       }
       case SAVE_TAB_AND_PANEL_ERROR: {
@@ -46,6 +51,15 @@ const controlReducer = (state = initialState, action) =>
       case SAVE_TAB: {
         draft.tabSaving = true;
         draft.tabSavingError = false;
+        break;
+      }
+      case SAVE_TAB_SUCCESS: {
+        draft.tabSaving = false;
+        draft.tabSavingError = false;
+        break;
+      }
+      case RESET_SAVED_SUCCESSFULLY: {
+        draft._savedSuccessfully = false;
         break;
       }
       case SAVE_TAB_ERROR: {

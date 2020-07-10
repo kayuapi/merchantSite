@@ -43,8 +43,9 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Paper from '@material-ui/core/Paper';
 import { addVariantEntry, removeVariantEntry, closeVariantsPopUp } from './actions';
-import { updateMenuItemVariants } from '../MenuItemsPanel/actions';
+import { updateMenuItemVariants, updateDirtiness } from '../MenuItemsPanel/actions';
 import { makeSelectVariantEntries, makeSelectIsVariantPopUpOpen, makeSelectOpenedMenuItemId } from './selectors';
+
 // import { useInjectReducer } from 'utils/injectReducer';
 // import reducer from './reducer';
 
@@ -77,6 +78,7 @@ export function VariantPopUp({
     removeVariantEntry,
     updateMenuItemVariants,
     closeVariantsPopUp,
+    updateDirtiness,
   }) {
   // useInjectReducer({ key: 'product', reducer });
   const classes = useStyles();
@@ -170,8 +172,8 @@ export function VariantPopUp({
           <Button
             onClick={() => {
               const variantEntries1 = getValues({nest: true})['variantsAlt'];
-              console.log('are you variantEntries', variantEntries1);
               updateMenuItemVariants(menuItemId, variantEntries1);
+              updateDirtiness(menuItemId, {variants: variantEntries1});
               closeVariantsPopUp();
             }}
             variant="contained"
@@ -194,6 +196,7 @@ VariantPopUp.propTypes = {
   removeVariantEntry: PropTypes.func,
   closeVariantsPopUp: PropTypes.func,
   updateMenuItemVariants: PropTypes.func,
+  updateDirtiness: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -208,6 +211,7 @@ function mapDispatchToProps(dispatch) {
     removeVariantEntry: variantEntryId => dispatch(removeVariantEntry(variantEntryId)),
     closeVariantsPopUp: () => dispatch(closeVariantsPopUp()),
     updateMenuItemVariants: (menuItemId, variants) => dispatch(updateMenuItemVariants(menuItemId, variants)),
+    updateDirtiness: (menuItemId, fields) => dispatch(updateDirtiness(menuItemId, fields)),
   };
 }
 

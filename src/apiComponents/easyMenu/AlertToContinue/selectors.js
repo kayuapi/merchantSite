@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 import { selectCategories } from '../CategoryTabs/selectors';
 const selectElegantMenuAlertToContinueDomain = state => state.elegantMenu.alertToContinue || initialState;
+const selectElegantMenuAlertToContinueIsAlertOn = state => state.elegantMenu.alertToContinue.isAlertToContinueOn || initialState['isAlertToContinueOn'];
 
 const makeSelectIsAlertToContinueOn = () =>
   createSelector(
@@ -24,6 +25,7 @@ const makeSelectCategoryName = (id) =>
 
 export { 
   selectElegantMenuAlertToContinueDomain,
+  selectElegantMenuAlertToContinueIsAlertOn,
   makeSelectIsAlertToContinueOn, 
   makeSelectActionToDispatch,
   makeSelectCategoryName,

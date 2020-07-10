@@ -30,7 +30,7 @@ export function* deleteCategory(action) {
     if (success) {
       // // alert to continue will always pop up when delete category, so it needs to be closed 
       yield put(categoryDeleted(action.deletedCategory.id));
-      yield put(switchCategory(action.categories[0].id));
+      yield put(switchCategory(action.categories[0]));
       yield put(closeAlertToContinue());
     } else {
       throw new Error({message: "error"});

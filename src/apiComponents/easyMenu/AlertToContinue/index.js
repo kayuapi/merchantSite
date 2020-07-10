@@ -18,6 +18,7 @@ import { makeSelectCurrentCategoryFromId } from '../CategoryTabs/selectors';
 import { SWITCH_CATEGORY, DELETE_CATEGORY } from '../CategoryTabs/constants';
 import { store } from '../../../App';
 import DeleteTabDialogAction from './DeleteTabDialogAction';
+import SwitchTabDialogAction from './SwitchTabDialogAction';
 
 const getCategoryNameFromId = (categoryId) => {
   return makeSelectCurrentCategoryFromId(categoryId)(store.getState());
@@ -57,29 +58,7 @@ const AlertToContinue = ({
         <DeleteTabDialogAction />}
         
       {actionToDispatch.type === SWITCH_CATEGORY &&
-        <DialogActions>
-          <Button onClick={closeAlertToContinue} color="primary">
-            Cancel
-          </Button>
-          <Button 
-            onClick={()=> {
-              dispatch(actionToDispatch); 
-              closeAlertToContinue();
-            }} 
-            color="primary" 
-            autoFocus>
-            Continue without saving
-          </Button>
-          <Button 
-            onClick={()=> {
-              dispatch(actionToDispatch); 
-              closeAlertToContinue();
-            }} 
-            color="primary" 
-            autoFocus>
-            Continue with saving
-          </Button>
-        </DialogActions>  
+        <SwitchTabDialogAction />}
       }
       
     </Dialog>    

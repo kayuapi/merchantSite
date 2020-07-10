@@ -11,6 +11,8 @@ export const SAVE_TAB = 'app/ElegantMenu/SAVE_TAB';
 export const SAVE_TAB_SUCCESS = 'app/ElegantMenu/SAVE_TAB_SUCCESS';
 export const SAVE_TAB_ERROR = 'app/ElegantMenu/SAVE_TAB_ERROR';
 
+export const RESET_SAVED_SUCCESSFULLY = 'app/ElegantMenu/RESET_SAVED_SUCCESSFULLY';
+
 export const TOGGLE_CATEGORY_SORT_MODE = 'app/ElegantMenu/TOGGLE_CATEGORY_SORT_MODE';
 export const TOGGLE_CATEGORY_SORT_MODE_CONTROLLER = 'app/ElegantMenu/TOGGLE_CATEGORY_SORT_MODE_CONTROLLER';
 

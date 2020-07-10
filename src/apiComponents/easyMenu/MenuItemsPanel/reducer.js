@@ -14,6 +14,8 @@ import {
   UPDATE_MENU_ITEM_IMAGE,
   UPDATE_MENU_ITEMS_LOCATION,
   UPDATE_MENU_ITEM_VARIANTS,
+  SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
+  UPDATE_DIRTINESS,
 } from './constants';
 import _ from "lodash";
 import awsmobile from '../../../aws-exports';
@@ -23,7 +25,9 @@ export const initialState = {
     menuItemsLength: 0
   }, 
   _prefixUploadedUrl: `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/`,
+  _isDirty: false,
   menuItems: [],
+  _menuItemsInCloud: [],
   menuItemsLoading: false,
   menuItemsLoadingError: false,
   menuItemsDeleting: false,
@@ -56,6 +60,10 @@ function deleteAndAdjustUILocation(menuItems, deletedMenuItemId) {
 const elegantMenuItemsPanelReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY: {
+        draft._menuItemsInCloud = action._menuItems;
+        break;
+      }
       case LOAD_MENU_ITEMS: {
         draft.menuItems = [];
         draft.menuItemsLoading = true;
@@ -65,6 +73,7 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
       case LOAD_MENU_ITEMS_SUCCESS: {
         draft.menuItems = action.menuItems;
         draft.menuItemsLoading = false;
+        draft._menuItemsInCloud = action.menuItems;
         break;
       }
       case LOAD_MENU_ITEMS_ERROR: {
@@ -167,6 +176,11 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
 
       case UPDATE_PREFIX_UPLOADED_URL: {
         draft._prefixUploadedUrl = draft._prefixUploadedUrl+action.userId+'/';
+        break;
+      }
+
+      case UPDATE_DIRTINESS: {
+        draft._isDirty = action._isDirty;
         break;
       }
     }
