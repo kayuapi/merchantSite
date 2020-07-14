@@ -99,7 +99,14 @@ export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory
   return await API.post(apiName, path,  myInit);
 }
 
-export async function deleteCategoriesAndMenuItemsFromDb(categories, deletedCategoryName) {
+export async function deleteCategoriesAndMenuItemsFromDb(categories, deletingCategory) {
+  const deletingCategoryName = deletingCategory.name;
+  const updatedCategories = categories
+    .filter(category => category.id !== deletingCategory.id)
+    .map(category => ({
+      id: category.id,
+      name: category.name
+    }));
   const apiName = 'amplifyChmboxOrderingApi';
   const path = '/uiplugin/delete';
   const myInit = {
@@ -109,10 +116,10 @@ export async function deleteCategoriesAndMenuItemsFromDb(categories, deletedCate
     body: {
       categories: {
         SK: 'PluginMenuPages',
-        categories,
+        categories: updatedCategories,
       },
       deletedCategoryName: {
-        SK: `PluginMenu#${deletedCategoryName}`,
+        SK: `PluginMenu#${deletingCategoryName}`,
       }
     },    
     response: false

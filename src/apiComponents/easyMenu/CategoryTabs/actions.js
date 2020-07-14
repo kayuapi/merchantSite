@@ -50,17 +50,20 @@ export function categoryAddingError(error) {
   }
 }
 
-export function deleteCategory(categories, deletedCategory) {
+export function deleteCategory(categories, deletingCategory, currentCategory) {
   return {
     type: DELETE_CATEGORY,
     categories,
-    deletedCategory,
+    deletingCategory,
+    currentCategory,
   }
 }
-export function categoryDeleted(categoryId) {
+export function categoryDeleted(categoriesBeforeDeleting, deletedCategory, currentCategoryBeforeDeleting) {
   return {
     type: DELETE_CATEGORY_SUCCESS,
-    categoryId,
+    categoriesBeforeDeleting,
+    deletedCategory,
+    currentCategoryBeforeDeleting,
   }
 }
 export function categoryDeletingError(error) {

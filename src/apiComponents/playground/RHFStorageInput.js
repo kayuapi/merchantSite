@@ -39,7 +39,6 @@ LinearProgressWithLabel.propTypes = {
 };
 
 const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloadedImage: image }) => {
-  console.log('image', image);
   const [localState, setLocalState] = useState({
     uploadedPercentage: 0,
     uploaded: false
@@ -70,9 +69,7 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloa
         level: 'protected',
         contentType: 'image/*',
         progressCallback(progress) {
-          console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
           let percent = Math.floor( progress.loaded * 100 / progress.total );
-          console.log(`${progress.loaded}kb of ${progress.total}kb | ${percent}%`);
           if (percent < 100) {
             setLocalState(state => ({ 
               ...localState,
@@ -83,7 +80,6 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloa
     })
     .then (result => {
         const uploadedImageUrl = encodeURI(uploadedImageUrlOnChange+result['key']);
-        console.log('uploadedImageUrl', uploadedImageUrl);
         setValue(`menuPage.items[${index}].image`, uploadedImageUrl, { shouldDirty: true });
         setTimeout(() => {
           setLocalState(state => ({

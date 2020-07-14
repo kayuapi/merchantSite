@@ -16,14 +16,26 @@ import {
   UPDATE_MENU_ITEM_VARIANTS,
   SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
   UPDATE_DIRTINESS,
+  RESET_DIRTINESS,
 } from './constants';
 
 import { isEqual } from 'lodash';
 import { store } from '../../../App';
 import { selectPrvMenuItemsInCloud } from './selectors';
 
+export function resetDirtiness() {
+  return {
+    type: RESET_DIRTINESS,
+  }
+}
+
 export function updateDirtiness(menuItemId, fields) {
-  const matchedMenuItem = selectPrvMenuItemsInCloud(store.getState()).filter(menuItem => menuItem.id === menuItemId)[0];
+  let matchedMenuItem;
+  const prvMenuItemsInCloud = selectPrvMenuItemsInCloud(store.getState());
+  if (prvMenuItemsInCloud) {
+    matchedMenuItem = prvMenuItemsInCloud.filter(menuItem => menuItem.id === menuItemId)[0];
+  }
+  
   const key = Object.keys(fields)[0];
   let _isDirty;
   if (matchedMenuItem) {

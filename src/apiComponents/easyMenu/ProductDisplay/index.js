@@ -102,10 +102,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const handlePlusMinusChange = (menuItemId) => {
-  console.log('MENUITEMID IS', menuItemId);
   // obtain variants from menuItem with the amentioned menuItemId
   const variants = selectMenuItemsVariants(store.getState(), menuItemId);
-  console.log('variants are', variants);
   store.dispatch(openVariantsPopUp(menuItemId, variants));
 };
 
@@ -140,7 +138,7 @@ export function ProductDisplay({
                 onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value)); onBlur();}}
                 onChange={onChange}
                 value={value}
-                placeholder="Enter a product name"
+                placeholder="Product name (e.g: Apple)"
                 classes={{input: classes.productTitleInput}}
                 inputProps={{'aria-label': 'put product title' }} 
               />
@@ -154,7 +152,7 @@ export function ProductDisplay({
                 onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); onBlur();}}
                 onChange={onChange}
                 value={value}
-                placeholder="Enter a product price"
+                placeholder="Product price (e.g: RM 10)"
                 classes={{input: classes.priceInput}}
                 inputProps={{ 'aria-label': 'put a price' }}  
               />

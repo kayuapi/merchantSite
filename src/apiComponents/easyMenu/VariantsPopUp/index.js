@@ -128,7 +128,7 @@ export function VariantPopUp({
                               as={<InputBase multiline />}
                               name={`variantsAlt[${nestedIndex}].name`}
                               defaultValue={variantEntry.name}
-                              placeholder="Enter a product variant name"
+                              placeholder="e.g: Variant 1"
                           />
                       </TableCell>
                       <TableCell align="center" className={classes.priceCell}>
@@ -136,7 +136,7 @@ export function VariantPopUp({
                               as={<InputBase multiline />}
                               name={`variantsAlt[${nestedIndex}].price`}
                               defaultValue={variantEntry.price}
-                              placeholder="Enter a price"
+                              placeholder="e.g: RM 5 "
                           />
                       </TableCell>
                       <TableCell align="center">

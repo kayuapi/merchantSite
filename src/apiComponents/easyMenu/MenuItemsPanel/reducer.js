@@ -16,6 +16,7 @@ import {
   UPDATE_MENU_ITEM_VARIANTS,
   SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
   UPDATE_DIRTINESS,
+  RESET_DIRTINESS,
 } from './constants';
 import _ from "lodash";
 import awsmobile from '../../../aws-exports';
@@ -26,8 +27,8 @@ export const initialState = {
   }, 
   _prefixUploadedUrl: `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/`,
   _isDirty: false,
-  menuItems: [],
-  _menuItemsInCloud: [],
+  menuItems: false,
+  _menuItemsInCloud: false,
   menuItemsLoading: false,
   menuItemsLoadingError: false,
   menuItemsDeleting: false,
@@ -65,15 +66,17 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
         break;
       }
       case LOAD_MENU_ITEMS: {
-        draft.menuItems = [];
+        draft.menuItems = false;
         draft.menuItemsLoading = true;
         draft.menuItemsLoadingError = false;
         break;
       }
       case LOAD_MENU_ITEMS_SUCCESS: {
-        draft.menuItems = action.menuItems;
         draft.menuItemsLoading = false;
-        draft._menuItemsInCloud = action.menuItems;
+        if (action.menuItems) {
+          draft.menuItems = action.menuItems;
+          draft._menuItemsInCloud = action.menuItems;  
+        }
         break;
       }
       case LOAD_MENU_ITEMS_ERROR: {
@@ -99,6 +102,10 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
         break;
       }
       case ADD_MENU_ITEM: {
+        // if menuItems has 0 length, it is 'false' (bool), so here make it to (list)
+        if (!draft.menuItems) {
+          draft.menuItems = [];          
+        }
         draft.menuItems.push(action.menuItem);
         break;
       }
@@ -144,19 +151,21 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
       }
 
       case UPDATE_MENU_ITEMS_LOCATION: {
-        let k = [];
-        draft.menuItems.forEach(menuItem => {
-          const foundIndex = action.menuItemIdAndLocationArray.findIndex(x => x.i === menuItem.id);
-          const updatedUiLocation = {
-            x: action.menuItemIdAndLocationArray[foundIndex].x,
-            y: action.menuItemIdAndLocationArray[foundIndex].y,
-            w: action.menuItemIdAndLocationArray[foundIndex].w,
-            h: action.menuItemIdAndLocationArray[foundIndex].h,
-          };
-          menuItem.uiLocation = updatedUiLocation;
-          k.push(menuItem);
-        });
-        draft.menuItems = k;
+        if (draft.menuItems) {
+          let k = [];
+          draft.menuItems.forEach(menuItem => {
+            const foundIndex = action.menuItemIdAndLocationArray.findIndex(x => x.i === menuItem.id);
+            const updatedUiLocation = {
+              x: action.menuItemIdAndLocationArray[foundIndex].x,
+              y: action.menuItemIdAndLocationArray[foundIndex].y,
+              w: action.menuItemIdAndLocationArray[foundIndex].w,
+              h: action.menuItemIdAndLocationArray[foundIndex].h,
+            };
+            menuItem.uiLocation = updatedUiLocation;
+            k.push(menuItem);
+          });
+          draft.menuItems = k;  
+        }
         break;
       }
 
@@ -169,7 +178,6 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
           }
           k.push(menuItem);
         });
-        console.log('k is', k);
         draft.menuItems = k;
         break;
       }
@@ -182,6 +190,10 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
       case UPDATE_DIRTINESS: {
         draft._isDirty = action._isDirty;
         break;
+      }
+
+      case RESET_DIRTINESS: {
+        draft._isDirty = false;
       }
     }
   })

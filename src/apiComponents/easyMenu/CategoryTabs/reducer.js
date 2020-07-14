@@ -15,15 +15,16 @@ import {
   REMOVE_CATEGORY_NEWLY_ADDED,
   UPDATE_CATEGORY_NAME,
 } from './constants';
-import { selectCategories } from './selectors';
 
 export const initialState = {
+  // false is an alias for empty array to save the trouble of jsx due to that [] is true and [].length is false
   categories: false,
+  currentCategory: false,
+
   categoriesLoading: false,
   categoriesError: false,
   canAddCategory: true,
   categoriesSaving: false,
-  currentCategory: {},
   categoryDeleting: false,
 };
 
@@ -39,9 +40,15 @@ const categoriesReducer = (state = initialState, action) =>
         break;
       }
       case LOAD_CATEGORIES_SUCCESS: {
-        draft.categories = action.categories;
         draft.categoriesLoading = false;
         if (action.categories) {
+          // create new categories array which has _name to store cloud value for dirtiness check and other UI usage
+          const categories = action.categories.map(category => ({
+            id: category.id,
+            _name: category.name,
+            name: category.name,
+          }))
+          draft.categories = categories;
           draft.currentCategory = action.categories[0];
         }
         break;
@@ -53,11 +60,12 @@ const categoriesReducer = (state = initialState, action) =>
       }
       
       case ADD_CATEGORY: {
+        // if categories has 0 length, it is 'false' (bool), so here make it to (list)
         if (!draft.categories) {
-          draft.categories = [''];
-        } else {
-          draft.categories.push(action.category);
+          draft.categories = [];
         }
+        draft.categories.push(action.category);
+        
         draft.canAddCategory = false;
         draft.categoriesError = false;
         break;
@@ -73,7 +81,13 @@ const categoriesReducer = (state = initialState, action) =>
         break;
       }
       case DELETE_CATEGORY_SUCCESS: {
-        draft.categories = draft.categories.filter(category => category.id !== action.categoryId);
+        const filteredCategories = draft.categories.filter(category => category.id !== action.deletedCategory.id);
+        if (filteredCategories.length === 0) {
+          draft.categories = false;
+          draft.currentCategory = false;
+        } else {
+          draft.categories = filteredCategories;
+        }
         draft.categoryDeleting = false;
         break;
       }

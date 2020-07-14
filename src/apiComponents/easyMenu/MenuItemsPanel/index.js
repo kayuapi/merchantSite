@@ -123,14 +123,12 @@ export const AddRemoveLayout = ({
 }) => {
   useEffect(() => {
     // const ac = new AbortController();
-    console.log('loading menu Items');
     loadMenuItems();
     // reset({}, {dirtyFields: false, dirty: false});
     // return () => ac.abort();
   }, [currentCategoryId, loadMenuItems]);
 
   const { reset, setValue } = useFormContext();
-  console.log('rendering menuitemspanel', menuItemsWithAddItem);
   const onLayoutChange = (layout) => {
     updateMenuItemsLocation(layout);
     // const newLayout = selectMenuItemsLayout(store.getState())
@@ -169,8 +167,36 @@ export const AddRemoveLayout = ({
         </Container>
         <VariantsPopUp />
       </TabPanel>
-    )
-  }
+    )        }
+
+  //   setTimeout(() => {
+  //     return (
+  //       <TabPanel value={currentCategoryId}>
+  //         <Container className={classes.cardGrid} maxWidth="sm">
+  //           {/* <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} /> */}
+  //           <div style={{position: "relative"}}>
+  //           <ResponsiveReactGridLayout
+  //             onLayoutChange={onLayoutChange}
+  //             layouts={{lg: currentMenuItemsLayout, md: currentMenuItemsLayout, sm: currentMenuItemsLayout, xs: currentMenuItemsLayout, xxs: currentMenuItemsLayout}}
+  //             // onBreakpointChange={this.onBreakpointChange}
+  //             breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+  //             cols={{ lg: 2, md: 2, sm: 2, xs: 2, xxs: 2 }}
+  //             isDraggable={true}
+  //             draggableCancel="input,textarea, button"
+  //             isResizable={false}
+  //             rowHeight={150}
+  //             className="layout"
+  //           >
+  //             {_.map(menuItemsWithAddItem, (el,ind) => createElement(el,ind, setValue))}
+  //           </ResponsiveReactGridLayout> 
+  //           </div>           
+  //         </Container>
+  //         <VariantsPopUp />
+  //       </TabPanel>
+  //     )        
+  //   }, 1000);
+  //   return null;
+  // }
 }
 
 AddRemoveLayout.propTypes = {

@@ -6,7 +6,9 @@ import { createStructuredSelector } from 'reselect';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import { closeAlertToContinue } from '../actions';
+import { updateCategoryName } from '../../CategoryTabs/actions';
 import { makeSelectActionToDispatch } from '../selectors';
+import { useFormContext } from 'react-hook-form';
 import {
   makeSelectCurrentCategory,
   makeSelectCategories,
@@ -19,6 +21,7 @@ import { makeSelectTabAndPanelSaving } from '../../Control/selectors';
 import { saveTabAndPanel } from '../../Control/actions';
 
 const SwitchTabDialogAction = ({
+  revertChangesToTab,
   currentCategory,
   categories,
   menuItems,
@@ -28,14 +31,27 @@ const SwitchTabDialogAction = ({
   saveTabAndPanel,
   dispatch,
 }) => {
+  const { reset, getValues } = useFormContext();
   return (
     <DialogActions>
-      <Button onClick={closeAlertToContinue} color="primary">
-        Cancel
-      </Button>
       <Button
         disabled={isTabAndPanelSaving}
         onClick={()=> {
+          if (!currentCategory._name) {
+            revertChangesToTab(currentCategory.id, '');
+          } else {
+            revertChangesToTab(currentCategory.id, currentCategory._name);
+          }
+          const categoryIndex = categories.findIndex(category => category.id ===currentCategory.id);
+          let categoriesInForm = getValues()['menuPage']['categories'];
+          categoriesInForm[categoryIndex] = currentCategory._name ? currentCategory._name : '';
+          reset({
+            ...getValues(),
+            menuPage: {
+              ...getValues()['menuPage'],
+              categories: categoriesInForm,
+            }
+          });
           dispatch(actionToDispatch);
         }} 
         color="primary" 
@@ -62,6 +78,7 @@ SwitchTabDialogAction.propTypes = {
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
 
+  revertChangesToTab: PropTypes.func,
   actionToDispatch: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   isTabAndPanelSaving: PropTypes.bool.isRequired,
   closeAlertToContinue: PropTypes.func,
@@ -80,6 +97,7 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
+    revertChangesToTab: (categoryId, categoryName) => dispatch(updateCategoryName(categoryId, categoryName)),
     saveTabAndPanel: (categories, currentCategory, menuItems) => dispatch(saveTabAndPanel(categories, currentCategory, menuItems)),
     closeAlertToContinue: () => dispatch(closeAlertToContinue()),
     dispatch,

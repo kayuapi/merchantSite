@@ -3,10 +3,9 @@ import { initialState } from './reducer';
 import { v4 as uuidv4 } from 'uuid';
 
 const selectElegantMenuItemsPanelDomain = state => state.elegantMenu.menuItemsPanel || initialState;
-const selectMenuItems = state => state.elegantMenu.menuItemsPanel.menuItems;
-const selectPrvMenuItemsInCloud = state => state.elegantMenu.menuItemsPanel._menuItemsInCloud;
+const selectMenuItems = state => state.elegantMenu.menuItemsPanel.menuItems  || initialState['menuItems'];
+const selectPrvMenuItemsInCloud = state => state.elegantMenu.menuItemsPanel._menuItemsInCloud || initialState['_menuItemsInCloud'];
 const selectMenuItemsVariants = (state, menuItemId) => {
-  console.log('wtf now', state.elegantMenu.menuItemsPanel.menuItems.filter(({id})=> id === menuItemId));
   return state.elegantMenu.menuItemsPanel.menuItems.filter(({id})=> id === menuItemId)[0].variants ?
     state.elegantMenu.menuItemsPanel.menuItems.filter(({id})=> id === menuItemId)[0].variants: [];
 
@@ -46,6 +45,12 @@ const selectMenuItemsLayout = state => {
   }
 }
 
+const makeSelectIsMenuItemsDirty = () =>
+  createSelector(
+    selectElegantMenuItemsPanelDomain,
+    substate => substate._isDirty,
+  );
+  
 const makeSelectPrefixUploadedUrl = () =>
   createSelector(
     selectElegantMenuItemsPanelDomain,
@@ -118,4 +123,5 @@ export {
   makeSelectMenuItemsError,
   makeSelectMenuItemsWithAddItem,
   makeSelectPrefixUploadedUrl,
+  makeSelectIsMenuItemsDirty,
 };

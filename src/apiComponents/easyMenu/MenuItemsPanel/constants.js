@@ -9,6 +9,7 @@ export const ADD_MENU_ITEM = 'app/ElegantMenu/ADD_MENU_ITEM';
 export const REMOVE_MENU_ITEM = 'app/ElegantMenu/REMOVE_MENU_ITEM';
 
 export const UPDATE_DIRTINESS = 'app/ElegantMenu/UPDATE_DIRTINESS';
+export const RESET_DIRTINESS = 'app/ElegantMenu/RESET_DIRTINESS';
 
 // Product display
 export const UPDATE_MENU_ITEM_NAME = 'app/ElegantMenu/UPDATE_MENU_ITEM_NAME';

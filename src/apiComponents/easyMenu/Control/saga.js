@@ -29,11 +29,40 @@ import { store } from '../../../App';
 
 // newlyAdded
 
+const validateNoDuplicateCategoryName = (categories) => {
+  const categoryNames = categories.map(category => category.name);
+  let tmpSet = new Set();
+  categoryNames.forEach(categoryName => {
+    tmpSet.add(categoryName);
+  })
+  if (tmpSet.size === categoryNames.length) {
+    return true;
+  }
+  return false;
+}
+
+
 export function* saveTabAndPanel(action) {
   try {
     console.log('saving');
     console.log('action', action);
-    const { success } = yield call(saveCategoriesAndMenuItemsToDb, action.categories, action.currentCategory.name, action.menuItems);
+    if (validateNoDuplicateCategoryName(action.categories)) {
+    }
+    else {
+      throw new Error({message: 'failed validation: duplicated category names'});
+    }
+    if (!action.categories) {
+      action.categories = [];
+    }
+    if (!action.menuItems) {
+      action.menuItems = [];
+    }
+    const { success } = yield call(
+      saveCategoriesAndMenuItemsToDb, 
+      action.categories ? action.categories : [], 
+      action.currentCategory.name, 
+      action.menuItems ? action.menuItems : []
+    );
     if (success) {
       yield put(tabAndPanelSaved());
       yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));

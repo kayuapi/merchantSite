@@ -6,15 +6,13 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import { createStructuredSelector } from 'reselect';
 
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { closeAlertToContinue } from './actions';
 import { makeSelectIsAlertToContinueOn, makeSelectActionToDispatch, makeSelectCategoryName } from './selectors';
-import { makeSelectCurrentCategoryFromId } from '../CategoryTabs/selectors';
+import { makeSelectCurrentCategoryFromId, selectCurrentCategory } from '../CategoryTabs/selectors';
 import { SWITCH_CATEGORY, DELETE_CATEGORY } from '../CategoryTabs/constants';
 import { store } from '../../../App';
 import DeleteTabDialogAction from './DeleteTabDialogAction';
@@ -23,6 +21,11 @@ import SwitchTabDialogAction from './SwitchTabDialogAction';
 const getCategoryNameFromId = (categoryId) => {
   return makeSelectCurrentCategoryFromId(categoryId)(store.getState());
 }
+
+const getCurrentCategory = () => {
+  return selectCurrentCategory(store.getState());
+}
+
 const AlertToContinue = ({
   categoryName,
   isAlertToContinueOn,
@@ -30,21 +33,20 @@ const AlertToContinue = ({
   dispatch,
   closeAlertToContinue,
   categoryToDeleteFromId,
-}) => {
-  console.log('AlertToContinue rendering');
-  
+}) => {  
   return (
     <Dialog
       open={isAlertToContinueOn}
       onClose={closeAlertToContinue}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      disableBackdropClick
     >
       <DialogTitle id="alert-dialog-title">
         {actionToDispatch.type === SWITCH_CATEGORY && 
           <span>Are you sure to proceed?</span>}
         {actionToDispatch.type === DELETE_CATEGORY && 
-          <span>Are you sure you want to delete "{getCategoryNameFromId(actionToDispatch.categoryId)}"?</span>}
+          <span>Are you sure you want to delete "{getCurrentCategory().name}"?</span>}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
@@ -58,7 +60,7 @@ const AlertToContinue = ({
         <DeleteTabDialogAction />}
         
       {actionToDispatch.type === SWITCH_CATEGORY &&
-        <SwitchTabDialogAction />}
+        <SwitchTabDialogAction />
       }
       
     </Dialog>    

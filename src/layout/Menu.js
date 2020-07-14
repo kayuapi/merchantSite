@@ -51,7 +51,7 @@ const Menu = ({ onMenuClick, logout }) => {
               />
               <MenuItemLink
                 to={`/easyMenu`}
-                primaryText={"Easy Menu"}
+                primaryText={"Simple Menu (beta)"}
                 leftIcon={createElement(MenuIcon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}

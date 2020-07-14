@@ -48,6 +48,7 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     color: "inherit",
     backgroundColor: "a09b87",
+    height: '64px',
     top: '55px', // hard coded need to be changed
     "& .myTab": {
       backgroundColor: "yellow",
@@ -96,6 +97,8 @@ const CategoryTabs = ({
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
+  // const categoriesLength = categories ? categories.length: 0;
+  // const tabInputRefs = React.useRef([...new Array(categoriesLength)].map(() => React.createRef()));
   const { formState: { dirtyFields} } = useFormContext();
   const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
 
@@ -125,28 +128,29 @@ const CategoryTabs = ({
   })
   
   const handleTabChange = (event, categoryId) => {
+    event.stopPropagation();
     const category = categories.filter(category => category.id === categoryId)[0];
-    console.log('check', category);
     if (category.id === currentCategory.id) {
     } else if (category.id !== currentCategory.id && !isDirty) {
-      dispatchSwitchCategory(category)
+      dispatchSwitchCategory(category);
     } else {
       const actionToDispatch = switchCategory(category);
       openAlertToContinue(actionToDispatch);      
-
     }
   };
 
   const addNewCategory = () => {
     const newCategory = {
       id: uuidv4(),
-      name: '',
+      _name: false,
+      name: false,
       newlyAdded: true, // this field is useful so that when deleting newlyAdded category, network request is not sent
-    }
+    };
+    addCategory(newCategory);
     if (isDirty) {
-      openAlertToContinue(addCategory(newCategory));
+      openAlertToContinue(switchCategory(newCategory));
     } else {
-      addCategory(newCategory);
+      dispatchSwitchCategory(newCategory);
     }
   }
   const [scrollBtn, setScrollBtn] = useState("off");
@@ -158,9 +162,8 @@ const CategoryTabs = ({
     return (
       <Close id={props.categoryId} onClick={(e) => {
           e.stopPropagation();
-          const deletedCategory = categories.filter(category=>category.id === props.categoryId)[0];
-          const updatedCategories = categories.filter(category=>category.id !== props.categoryId);
-          const actionToDispatch = deleteCategory(updatedCategories, deletedCategory);
+          const deletingCategory = categories.filter(category=>category.id === props.categoryId)[0];
+          const actionToDispatch = deleteCategory(categories, deletingCategory, currentCategory);
           openAlertToContinue(actionToDispatch);
         }} 
       />
@@ -170,8 +173,24 @@ const CategoryTabs = ({
   return (
     <>
       { categoriesLoading && <CircularProgress /> }
-      { categories && currentCategory && (
-        <TabContext value={currentCategory.id}>
+      { !categoriesLoading && !categories && (
+        <AppBar position="sticky" className={classes.appBar}>    
+          <Grid className={classes.gridContainer} container alignItems="center" justify="center">
+            <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
+              <IconButton 
+                className={classes.addPageButton} 
+                onClick={addNewCategory} 
+                aria-label="add page"
+              >
+                <Add />
+              </IconButton>
+            </Grid>
+            <Grid item xl={11} lg={11} md={11} sm={11} xs={11} />
+          </Grid>
+        </AppBar>
+      )}
+      { !categoriesLoading && categories && currentCategory && (
+        <TabContext value={currentCategory.id}>      
           <AppBar position="sticky" className={classes.appBar}>    
             <Grid className={classes.gridContainer} container alignItems="center" justify="center">
               <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
@@ -198,12 +217,16 @@ const CategoryTabs = ({
                           value={category.id}
                           label={<Controller 
                                   name={`menuPage.categories[${index}]`}
-                                  defaultValue={category.name}
+                                  defaultValue={category.name ? category.name : ''}
                                   render={({onChange, onBlur, value}) => (
                                     <InputBase
-                                      onBlur={(e) => {updateCategoryName(category.id, e.target.value); onBlur();}}
+                                      onBlur={(e) => {
+                                        updateCategoryName(category.id, e.target.value); 
+                                        onBlur();
+                                      }}
                                       onChange={onChange}
                                       value={value}
+                                      multiline
                                       placeholder="New category"
                                       classes={{root: classes.tabInput}}
                                     />
@@ -215,16 +238,16 @@ const CategoryTabs = ({
                       )}
                     )}
                   </TabList>
-                </div>
+                </div>              
               </Grid>
             </Grid>
           </AppBar>
-          { children }
-          {/* {children(pageNames.data)} */}
+          { categories && currentCategory && children }
         </TabContext>
       )}
     </>
-  )};
+  )
+};
 
 CategoryTabs.propTypes = {
   canAddCategory: PropTypes.bool,

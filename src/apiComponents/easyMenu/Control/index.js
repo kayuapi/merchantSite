@@ -28,8 +28,8 @@ import {
 
 import {
   makeSelectMenuItems,
+  makeSelectIsMenuItemsDirty,
 } from '../MenuItemsPanel/selectors';
-
 
 import { 
   saveTabAndPanel, 
@@ -37,7 +37,7 @@ import {
   toggleCategorySortModeController,
 } from './actions';
 import { openAlertToContinue } from '../AlertToContinue/actions';
-import { updatePrefixUploadedUrlWithUserId } from '../MenuItemsPanel/actions';
+import { updatePrefixUploadedUrlWithUserId, resetDirtiness } from '../MenuItemsPanel/actions';
 
 import { Auth } from 'aws-amplify';
 
@@ -64,6 +64,9 @@ const Control = ({
   isCategoryTabSaving,
   isCategoryTabSavingFailure,
 
+  menuItemsIsDirty,
+  resetDirtiness,
+
   savedSuccessfully,
   resetSavedSuccessfully,
 
@@ -74,20 +77,23 @@ const Control = ({
   updatePrefixUploadedUrlWithUserId,
 }) => {    
   const classes = useStyles();
-  console.log('control rendering');
   const { formState: { dirtyFields}, reset } = useFormContext();
-  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty;
 
 
 
   useEffect(() => {
-    console.log('resetting');
     if (savedSuccessfully) {
-      console.log('reset succesfully');
       reset({}, {isDirty: false, dirtyFields: false});
       resetSavedSuccessfully();
     }
   }, [reset, resetSavedSuccessfully, savedSuccessfully]);
+
+  useEffect(() => {
+    if (savedSuccessfully) {
+      resetDirtiness();
+    }
+  }, [resetDirtiness, savedSuccessfully]);
 
   useEffect(() => {
     async function getUserId() {
@@ -117,7 +123,7 @@ const Control = ({
         {isDirty && tabAndPanelSaving && <span>Saving...</span>}
         {isDirty && !tabAndPanelSaving && <span>Save page</span>}
       </Button>
-      <ToggleButton
+      {/* <ToggleButton
         value="check"
         disabled={ tabAndPanelSaving }
         selected={isCategorySortModeOn}
@@ -132,18 +138,20 @@ const Control = ({
         {isCategorySortModeOn && <span>Sort Category Mode: On</span>}
         {isCategorySortModeOn && isCategoryTabSaving && <span>Sort Category Mode: On - Submitting...</span>}
         {!isCategorySortModeOn && <span>Sort Category Mode: Off</span>}
-      </ToggleButton>
+      </ToggleButton> */}
     </div>
   )
 };
 
 
 Control.propTypes = {
-  currentCategory: PropTypes.object,
+  currentCategory: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   savedSuccessfully: PropTypes.bool,
   resetSavedSuccessfully: PropTypes.func,
+
+  menuItemsIsDirty: PropTypes.bool,
 
   canSaveTabAndPanel: PropTypes.bool,
   tabAndPanelSaving: PropTypes.bool,
@@ -151,6 +159,9 @@ Control.propTypes = {
   isCategorySortModeOn: PropTypes.bool,
   isCategoryTabSaving: PropTypes.bool,
   isCategoryTabSavingFailure: PropTypes.bool,
+
+
+  resetDirtiness: PropTypes.func,
 
   saveTabAndPanel: PropTypes.func.isRequired,
   saveTab: PropTypes.func.isRequired,
@@ -164,7 +175,7 @@ const mapStateToProps = createStructuredSelector({
   currentCategory: makeSelectCurrentCategory(),
   categories: makeSelectCategories(),
   menuItems: makeSelectMenuItems(),
-
+  menuItemsIsDirty: makeSelectIsMenuItemsDirty(),
 
   savedSuccessfully: makeSelectSavedSuccessfully(),
 
@@ -186,6 +197,7 @@ function mapDispatchToProps(dispatch) {
     updatePrefixUploadedUrlWithUserId: (userId) => dispatch(updatePrefixUploadedUrlWithUserId(userId)),
 
     resetSavedSuccessfully: () => dispatch(resetSavedSuccessfully()),
+    resetDirtiness: () => dispatch(resetDirtiness()),
   };
 }
 
