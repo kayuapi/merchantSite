@@ -10,6 +10,10 @@
 		"amplifyChmboxorderingDdb": {
 			"service": "DynamoDB",
 			"providerPlugin": "awscloudformation"
+		},
+		"s358e2f267": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation"
 		}
 	},
 	"function": {
