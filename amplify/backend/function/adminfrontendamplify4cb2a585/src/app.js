@@ -185,7 +185,8 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 
   let getItemParams = {
     TableName: tableName,
-    Key: params
+    Key: params,
+    ProjectionExpression: 'categories, menuItems, banner, bannerDisplayType'
   }
 
   dynamodb.get(getItemParams,(err, data) => {
@@ -268,17 +269,58 @@ app.post(path, verifyToken, function(req, res) {
   });
 });
 
+/************************************
+* HTTP post method for insert objects transactionally *
+*************************************/
+app.post(`${path}/save`, verifyToken, function(req, res) {
+  let dataFromJwt;
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    dataFromJwt = getUserNameFromJwt(req.token);
+  }
+  dataFromJwt.then((claim) => {
+    req.body.categories['shopId'] = claim.userName;
+    req.body.menuItems['shopId'] = claim.userName;
+
+    let params = {
+      TransactItems: [{
+        Put: {
+          TableName : tableName,
+          Item: req.body.categories,
+        }
+      }, {
+        Put: {
+          TableName: tableName,
+          Item: req.body.menuItems,
+        }
+      }]
+    };
+
+    dynamodb.transactWrite(params, (err, data) => {
+      if(err) {
+        res.statusCode = 500;
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'post call succeed!', url: req.url, data: data})
+      }
+    });
+  });
+});
+
 /**************************************
 * HTTP remove method to delete object *
 ***************************************/
 
-app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+app.delete(path + '/object' + hashKeyPath + sortKeyPath, verifyToken, function(req, res) {
+  let dataFromJwt;
   var params = {};
   if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    // params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    params[partitionKeyName] = req.params[partitionKeyName];
+    dataFromJwt = getUserNameFromJwt(req.token);
   } else {
     params[partitionKeyName] = req.params[partitionKeyName];
-     try {
+    try {
       params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
     } catch(err) {
       res.statusCode = 500;
@@ -294,19 +336,62 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
     }
   }
 
-  let removeItemParams = {
-    TableName: tableName,
-    Key: params
-  }
-  dynamodb.delete(removeItemParams, (err, data)=> {
-    if(err) {
-      res.statusCode = 500;
-      res.json({error: err, url: req.url});
-    } else {
-      res.json({url: req.url, data: data});
+  dataFromJwt.then((claim) => {
+    params[partitionKeyName] = claim.userName;
+    let removeItemParams = {
+      TableName: tableName,
+      Key: params
     }
+    dynamodb.delete(removeItemParams, (err, data) => {
+      if(err) {
+        res.statusCode = 500;
+        res.json({error: err, url: req.url});
+      } else{
+        res.json({success: 'delete call succeed!', url: req.url, data: data})
+      }
+    });
+  
   });
 });
+
+/************************************
+* HTTP post method for delete objects transactionally *
+*************************************/
+app.post(`${path}/delete`, verifyToken, function(req, res) {
+  let dataFromJwt;
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    dataFromJwt = getUserNameFromJwt(req.token);
+  }
+  dataFromJwt.then((claim) => {
+    req.body.categories[partitionKeyName] = claim.userName;
+    req.body.deletedCategoryName[partitionKeyName] = claim.userName;
+
+    let params = {
+      TransactItems: [{
+        Put: {
+          TableName : tableName,
+          Item: req.body.categories,
+        }
+      }, {
+        Delete: {
+          TableName: tableName,
+          Key: req.body.deletedCategoryName,
+        }
+      }]
+    };
+
+    dynamodb.transactWrite(params, (err, data) => {
+      if(err) {
+        res.statusCode = 500;
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'post call succeed!', url: req.url, data: data})
+      }
+    });
+  });
+});
+
 app.listen(3000, function() {
     console.log("App started")
 });

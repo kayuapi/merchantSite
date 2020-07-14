@@ -7,6 +7,8 @@
 import React, { memo, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 // import { connect, useSelector } from 'react-redux';
 // import { FormattedMessage } from 'react-intl';
 import { compose } from 'redux';
@@ -25,16 +27,15 @@ import TextField from '@material-ui/core/TextField';
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
+import { openVariantsPopUp } from '../VariantsPopUp/actions';
+import { updateMenuItemName, updateMenuItemPrice } from '../MenuItemsPanel/actions';
+import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
 import InputBase from '@material-ui/core/InputBase';
 // import { useInjectReducer } from 'utils/injectReducer';
-import { Controller, useFormContext, useFieldArray } from "react-hook-form";
-import AdminProductVariantDisplay from '../AdminProductVariantDisplay';
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { store } from '../../../App';
 
-import StorageInput from '../../playground/StorageInput';
+import StorageInput from '../../playground/RHFStorageInput';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,6 +50,8 @@ const useStyles = makeStyles(theme => ({
     // paddingTop: '56.25%', // 16:9
     // width: 'auto',
     // height: 'auto',
+    width: '80%',
+    'align-self': 'center',
     'object-fit': 'contain',
   },
   textField: {
@@ -98,87 +101,64 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function AdminProductDisplay({
-  id,
-  item: { name, price, image, variants, uiLocation },
+const handlePlusMinusChange = (menuItemId) => {
+  // obtain variants from menuItem with the amentioned menuItemId
+  const variants = selectMenuItemsVariants(store.getState(), menuItemId);
+  store.dispatch(openVariantsPopUp(menuItemId, variants));
+};
+
+export function ProductDisplay({
+  item: { id, name, price, image, variants=[{id: 'abc', name:'abcname', price:'rm5'}], uiLocation: {x, y} },
   index,
-  setValue
-  // control,
-  // register,
+  dispatch,
 }) {
-
-  const { fields, append, remove } = useFieldArray({
-    name: `menuPage.items[${index}].variants`
-  });
-  console.log('INDEX IS: ', index);
-  console.log('rendering adminProductDisplay: ', fields);
-  console.log('rendering adminProductDisplay: variants: ', variants);
   const classes = useStyles();
-  const { register } = useFormContext();
-  const [isVariantOpen, setVariantOpen] = React.useState(false);
-
-  const handlePlusMinusChange = () => {
-    setVariantOpen(true);
-  };
-
-  const { setValue: writeValue } = useFormContext();
   return (
     <>
       <Card className={classes.root}>
-        <input hidden name={`menuPage.items[${index}].uiLocation.x`} type="number" readOnly value={uiLocation.x} ref={register()} />
-        <input hidden name={`menuPage.items[${index}].uiLocation.y`} type="number" readOnly value={uiLocation.y} ref={register()} />
-        <input hidden name={`menuPage.items[${index}].uiLocation.w`} type="number" readOnly value={uiLocation.w} ref={register()} />
-        <input hidden name={`menuPage.items[${index}].uiLocation.h`} type="number" readOnly value={uiLocation.h} ref={register()} />
 
-        {fields.map((itemNest, nestedIndex) => (
-          <div key={itemNest.id}>
-            <input hidden name={`menuPage.items[${index}].variants[${nestedIndex}].name`} type="text" defaultValue={itemNest.name} ref={register()} />
-            <input hidden name={`menuPage.items[${index}].variants[${nestedIndex}].price`} type="text" defaultValue={itemNest.price} ref={register()} />          
-          </div>
-        ))}
-
-        <input hidden name={`menuPage.items[${index}].image`} ref={register()} />
-        {image ? (
-          <CardMedia
-            component="img"
-            alt={name}
-            id={id}
-            height="100"
-            width="100"
-            className={classes.cardMedia}
-            image={image}
-            title={name}
-          />): (
-          <CardMedia
-            component={StorageInput}
-            alt={name}
-            id={id}
-            height="100"
-            width="100"
-            index={index}
-            className={classes.cardMedia}
-            image={image}
-            title={name}
-            writeValue={writeValue}
-          />)}
+        <CardMedia
+          component={StorageInput}
+          alt={name}
+          menuItemId={id}
+          height="100"
+          width="100"
+          index={index}
+          className={classes.cardMedia}
+          downloadedImage={image}
+          image={image}
+          title={name}
+        />
         <CardContent className={classes.content}>
-          {/* <Controller />'s control props is optional when using <FormContext /> */}
           <Controller
-            as={<InputBase />}
-            name={`menuPage.items[${index}].name`}
+            name={`menuPage.menuItems[${index}].name`}
             defaultValue={name}
-            placeholder="Enter a product name"
-            classes={{input: classes.productTitleInput}}
-            inputProps={{ 'aria-label': 'put product title' }}
+            render={({onChange, onBlur, value}) => (
+              <InputBase
+                onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value)); onBlur();}}
+                onChange={onChange}
+                value={value}
+                placeholder="Product name (e.g: Apple)"
+                classes={{input: classes.productTitleInput}}
+                inputProps={{'aria-label': 'put product title' }} 
+              />
+            )}
           />
           <Controller
-            as={<InputBase />}
-            name={`menuPage.items[${index}].price`}
+            name={`menuPage.menuItems[${index}].price`}
             defaultValue={price}
-            placeholder="Enter a product price"
-            classes={{input: classes.priceInput}}
-            inputProps={{ 'aria-label': 'put a price' }}
+            render={({onChange, onBlur, value}) => (
+              <InputBase
+                onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); onBlur();}}
+                onChange={onChange}
+                value={value}
+                placeholder="Product price (e.g: RM 10)"
+                classes={{input: classes.priceInput}}
+                inputProps={{ 'aria-label': 'put a price' }}  
+              />
+            )}
           />
+
         </CardContent>
 
         <CardActions className={classes.controls}>
@@ -197,7 +177,7 @@ export function AdminProductDisplay({
             <Grid item xs={6} className={classes.gridItem}>
               <IconButton
                 className={classes.gridItem2}
-                onClick={handlePlusMinusChange}
+                onClick={() => {handlePlusMinusChange(id)}}
                 edge="start"
               >
                 <AddIcon />
@@ -215,38 +195,27 @@ export function AdminProductDisplay({
           </Grid>
         </CardActions>
       </Card>
-
-      <AdminProductVariantDisplay 
-        index={index} 
-        isOpen={isVariantOpen} 
-        setVariantOpen={setVariantOpen}
-        append={append}
-        fields={fields}
-        remove={remove}
-        setValue={setValue}
-      />
     </>
   );
 }
 
-AdminProductDisplay.propTypes = {
+ProductDisplay.propTypes = {
   item: PropTypes.object,
   id: PropTypes.any,
+  dispatch: PropTypes.func,
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    // addProduct: item => dispatch(addProductToCart(item)),
-    // removeProduct: item => dispatch(removeProductFromCart(item)),
-  };
+    dispatch
+  }
 }
-
-// const withConnect = connect(
-//   null,
-//   mapDispatchToProps,
-// );
+const withConnect = connect(
+  null,
+  mapDispatchToProps,
+)
 
 export default compose(
-  // withConnect,
+  withConnect,
   memo,
-)(AdminProductDisplay);
+)(ProductDisplay);

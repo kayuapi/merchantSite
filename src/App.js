@@ -67,7 +67,7 @@ const history = createHashHistory();
 // const initialState = {}
 // const store = createStore(rootReducer, initialState)
 
-const store = createAdminStore({
+export const store = createAdminStore({
     // authProvider,
     dataProvider,
     history,
@@ -88,23 +88,23 @@ const App = () => {
         <>
 
     <Provider store={store}>
-        <ReactReduxFirebaseProvider {...rrfProps}>
-            <Admin 
-            customRoutes={customRoutes}
-            layout={Layout}
-            dashboard={Dashboard}
-            // loginPage={MyLoginPage}
-            // logoutButton={MyLogoutButton}
-            // authProvider={authProvider}
-            dataProvider={dataProvider}
-            i18nProvider={i18nProvider}
-            history={history}
-            >
-                
-                <Resource name="menuItems" {...menuItems} />
-                {/* <Resource name="categories" {...categories} /> */}
-            </Admin>
-        </ReactReduxFirebaseProvider>
+        {/* <ReactReduxFirebaseProvider {...rrfProps}> */}
+      <Admin 
+        customRoutes={customRoutes}
+        layout={Layout}
+        dashboard={Dashboard}
+        // loginPage={MyLoginPage}
+        // logoutButton={MyLogoutButton}
+        // authProvider={authProvider}
+        dataProvider={dataProvider}
+        i18nProvider={i18nProvider}
+        history={history}
+      >
+          
+          <Resource name="menuItems" {...menuItems} />
+          {/* <Resource name="categories" {...categories} /> */}
+      </Admin>
+        {/* </ReactReduxFirebaseProvider> */}
     </Provider>
     <AmplifySignOut />
     </>

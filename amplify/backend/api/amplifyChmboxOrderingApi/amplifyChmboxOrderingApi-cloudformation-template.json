@@ -506,6 +506,9 @@
         "Properties": {
           "Description": "",
           "Name": "amplifyChmboxOrderingApi",
+          "EndpointConfiguration": {
+            "Types": [ "REGIONAL" ]
+          },
           "Body": {
             "swagger": "2.0",
             "info": {

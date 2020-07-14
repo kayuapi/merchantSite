@@ -18,7 +18,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { submitPage, submitPageNames } from '../easyMenu';
+// import { submitPage, submitPageNames } from '../easyMenu';
 // import { DevTool } from "react-hook-form-devtools";
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415

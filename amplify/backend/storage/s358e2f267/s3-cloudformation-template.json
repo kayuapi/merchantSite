@@ -315,6 +315,7 @@
 			}
 		},    
       
+      
 	    
 		"S3AuthPublicPolicy": {
 			"DependsOn": [
