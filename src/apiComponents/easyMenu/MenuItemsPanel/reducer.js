@@ -67,6 +67,7 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
       }
       case LOAD_MENU_ITEMS: {
         draft.menuItems = false;
+        draft._menuItemsInCloud = false;
         draft.menuItemsLoading = true;
         draft.menuItemsLoadingError = false;
         break;
