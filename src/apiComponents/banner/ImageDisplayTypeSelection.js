@@ -37,7 +37,7 @@ export default function ToggleButtons({
 
   return (
     <>
-      <Box display="flex" justifyContent="flex-start">
+      <Box display="flex">
         <ToggleButtonGroup
           value={bannerDisplayType}
           exclusive
@@ -54,36 +54,35 @@ export default function ToggleButtons({
             C: fill
           </ToggleButton>
         </ToggleButtonGroup>
-        <Button
-          disabled={!isDirty || isSaving}
-          variant="contained"
-          color="primary"
-          size="small"
-          className={classes.button}
-          startIcon={<SaveIcon />}
-          onClick={()=>{
-            setIsSaving(true);
-            saveBannerToDb(banner, bannerDisplayType)
-              .then(({ success }) => {
-                if (success) {
-                  setIsSaving(false);
-                  dispatch({
-                    type: 'imageSaved', 
-                    payload: {
-                      bannerDisplayType,
-                      banner,
-                    }
-                  });
-                }
-              });
-          }}
-          style={{'marginLeft': 'auto'}} 
-        >
-          { !isSaving && isDirty && <span>Save</span> }
-          { !isSaving && !isDirty && <span>Saved</span>}
-          { isSaving && <span>Saving...</span> }
+          <Button
+            disabled={!isDirty || isSaving}
+            variant="contained"
+            color="primary"
+            size="small"
+            className={classes.button}
+            startIcon={<SaveIcon />}
+            onClick={()=>{
+              setIsSaving(true);
+              saveBannerToDb(banner, bannerDisplayType)
+                .then(({ success }) => {
+                  if (success) {
+                    setIsSaving(false);
+                    dispatch({
+                      type: 'imageSaved', 
+                      payload: {
+                        bannerDisplayType,
+                        banner,
+                      }
+                    });
+                  }
+                });
+            }}
+          >
+            { !isSaving && isDirty && <span>Save</span> }
+            { !isSaving && !isDirty && <span>Saved</span>}
+            { isSaving && <span>Saving...</span> }
 
-        </Button>
+          </Button>
       </Box>
     </>
   );

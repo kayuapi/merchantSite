@@ -111,6 +111,7 @@ const Banner = ({props}) => {
             />          
             <BannerInput 
               uploadedImagePath={uploadedImagePath}
+              _banner={state._banner}
               banner={state.banner} 
               bannerDisplayType={state.bannerDisplayType} 
               dispatch={dispatch} 

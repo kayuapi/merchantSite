@@ -2,17 +2,15 @@ import React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
-import { Storage, Auth } from 'aws-amplify';
+import { Storage } from 'aws-amplify';
 import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardMedia from '@material-ui/core/CardMedia';
 import { withStyles } from '@material-ui/core/styles';
+import styles from './bannerStyle.module.css';
 
 const useStyles = theme => ({
   root: {
     width: '100%',
-  }
+    }
 })
 
 function LinearProgressWithLabel(props) {
@@ -103,19 +101,22 @@ class S3ImageUpload extends React.Component {
       const { classes } = this.props;
       return (
         <>
-          <Card className={classes.root}>
-            <CardActionArea onClick={() => {this.inputOpenRef.current.click()}}>
-              <CardMedia
-                component="img"
-                alt="Banner"
-                height="150px"
-                image={this.props.banner ? this.props.banner : ''}
-                title="Banner"
-                style={{objectFit: this.props.bannerDisplayType}}
-              />
-            </CardActionArea>
+          <div className={styles.container}>
+            <img 
+              className={styles.image}
+              src={this.props.banner ? this.props.banner : ''}
+              height='150px'
+              style={{objectFit: this.props.bannerDisplayType}} 
+              alt='' 
+            />
+            <div className={styles.middle} onClick={()=>{this.inputOpenRef.current.click()}}>
+              <div className={styles.text}>
+                {!this.props._banner && <span>Click to add banner</span>}
+                {this.props._banner && <span>Click to change banner</span>}
+              </div>
+            </div>
             <input ref={this.inputOpenRef} type="file" accept='image/*' onChange={(evt) => this.onChange(evt)} style={{display: 'none'}} />
-          </Card>
+          </div>
           { uploadedPercentage > 0 && <LinearProgressWithLabel value={uploadedPercentage} /> }
         </>
       )
