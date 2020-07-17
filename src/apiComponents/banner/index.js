@@ -3,10 +3,8 @@ import Container from '@material-ui/core/Container';
 import BannerInput from './BannerInput';
 import ImageDisplayTypeSelection from './ImageDisplayTypeSelection';
 import { makeStyles } from '@material-ui/core/styles';
-import { useForm } from 'react-hook-form';
-import { Auth, API } from 'aws-amplify';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { DevTool } from "react-hook-form-devtools";
+import { grabFromDb, grabUploadingPath } from './utils/request';
 
 const useStyles = makeStyles(theme => ({
     button: {
@@ -33,90 +31,43 @@ const useStyles = makeStyles(theme => ({
   }
 ));
 
-// async function getJwtToken() {
-//   const jwtToken = (await Auth.currentSession()).getIdToken().getJwtToken();
-//   console.log(jwtToken);
-//   return jwtToken;
-// }
-
-// async function submitData() {
-//   const apiName = 'amplifyChmboxOrderingApi';
-//   const basePath = '/uiplugin';
-//   try {
-//     const myInit = {
-//       headers: {
-//         'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
-//       },
-//       body: {
-//         SK: `Banner`
-//       },
-//       response: false
-//     };
-//     const path = `${basePath}`;
-//     const pageSubmissionResponse = await API.post(apiName, path,  myInit);
-//     console.log('pageSubmissionResponse', pageSubmissionResponse);
-//     return pageSubmissionResponse;
-//   }
-//   catch(err) {
-//     console.log('api response error', err.response);
-//   }
-// }
-
-async function grabFromDb(item) {
-  const apiName = 'amplifyChmboxOrderingApi';
-  const basePath = '/uiplugin/object';
-  try {
-    const myInit = {
-      headers: {
-        // 'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
-      },
-      response: false
-    };
-
-    const currentUserInfo = await Auth.currentUserInfo();
-    const path = `${basePath}/${currentUserInfo.username}/${item}`;
-    const retrievedItem = await API.get(apiName, path, myInit);
-    console.log('retrievedItem', retrievedItem);
-    return retrievedItem;
-  }
-  catch(err) {
-    console.log('api response error', err.response);
-  }
-}
-
 function init(initialState) {
   return {
-    imageDisplayType: '',
-    currentImageDisplayType: '',
-    isLoading: true,
-    currentBanner: ''  
+    _banner: initialState._banner,
+    _bannerDisplayType: initialState._bannerDisplayType,
+    banner: initialState.banner,
+    bannerDisplayType: initialState.bannerDisplayType ? initialState.bannerDisplayType : 'cover',
   }
-}
+};
 
 const initialState = {
-  imageDisplayType: '',
-  currentImageDisplayType: '',
-  currentBanner: ''
+  _banner: false,
+  _bannerDisplayType: false,
+  banner: false,
+  bannerDisplayType: false,
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case 'initialStateLoaded':
-      return {
-        imageDisplayType: action.payload.imageDisplayType,
-        currentImageDisplayType: action.payload.imageDisplayType,
-        image: action.payload.image
-      };
-    case 'changeCurrentImageDisplayType':
+      return init(initialState);
+    case 'changeBannerDisplayType':
       return {
         ...state,
-        currentImageDisplayType: action.payload
+        bannerDisplayType: action.payload.bannerDisplayType,
       };
-    case 'savedCurrentImageDisplayType':
+    case 'imageLoaded':
       return {
         ...state,
-        imageDisplayType: state.currentImageDisplayType
+        banner: action.payload.banner,
       };
+    case 'imageSaved':
+      return {
+        _bannerDisplayType: action.payload.bannerDisplayType,
+        _banner: action.payload.banner,
+        bannerDisplayType: action.payload.bannerDisplayType,
+        banner: action.payload.banner,
+      };  
     default:
       throw new Error();
   }
@@ -124,43 +75,46 @@ function reducer(state, action) {
 
 const Banner = ({props}) => {
   const [state, dispatch] = useReducer(reducer, initialState, init);
-
-  console.log('rendering banner...');
-
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true);
+  const [uploadedImagePath, setUploadedImagePath] = useState('');
 
   useEffect(()=> {
-    console.log('effect ran');
-    grabFromDb('Banner').then((retrievedItem)=> {
+    grabUploadingPath().then(uploadingPath => setUploadedImagePath(uploadingPath));
+    grabFromDb('Banner').then(({banner, bannerDisplayType})=> {
       setIsLoading(false);
-      dispatch({
-        type: 'initialStateLoaded', 
-        payload: {
-          currentImageDisplayType: retrievedItem.imageDisplayType,
-          imageDisplayType: retrievedItem.imageDisplayType,
-          image: retrievedItem.image
-        }
-      })
+      if (!banner && !bannerDisplayType) {
+        dispatch({
+          type: 'initialStateLoaded'
+        });  
+      } else {
+        dispatch({
+          type: 'imageSaved', 
+          payload: {
+            bannerDisplayType,
+            banner
+          }
+        });
+      }
     });
   }, []);
   
   return (
-    <div className={classes.root}>        
+    <div className={classes.root}>
       <Container className={classes.cardGrid} maxWidth="sm">
-          ***FEATURE IN DEVELOPMENT***<br />
-          *****PREVIEW & COMING SOON*****<br /><br />
         {isLoading && <CircularProgress />}
-        {!isLoading && state.image &&
-          <form>
-            <ImageDisplayTypeSelection image={state.image} currentImageDisplayType={state.currentImageDisplayType} isDirty={state.imageDisplayType !== state.currentImageDisplayType} dispatch={dispatch} />
-            <img height="150px" width="100%" style={{objectFit: state.currentImageDisplayType}} alt={state.image} src={state.image} />
-          </form>
-        }
-        {!isLoading && !state.image &&
+        {!isLoading && 
           <>
-            {/* <ImageDisplayTypeSelection currentImageDisplayType={state.currentImageDisplayType} isDirty={state.imageDisplayType !== state.currentImageDisplayType} dispatch={dispatch} /> */}
-            <BannerInput imageDisplayType="fill" loadingData={isLoading} />
+            <ImageDisplayTypeSelection
+              localState={state} 
+              dispatch={dispatch} 
+            />          
+            <BannerInput 
+              uploadedImagePath={uploadedImagePath}
+              banner={state.banner} 
+              bannerDisplayType={state.bannerDisplayType} 
+              dispatch={dispatch} 
+            />          
           </>
         }
       </Container>
