@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFormContext } from "react-hook-form";
 import { createStructuredSelector } from 'reselect';
-import PropTypes, { resetWarningCache } from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import SaveIcon from '@material-ui/icons/Save';

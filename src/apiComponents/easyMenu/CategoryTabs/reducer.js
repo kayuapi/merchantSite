@@ -12,7 +12,6 @@ import {
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
-  REMOVE_CATEGORY_NEWLY_ADDED,
   UPDATE_CATEGORY_NAME,
 } from './constants';
 
@@ -96,13 +95,6 @@ const categoriesReducer = (state = initialState, action) =>
         draft.categoriesError = action.error;
         break;
       }
-
-      case REMOVE_CATEGORY_NEWLY_ADDED: {
-        const selectedCategoryIndex = draft.categories.findIndex(category => category.id === action.categoryId);
-        draft.categories[selectedCategoryIndex].newlyAdded = null;
-        break;
-      }
-
       
       case SAVE_CATEGORY: {
         draft.categoriesSaving = true;

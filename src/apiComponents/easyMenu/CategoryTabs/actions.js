@@ -12,7 +12,6 @@ import {
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
-  REMOVE_CATEGORY_NEWLY_ADDED,
   UPDATE_CATEGORY_NAME,
 } from './constants';
 
@@ -97,13 +96,6 @@ export function switchCategory(category) {
   return {
     type: SWITCH_CATEGORY,
     category,
-  }
-}
-
-export function removeCategoryNewlyAdded(categoryId) {
-  return {
-    type: REMOVE_CATEGORY_NEWLY_ADDED,
-    categoryId,
   }
 }
 

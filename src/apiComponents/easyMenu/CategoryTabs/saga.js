@@ -34,8 +34,8 @@ export function* closeAlertWindowAfterSwitchCategory() {
 export function* deletingCategory(action) {
   try {
     let success = false;
-    // newlyAdded Category does not require network call to delete
-    if (!action.deletingCategory.newlyAdded) {
+    // if a category has name == false and _name === name, it is a newly created category. Newly created category does not need network call to delete
+    if (!action.deletingCategory.name && action.deletingCategory._name === action.deletingCategory.name) {
       const { success: successResponse } = yield call(deleteCategoriesAndMenuItemsFromDb, action.categories, action.deletingCategory);
       success = successResponse;
     } else {

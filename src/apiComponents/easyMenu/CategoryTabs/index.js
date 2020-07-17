@@ -144,7 +144,6 @@ const CategoryTabs = ({
       id: uuidv4(),
       _name: false,
       name: false,
-      newlyAdded: true, // this field is useful so that when deleting newlyAdded category, network request is not sent
     };
     addCategory(newCategory);
     if (isDirty) {

@@ -144,11 +144,13 @@ export const AddRemoveLayout = ({
     return <CircularProgress />
   }
   else {
+    console.log('menuItems first', menuItems);
     return (
       <TabPanel value={currentCategoryId}>
         <Container className={classes.cardGrid} maxWidth="sm">
           {/* <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} /> */}
           <div style={{position: "relative"}}>
+            {console.log('menuItems', menuItems)}
           <ResponsiveReactGridLayout
             onLayoutChange={onLayoutChange}
             layouts={{lg: currentMenuItemsLayout, md: currentMenuItemsLayout, sm: currentMenuItemsLayout, xs: currentMenuItemsLayout, xxs: currentMenuItemsLayout}}
