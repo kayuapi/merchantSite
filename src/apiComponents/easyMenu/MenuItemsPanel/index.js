@@ -121,14 +121,16 @@ export const AddRemoveLayout = ({
   loadMenuItems,
   updateMenuItemsLocation,
 }) => {
+  const { reset, setValue } = useFormContext();
+
   useEffect(() => {
     // const ac = new AbortController();
     loadMenuItems();
-    // reset({}, {dirtyFields: false, dirty: false});
+    // to reset the fields of menuitems 
+    reset({}, {dirtyFields: false, dirty: false});
     // return () => ac.abort();
-  }, [currentCategoryId, loadMenuItems]);
+  }, [currentCategoryId, loadMenuItems, reset]);
 
-  const { reset, setValue } = useFormContext();
   const onLayoutChange = (layout) => {
     updateMenuItemsLocation(layout);
     // const newLayout = selectMenuItemsLayout(store.getState())
@@ -144,13 +146,11 @@ export const AddRemoveLayout = ({
     return <CircularProgress />
   }
   else {
-    console.log('menuItems first', menuItems);
     return (
       <TabPanel value={currentCategoryId}>
         <Container className={classes.cardGrid} maxWidth="sm">
           {/* <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} /> */}
           <div style={{position: "relative"}}>
-            {console.log('menuItems', menuItems)}
           <ResponsiveReactGridLayout
             onLayoutChange={onLayoutChange}
             layouts={{lg: currentMenuItemsLayout, md: currentMenuItemsLayout, sm: currentMenuItemsLayout, xs: currentMenuItemsLayout, xxs: currentMenuItemsLayout}}

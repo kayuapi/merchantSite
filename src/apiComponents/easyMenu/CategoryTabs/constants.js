@@ -20,3 +20,4 @@ export const SWITCH_CATEGORY = 'app/ElegantMenu/SWITCH_CATEGORY';
 
 
 export const UPDATE_CATEGORY_NAME = 'app/ElegantMenu/UPDATE_CATEGORY_NAME';
+export const UPDATE_CATEGORY_DIRTINESS = 'app/ElegantMenu/UPDATE_CATEGORY_DIRTINESS';

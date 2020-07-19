@@ -20,6 +20,7 @@ import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
 
 import { createStructuredSelector } from 'reselect';
 import { 
+  makeSelectIsCategoryDirty,
   makeSelectCategories, 
   makeSelectCategoriesLoading, 
   makeSelectCategoriesError,
@@ -35,9 +36,9 @@ import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@mat
 import Add from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
-import { Controller } from "react-hook-form";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
+import { updateDirtiness } from './actions';
 
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
@@ -78,8 +79,30 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "100vw"
   },
 }));
+function SetCaretAtEnd(elem) {
+  var elemLen = elem.value.length;
+  // For IE Only
+  if (document.selection) {
+      // Set focus
+      elem.focus();
+      // Use IE Ranges
+      var oSel = document.selection.createRange();
+      // Reset position to 0 & then set at end
+      oSel.moveStart('character', -elemLen);
+      oSel.moveStart('character', elemLen);
+      oSel.moveEnd('character', 0);
+      oSel.select();
+  }
+  else if (elem.selectionStart || elem.selectionStart == '0') {
+      // Firefox/Chrome
+      elem.selectionStart = elemLen;
+      elem.selectionEnd = elemLen;
+      elem.focus();
+  } // if
+} // SetCaretAtEnd()
 
 const CategoryTabs = ({
+  isCategoryDirty,
   categories,
   categoriesLoading,
   categoriesError,
@@ -97,11 +120,12 @@ const CategoryTabs = ({
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
+  const composerRef = React.useRef();
   // const categoriesLength = categories ? categories.length: 0;
   // const tabInputRefs = React.useRef([...new Array(categoriesLength)].map(() => React.createRef()));
-  const { formState: { dirtyFields} } = useFormContext();
-  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
-
+  const { formState: { dirtyFields }, unregister, getValues } = useFormContext();
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || isCategoryDirty;
+  const [isComposing, setIsComposing] = useState(false);
   const updateScrollButton = () => {
     const container = tabsRef.current;
     if (!container) {
@@ -125,15 +149,29 @@ const CategoryTabs = ({
     return () => {
       window.removeEventListener("resize", updateScrollButton);
     }
-  })
+  });
+
+  useEffect(() => {
+    if (isComposing) {
+      if (composerRef.current) {
+        console.log('composerRef', composerRef);
+        // composerRef.current.focus();
+        SetCaretAtEnd(composerRef.current);
+      }  
+    }
+  });
+
+
   
   const handleTabChange = (event, categoryId) => {
     event.stopPropagation();
+    console.log('isDirty', isDirty);
     const category = categories.filter(category => category.id === categoryId)[0];
     if (category.id === currentCategory.id) {
     } else if (category.id !== currentCategory.id && !isDirty) {
       dispatchSwitchCategory(category);
     } else {
+      console.log('ATTENTION');
       const actionToDispatch = switchCategory(category);
       openAlertToContinue(actionToDispatch);      
     }
@@ -156,13 +194,42 @@ const CategoryTabs = ({
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
-
+  console.log('formstate here', getValues());
+  const MyInputBase = React.forwardRef((props, ref) => {
+    console.log('myinputbase ref', composerRef);
+    return (
+      <InputBase
+        // inputRef={ref}
+        inputRef={currentCategory.id === props.category.id ? composerRef : null}
+        defaultValue={props.category.name ? props.category.name: ''}
+        onBlur={(e) => {
+          e.persist();
+          setIsComposing(false);
+          // updateCategoryName(props.category.id, e.target.value);
+        }}
+        onChange={(e) => {
+          
+          e.persist();
+          console.log('e', e);
+          updateCategoryName(props.category.id, e.target.value);
+          setIsComposing(true);
+          // e.preventDefault();
+        }}
+        multiline
+        inputProps={{ tabIndex: "-1" }}
+        placeholder="New category"
+        classes={{root: classes.tabInput}}
+      />
+    )
+  })
   const MyCloseIcon = React.forwardRef((props, ref) => {
+    console.log('mycloseicon ref', ref);
     return (
       <Close id={props.categoryId} onClick={(e) => {
           e.stopPropagation();
-          const deletingCategory = categories.filter(category=>category.id === props.categoryId)[0];
-          const actionToDispatch = deleteCategory(categories, deletingCategory, currentCategory);
+          const deletingCategoryIndex = categories.findIndex(category => category.id === props.categoryId);
+          // const deletingCategory = categories.filter(category=>category.id === props.categoryId)[0];
+          const actionToDispatch = deleteCategory(categories, categories[deletingCategoryIndex], currentCategory);
           openAlertToContinue(actionToDispatch);
         }} 
       />
@@ -210,27 +277,12 @@ const CategoryTabs = ({
                     scrollButtons={scrollBtn}
                   >
                     {categories.map((category, index) => {
+                      console.log(currentCategory.id === category.id ? composerRef:'no');
                       return(
                         <Tab
                           key={category.id}
                           value={category.id}
-                          label={<Controller 
-                                  name={`menuPage.categories[${index}]`}
-                                  defaultValue={category.name ? category.name : ''}
-                                  render={({onChange, onBlur, value}) => (
-                                    <InputBase
-                                      onBlur={(e) => {
-                                        updateCategoryName(category.id, e.target.value); 
-                                        onBlur();
-                                      }}
-                                      onChange={onChange}
-                                      value={value}
-                                      multiline
-                                      placeholder="New category"
-                                      classes={{root: classes.tabInput}}
-                                    />
-                                  )}
-                                />}
+                          label={<MyInputBase category={category} index={index} />}
                           icon={<MyCloseIcon categoryId={category.id} />}
                           classes={{ root: classes.tabRoot, wrapper: classes.myTab2 }}
                         />
@@ -250,6 +302,7 @@ const CategoryTabs = ({
 
 CategoryTabs.propTypes = {
   canAddCategory: PropTypes.bool,
+  isCategoryDirty: PropTypes.bool,
   canSaveTabAndPanel: PropTypes.bool,
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   categoriesLoading: PropTypes.bool,
@@ -266,6 +319,7 @@ CategoryTabs.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
+  isCategoryDirty: makeSelectIsCategoryDirty(),
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   categories: makeSelectCategories(),
   categoriesLoading: makeSelectCategoriesLoading(),

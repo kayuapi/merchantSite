@@ -16,6 +16,7 @@ import {
   makeSelectTabSaving,
   makeSelectTabSavingError,
   makeSelectSavedSuccessfully,
+  makeSelectIsCategoryStateAndMenuItemsPanelDirty,
 } from './selectors';
 
 import {
@@ -78,7 +79,8 @@ const Control = ({
 }) => {    
   const classes = useStyles();
   const { formState: { dirtyFields}, reset } = useFormContext();
-  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty;
+  console.log('menuItemsIsDirty',dirtyFields);
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty || currentCategory._name !== currentCategory.name;
 
 
 
@@ -176,7 +178,7 @@ const mapStateToProps = createStructuredSelector({
   categories: makeSelectCategories(),
   menuItems: makeSelectMenuItems(),
   menuItemsIsDirty: makeSelectIsMenuItemsDirty(),
-
+  // categoryIsDirty: makeSelectIsCategoryDirty(),
   savedSuccessfully: makeSelectSavedSuccessfully(),
 
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),

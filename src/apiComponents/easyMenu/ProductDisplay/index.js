@@ -130,6 +130,22 @@ export function ProductDisplay({
           title={name}
         />
         <CardContent className={classes.content}>
+          {/* <InputBase
+            onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value));}}
+            defaultValue={name}
+            placeholder="Product name (e.g: Apple)"
+            classes={{input: classes.productTitleInput}}
+            inputProps={{'aria-label': 'put product title' }} 
+          />
+          <InputBase
+            onChange={(e)=>{
+              console.log('e', e);
+            }}
+            defaultValue={price}
+            placeholder="Product price (e.g: RM 10)"
+            classes={{input: classes.priceInput}}
+            inputProps={{'aria-label': 'put a price' }} 
+          /> */}
           <Controller
             name={`menuPage.menuItems[${index}].name`}
             defaultValue={name}

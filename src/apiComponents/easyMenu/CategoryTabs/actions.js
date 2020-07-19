@@ -13,6 +13,7 @@ import {
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
   UPDATE_CATEGORY_NAME,
+  UPDATE_CATEGORY_DIRTINESS,
 } from './constants';
 
 // Load categories
@@ -104,5 +105,17 @@ export function updateCategoryName(categoryId, categoryName) {
     type: UPDATE_CATEGORY_NAME,
     categoryId,
     categoryName,
+  }
+}
+
+export function updateDirtiness(category) {
+  let _isDirty = false;
+  if (category) {
+    _isDirty = category._name === category.name;
+  }
+  
+  return {
+    type: UPDATE_CATEGORY_DIRTINESS,
+    _isDirty,
   }
 }
