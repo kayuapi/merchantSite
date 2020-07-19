@@ -26,7 +26,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import MoveIcon from '@material-ui/icons/OpenWith';
 import { openVariantsPopUp } from '../VariantsPopUp/actions';
 import { updateMenuItemName, updateMenuItemPrice } from '../MenuItemsPanel/actions';
 import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
@@ -205,7 +205,8 @@ export function ProductDisplay({
                 className={classes.gridItem2}
                 edge="end"
               >
-                <RemoveIcon />
+                <MoveIcon />
+                <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
               </IconButton>
             </Grid>
           </Grid>
