@@ -62,38 +62,41 @@ class S3ImageUpload extends React.Component {
     }
     onChange(e) {
         let that = this;
-        const file = e.target.files[0];
-        const fileName = file.name;
-
-        Storage.put(fileName, file, {
-            level: 'protected',
-            contentType: 'image/*',
-            progressCallback(progress) {
-                let percent = Math.floor( progress.loaded * 100 / progress.total );
-                if (percent < 100) {
-                    that.setState({ uploadedPercentage: percent })
+        // to ensure that pressing cancel after input dialog doesn't error out
+        if (e.target.files.length > 0) {
+          const file = e.target.files[0];
+          const fileName = file.name;
+  
+          Storage.put(fileName, file, {
+              level: 'protected',
+              contentType: 'image/*',
+              progressCallback(progress) {
+                  let percent = Math.floor( progress.loaded * 100 / progress.total );
+                  if (percent < 100) {
+                      that.setState({ uploadedPercentage: percent })
+                  }
+              },
+          })
+          .then (result => {
+              const uploadedImageUrl = encodeURI(this.state.uploadedImagePath+result['key']);
+              this.setState({ 
+                uploadedPercentage: 100, 
+                uploadedImageUrl: uploadedImageUrl
+              }, () => {
+                setTimeout(() => {
+                  this.setState({ 
+                    uploadedPercentage: 0
+                  })
+                }, 500);
+              });
+              this.props.dispatch({
+                type: 'imageLoaded', 
+                payload: {
+                  banner: uploadedImageUrl
                 }
-            },
-        })
-        .then (result => {
-            const uploadedImageUrl = encodeURI(this.state.uploadedImagePath+result['key']);
-            this.setState({ 
-              uploadedPercentage: 100, 
-              uploadedImageUrl: uploadedImageUrl
-            }, () => {
-              setTimeout(() => {
-                this.setState({ 
-                  uploadedPercentage: 0
-                })
-              }, 500);
-            });
-            this.props.dispatch({
-              type: 'imageLoaded', 
-              payload: {
-                banner: uploadedImageUrl
-              }
-            });      
-        });
+              });      
+          });  
+        }
     }
   
     render() {
@@ -102,11 +105,11 @@ class S3ImageUpload extends React.Component {
       return (
         <>
           <div className={styles.container}>
-            <img 
+            <img
               className={styles.image}
               src={this.props.banner ? this.props.banner : ''}
               height='150px'
-              style={{objectFit: this.props.bannerDisplayType}} 
+              style={{objectFit: this.props.bannerDisplayType, background: 'gainsboro'}} 
               alt='' 
             />
             <div className={styles.middle} onClick={()=>{this.inputOpenRef.current.click()}}>
