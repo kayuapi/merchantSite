@@ -26,7 +26,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import MoveIcon from '@material-ui/icons/OpenWith';
 import { openVariantsPopUp } from '../VariantsPopUp/actions';
 import { updateMenuItemName, updateMenuItemPrice } from '../MenuItemsPanel/actions';
 import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
@@ -130,6 +130,22 @@ export function ProductDisplay({
           title={name}
         />
         <CardContent className={classes.content}>
+          {/* <InputBase
+            onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value));}}
+            defaultValue={name}
+            placeholder="Product name (e.g: Apple)"
+            classes={{input: classes.productTitleInput}}
+            inputProps={{'aria-label': 'put product title' }} 
+          />
+          <InputBase
+            onChange={(e)=>{
+              console.log('e', e);
+            }}
+            defaultValue={price}
+            placeholder="Product price (e.g: RM 10)"
+            classes={{input: classes.priceInput}}
+            inputProps={{'aria-label': 'put a price' }} 
+          /> */}
           <Controller
             name={`menuPage.menuItems[${index}].name`}
             defaultValue={name}
@@ -189,7 +205,8 @@ export function ProductDisplay({
                 className={classes.gridItem2}
                 edge="end"
               >
-                <RemoveIcon />
+                <MoveIcon />
+                <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
               </IconButton>
             </Grid>
           </Grid>

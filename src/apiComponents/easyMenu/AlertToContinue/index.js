@@ -41,12 +41,13 @@ const AlertToContinue = ({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       disableBackdropClick
+      disableEscapeKeyDown
     >
       <DialogTitle id="alert-dialog-title">
         {actionToDispatch.type === SWITCH_CATEGORY && 
           <span>Are you sure to proceed?</span>}
         {actionToDispatch.type === DELETE_CATEGORY && 
-          <span>Are you sure you want to delete "{getCurrentCategory().name}"?</span>}
+          <span>Are you sure you want to delete "{actionToDispatch.deletingCategory.name}"?</span>}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">

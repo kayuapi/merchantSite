@@ -154,18 +154,61 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
       case UPDATE_MENU_ITEMS_LOCATION: {
         if (draft.menuItems) {
           let k = [];
-          draft.menuItems.forEach(menuItem => {
-            const foundIndex = action.menuItemIdAndLocationArray.findIndex(x => x.i === menuItem.id);
-            const updatedUiLocation = {
-              x: action.menuItemIdAndLocationArray[foundIndex].x,
-              y: action.menuItemIdAndLocationArray[foundIndex].y,
-              w: action.menuItemIdAndLocationArray[foundIndex].w,
-              h: action.menuItemIdAndLocationArray[foundIndex].h,
-            };
-            menuItem.uiLocation = updatedUiLocation;
-            k.push(menuItem);
-          });
-          draft.menuItems = k;  
+          console.log('action.menuItemIdAndLocationArray', action.menuItemIdAndLocationArray);
+          const maxX = action.menuItemIdAndLocationArray.length < 2 ? action.menuItemIdAndLocationArray.length : 2;
+          const maxY = Math.ceil(action.menuItemIdAndLocationArray.length/2);
+          console.log('maxX', maxX);
+          console.log('maxY', maxY);
+          for (let y=0; y < maxY ; y++) {
+            for(let x=0; x<maxX; x++) {
+              if (action.menuItemIdAndLocationArray.length > 0) {
+                let minMahattanDistItem = action.menuItemIdAndLocationArray[0];
+                console.log('inside', action.menuItemIdAndLocationArray);
+                action.menuItemIdAndLocationArray.reduce((min, p) => {
+                  const mhDist = Math.abs(p.x-x) + Math.abs(p.y-y);
+                  if (mhDist < min) {
+                    minMahattanDistItem = p;
+                    return mhDist;
+                  };
+                  return min;
+                }, Math.abs(action.menuItemIdAndLocationArray[0].x-x) + Math.abs(action.menuItemIdAndLocationArray[0].y-y));
+                console.log('print', action.menuItemIdAndLocationArray);
+                console.log('minMahattanDistItem', minMahattanDistItem);
+                const foundIndex = draft.menuItems.findIndex(menuItem => menuItem.id === minMahattanDistItem.i);
+                console.log('foundIndex', foundIndex);
+                const updatedUiLocation = {
+                  x: x,
+                  y: y,
+                  w: minMahattanDistItem.w,
+                  h: minMahattanDistItem.h,
+                };
+                console.log('draft.meuItems', draft.menuItems.target);
+                draft.menuItems.forEach(menuItem => {
+                  if (menuItem.id === minMahattanDistItem.i) {
+                    menuItem.uiLocation = updatedUiLocation;
+                    k.push(menuItem);
+                  }
+                })
+                // draft.menuItems[foundIndex].uiLocation = updatedUiLocation;
+                // k.push(draft.menuItems[foundIndex]);
+                action.menuItemIdAndLocationArray = action.menuItemIdAndLocationArray.filter(item => item.i !== minMahattanDistItem.i);  
+              }
+            }
+          }
+          draft.menuItems = k;
+
+          // draft.menuItems.forEach(menuItem => {
+          //   const foundIndex = action.menuItemIdAndLocationArray.findIndex(x => x.i === menuItem.id);
+          //   const updatedUiLocation = {
+          //     x: action.menuItemIdAndLocationArray[foundIndex].x,
+          //     y: action.menuItemIdAndLocationArray[foundIndex].y,
+          //     w: action.menuItemIdAndLocationArray[foundIndex].w,
+          //     h: action.menuItemIdAndLocationArray[foundIndex].h,
+          //   };
+          //   menuItem.uiLocation = updatedUiLocation;
+          //   k.push(menuItem);
+          // });
+          // draft.menuItems = k;  
         }
         break;
       }
