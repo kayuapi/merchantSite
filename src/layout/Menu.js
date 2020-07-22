@@ -7,6 +7,7 @@ import { useTranslate, MenuItemLink, getResources } from 'react-admin';
 import BannerIcon from '@material-ui/icons/Image';
 import MenuIcon from '@material-ui/icons/Create';
 import OrderMemoIcon from '@material-ui/icons/Note';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 const Menu = ({ onMenuClick, logout }) => {
     // const translate = useTranslate();
@@ -63,6 +64,14 @@ const Menu = ({ onMenuClick, logout }) => {
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
               />
+              <MenuItemLink
+                to={`/receipt`}
+                primaryText={"Receipt (unstable)"}
+                leftIcon={createElement(ReceiptIcon)}
+                onClick={onMenuClick}
+                sidebarIsOpen={open}
+              />
+
               {/* <MenuItemLink
                 to={`/playground`}
                 primaryText={"Playground"}
