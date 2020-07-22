@@ -76,7 +76,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-adminfrontendamplify-master-92303-deployment",
-					"S3Key": "amplify-builds/adminfrontendamplify4cb2a585-32515430502b39444736-build.zip"
+					"S3Key": "amplify-builds/adminfrontendamplify4cb2a585-4232576a653633333435-build.zip"
 				}
 			}
 		},
