@@ -2,6 +2,8 @@ import { API, Auth } from 'aws-amplify';
 
 
 export async function grabFromDb(item) {
+  const uriEncodedItem = encodeURIComponent(item);
+
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin/object';
   try {
@@ -13,7 +15,7 @@ export async function grabFromDb(item) {
     };
 
     const currentUserInfo = await Auth.currentUserInfo();
-    const path = `${basePath}/${currentUserInfo.username}/${item}`;
+    const path = `${basePath}/${currentUserInfo.username}/${uriEncodedItem}`;
     const retrievedItem = await API.get(apiName, path, myInit);
     return retrievedItem;
   }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFormContext } from "react-hook-form";
 import { createStructuredSelector } from 'reselect';
-import PropTypes, { resetWarningCache } from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import SaveIcon from '@material-ui/icons/Save';
@@ -16,6 +16,7 @@ import {
   makeSelectTabSaving,
   makeSelectTabSavingError,
   makeSelectSavedSuccessfully,
+  makeSelectIsCategoryStateAndMenuItemsPanelDirty,
 } from './selectors';
 
 import {
@@ -78,7 +79,8 @@ const Control = ({
 }) => {    
   const classes = useStyles();
   const { formState: { dirtyFields}, reset } = useFormContext();
-  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty;
+  console.log('menuItemsIsDirty',dirtyFields);
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty || currentCategory._name !== currentCategory.name;
 
 
 
@@ -176,7 +178,7 @@ const mapStateToProps = createStructuredSelector({
   categories: makeSelectCategories(),
   menuItems: makeSelectMenuItems(),
   menuItemsIsDirty: makeSelectIsMenuItemsDirty(),
-
+  // categoryIsDirty: makeSelectIsCategoryDirty(),
   savedSuccessfully: makeSelectSavedSuccessfully(),
 
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),

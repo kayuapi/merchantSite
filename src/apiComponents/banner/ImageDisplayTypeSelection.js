@@ -55,7 +55,7 @@ export default function ToggleButtons({
           </ToggleButton>
         </ToggleButtonGroup>
           <Button
-            disabled={!isDirty || isSaving}
+            disabled={!isDirty || isSaving || (!_banner && !banner)}
             variant="contained"
             color="primary"
             size="small"

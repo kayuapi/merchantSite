@@ -38,21 +38,21 @@ const SwitchTabDialogAction = ({
         disabled={isTabAndPanelSaving}
         onClick={()=> {
           if (!currentCategory._name) {
-            revertChangesToTab(currentCategory.id, '');
+            revertChangesToTab(currentCategory.id, false);
           } else {
             revertChangesToTab(currentCategory.id, currentCategory._name);
           }
-          const categoryIndex = categories.findIndex(category => category.id ===currentCategory.id);
-          let categoriesInForm = getValues()['menuPage']['categories'];
-          categoriesInForm[categoryIndex] = currentCategory._name ? currentCategory._name : '';
-          reset({
-            ...getValues(),
-            menuPage: {
-              ...getValues()['menuPage'],
-              categories: categoriesInForm,
-            }
-          });
           dispatch(actionToDispatch);
+          // const categoryIndex = categories.findIndex(category => category.id ===currentCategory.id);
+          // let categoriesInForm = getValues()['menuPage']['categories'];
+          // categoriesInForm[categoryIndex] = currentCategory._name ? currentCategory._name : '';
+          // reset({
+          //   ...getValues(),
+          //   menuPage: {
+          //     ...getValues()['menuPage'],
+          //     categories: categoriesInForm,
+          //   }
+          // });
         }} 
         color="primary" 
         autoFocus>
