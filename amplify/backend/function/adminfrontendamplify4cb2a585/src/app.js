@@ -177,6 +177,7 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
   if (hasSortKey) {
     try {
       params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
+      params[sortKeyName] = decodeURIComponent(params[sortKeyName]);
     } catch(err) {
       res.statusCode = 500;
       res.json({error: 'Wrong column type ' + err});
