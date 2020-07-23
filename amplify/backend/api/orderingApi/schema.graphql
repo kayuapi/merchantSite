@@ -1,0 +1,65 @@
+type Order 
+  @model 
+  @key(fields: [
+      "shopId",
+      "fulfillmentMethod",
+      "orderId"
+    ])
+  @auth(rules: [
+      {allow: owner},
+      {allow: public, provider: iam, operations: [create] }
+    ])
+{
+  shopId: String!
+  fulfillmentMethod: FulfillmentMethod!
+  orderId: String!
+  status: OrderStatus!
+  paymentMethod: PaymentMethod!
+  postscript: String
+
+
+  tableNumber: String
+  
+  firstName: String
+  lastName: String
+  phoneNumber: String
+
+  pickupDate: String
+  pickupTime: String
+  vehiclePlateNumber: String
+
+  deliveryDate: String
+  deliveryTime: String
+  deliveryAddress: String
+
+  items:[MenuItem]
+}
+
+type MenuItem
+{
+  name: String!
+  variant: String
+  quantity: String!
+}
+
+enum FulfillmentMethod {
+  DINE_IN
+  DELIVERY
+  SELF_PICKUP
+}
+
+enum OrderStatus {
+  FULFILLED
+  UNFULFILLED
+  CANCELED
+}
+
+enum PaymentMethod {
+  E_WALLET
+  E_WALLET_TOUCHNGO
+  E_WALET_BOOST
+  CASH
+  CASH_ON_DELIVERY
+  ONLINE_BANKING
+  CARD
+}
