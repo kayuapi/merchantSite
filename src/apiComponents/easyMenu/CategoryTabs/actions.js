@@ -12,8 +12,8 @@ import {
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
-  REMOVE_CATEGORY_NEWLY_ADDED,
   UPDATE_CATEGORY_NAME,
+  UPDATE_CATEGORY_DIRTINESS,
 } from './constants';
 
 // Load categories
@@ -100,17 +100,22 @@ export function switchCategory(category) {
   }
 }
 
-export function removeCategoryNewlyAdded(categoryId) {
-  return {
-    type: REMOVE_CATEGORY_NEWLY_ADDED,
-    categoryId,
-  }
-}
-
 export function updateCategoryName(categoryId, categoryName) {
   return {
     type: UPDATE_CATEGORY_NAME,
     categoryId,
     categoryName,
+  }
+}
+
+export function updateDirtiness(category) {
+  let _isDirty = false;
+  if (category) {
+    _isDirty = category._name === category.name;
+  }
+  
+  return {
+    type: UPDATE_CATEGORY_DIRTINESS,
+    _isDirty,
   }
 }

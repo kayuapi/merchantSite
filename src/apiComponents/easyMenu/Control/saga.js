@@ -11,7 +11,6 @@ import {
   modifyStateToClean,
   modifyStateToDirty, 
 } from './actions';
-import { removeCategoryNewlyAdded } from '../CategoryTabs/actions';
 import { saveCategoriesToDb, savePanelToDb, saveCategoriesAndMenuItemsToDb } from '../utils/request';
 import { 
   selectCategories, 
@@ -26,8 +25,6 @@ import { syncPrvMenuItemsInCloudAfterSavingSuccessfully } from '../MenuItemsPane
 import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
 import { store } from '../../../App';
 // saveCategorySortModeOn
-
-// newlyAdded
 
 const validateNoDuplicateCategoryName = (categories) => {
   const categoryNames = categories.map(category => category.name);
@@ -66,10 +63,6 @@ export function* saveTabAndPanel(action) {
     if (success) {
       yield put(tabAndPanelSaved());
       yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
-      // saved tab is no longer newly added - newly added field is added to facilitate deletion of newly added tab without network call
-      if (action.currentCategory.newlyAdded) {
-        yield put(removeCategoryNewlyAdded(action.currentCategory.id));
-      }
       console.log('selectElegantMenuAlertToContinueIsAlertOn(store.getState())', selectElegantMenuAlertToContinueIsAlertOn(store.getState()));
       if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {
         yield put(closeAlertToContinue());
