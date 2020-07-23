@@ -15,6 +15,45 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+const ReceiptSummaryEntry = styled.div`
+  /* flex child */
+  flex-grow: 1;
+  
+  /*
+    Needed to wrap text in ie11
+    https://stackoverflow.com/questions/35111090/why-ie11-doesnt-wrap-the-text-in-flexbox
+  */
+  flex-basis: 100%
+  
+  width: 100%;
+  border: 1px solid grey;
+  //margin-bottom: ${grid}px;
+  background-color: lightblue;
+  padding: ${grid}px;
+  align-items: center;
+
+  /* flex parent */
+  display: flex;
+  flex-direction: row;
+
+`;
+
+const ReceiptSummaryEntryName = styled.div`
+  width: 50%;
+  background-color: lightblue;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: normal;
+`;
+
+const ReceiptSummaryEntryPrice = styled.div`
+  width: 50%;
+  background-color: lightblue;
+  flex-shrink: 0;
+  flex-grow: 0;
+  font-weight: normal;
+`;
+
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -63,8 +102,22 @@ const Order = ({
             isCombineEnabled={Boolean(isCombineEnabled)}
             useClone={Boolean(useClone)}
           />
+          <ReceiptSummaryEntry>
+            <ReceiptSummaryEntryName>Sub-Total</ReceiptSummaryEntryName>
+            <ReceiptSummaryEntryPrice>RM 21.95</ReceiptSummaryEntryPrice>
+          </ReceiptSummaryEntry>
+          <ReceiptSummaryEntry>
+            <ReceiptSummaryEntryName>6% Service Tax</ReceiptSummaryEntryName>
+            <ReceiptSummaryEntryPrice>RM 1.32</ReceiptSummaryEntryPrice>
+          </ReceiptSummaryEntry>
+          <ReceiptSummaryEntry>
+            <ReceiptSummaryEntryName>Rounding</ReceiptSummaryEntryName>
+            <ReceiptSummaryEntryPrice>RM -0.02</ReceiptSummaryEntryPrice>
+          </ReceiptSummaryEntry>
+
         </Container>
       )}
+
     </Draggable>
 
   )

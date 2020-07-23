@@ -1,7 +1,8 @@
+import { v4 as uuidv4 } from 'uuid';
 const generateOrderItems = (count) => {
   const orderItems = Array.from({length: count}, (v, k) => k).map(k=> {
     const custom = {
-      id: `id-${k}-${Math.floor(Math.random() * 100)}`,
+      id: `${uuidv4()}`,
       name: `item-${k}`,
       price: Math.floor(Math.random() * 10).toFixed(2),
       qty: Math.floor(Math.random() * 10),

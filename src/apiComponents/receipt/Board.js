@@ -20,7 +20,7 @@ const ParentContainer = styled.div`
 
 const Container = styled.div`
   background-color: ${blue[400]};
-  min-height: 100vh;
+  //min-height: 100vh;
   /* like display:flex but will allow bleeding over the window width */
   min-width: 100vw;
   display: inline-flex;
