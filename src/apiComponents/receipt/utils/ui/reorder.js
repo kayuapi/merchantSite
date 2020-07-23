@@ -48,7 +48,7 @@ export const reorderTablesFacetedOrders = ({
   };
 
   return {
-    quoteMap: result,
+    tablesFacetedOrders: result,
   };
 };
 

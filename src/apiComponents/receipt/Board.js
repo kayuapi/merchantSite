@@ -51,7 +51,7 @@ const Board = ({
         ...state.tablesFacetedOrders,
         [result.source.droppableId]: withOrderRemoved,
       };
-      this.setState({
+      setState({
         ...state, 
         tablesFacetedOrders 
       });
@@ -128,7 +128,6 @@ const Board = ({
       )}
     </Droppable>
   );
-  console.log('find out', state.tablesFacetedOrders);
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
