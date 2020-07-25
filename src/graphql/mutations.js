@@ -33,7 +33,6 @@ export const updateOrder = /* GraphQL */ `
       _lastChangedAt
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -69,7 +68,6 @@ export const deleteOrder = /* GraphQL */ `
       _lastChangedAt
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -105,7 +103,6 @@ export const createOrder = /* GraphQL */ `
       _lastChangedAt
       createdAt
       updatedAt
-      owner
     }
   }
 `;

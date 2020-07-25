@@ -6,7 +6,7 @@ type Order
       "orderId"
     ])
   @auth(rules: [
-      {allow: owner},
+      {allow: owner, ownerField: "shopId"},
       {allow: public, provider: iam, operations: [create] }
     ])
 {

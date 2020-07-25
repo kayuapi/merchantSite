@@ -41,7 +41,6 @@ export const syncOrders = /* GraphQL */ `
         _lastChangedAt
         createdAt
         updatedAt
-        owner
       }
       nextToken
       startedAt
@@ -85,7 +84,6 @@ export const getOrder = /* GraphQL */ `
       _lastChangedAt
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -133,7 +131,6 @@ export const listOrders = /* GraphQL */ `
         _lastChangedAt
         createdAt
         updatedAt
-        owner
       }
       nextToken
       startedAt

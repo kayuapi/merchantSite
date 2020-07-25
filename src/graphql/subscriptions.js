@@ -2,8 +2,8 @@
 // this is an auto generated file. This will be overwritten
 
 export const onCreateOrder = /* GraphQL */ `
-  subscription OnCreateOrder($owner: String!) {
-    onCreateOrder(owner: $owner) {
+  subscription OnCreateOrder($shopId: String!) {
+    onCreateOrder(shopId: $shopId) {
       shopId
       fulfillmentMethod
       orderId
@@ -30,13 +30,12 @@ export const onCreateOrder = /* GraphQL */ `
       _lastChangedAt
       createdAt
       updatedAt
-      owner
     }
   }
 `;
 export const onUpdateOrder = /* GraphQL */ `
-  subscription OnUpdateOrder($owner: String!) {
-    onUpdateOrder(owner: $owner) {
+  subscription OnUpdateOrder($shopId: String!) {
+    onUpdateOrder(shopId: $shopId) {
       shopId
       fulfillmentMethod
       orderId
@@ -63,13 +62,12 @@ export const onUpdateOrder = /* GraphQL */ `
       _lastChangedAt
       createdAt
       updatedAt
-      owner
     }
   }
 `;
 export const onDeleteOrder = /* GraphQL */ `
-  subscription OnDeleteOrder($owner: String!) {
-    onDeleteOrder(owner: $owner) {
+  subscription OnDeleteOrder($shopId: String!) {
+    onDeleteOrder(shopId: $shopId) {
       shopId
       fulfillmentMethod
       orderId
@@ -96,7 +94,6 @@ export const onDeleteOrder = /* GraphQL */ `
       _lastChangedAt
       createdAt
       updatedAt
-      owner
     }
   }
 `;
