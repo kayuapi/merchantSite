@@ -1,4 +1,4 @@
-import React, { createElement } from 'react';
+import React, { createElement, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useMediaQuery, Theme } from '@material-ui/core';
 import { useTranslate, MenuItemLink, getResources } from 'react-admin';
@@ -9,8 +9,11 @@ import MenuIcon from '@material-ui/icons/Create';
 import OrderMemoIcon from '@material-ui/icons/Note';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 
-const Menu = ({ onMenuClick, logout }) => {
+const Menu = ({ onMenuClick, dense, logout }) => {
     // const translate = useTranslate();
+    const [state, setState] = useState({
+      menuReceipt: false,
+    })
     const isXSmall = useMediaQuery((theme: Theme) =>
         theme.breakpoints.down('xs')
     );
