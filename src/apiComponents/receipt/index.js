@@ -3,8 +3,8 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import { sampleData } from './utils/data/data';
-// import { onCreateOrder } from '../../graphql/subscriptions';
-// import { API, graphqlOperation } from 'aws-amplify';
+import { onCreateOrder } from '../../graphql/subscriptions';
+import { API, graphqlOperation } from 'aws-amplify';
 import Board from './Board';
 
 const useStyles = makeStyles(theme => ({
@@ -37,22 +37,23 @@ const Receipt = ({props}) => {
   //   });
   // }
 
-  // useEffect(() => {
-  //   let subscription;
+  useEffect(() => {
+    console.log('ready');
+    let subscription;
 
-  //   const run = () => {
-  //     subscription = API.graphql(
-  //       graphqlOperation(onCreateOrder, {owner: 'demo'})
-  //     ).subscribe({
-  //       next: response => console.log('response', response),
-  //       error: response => console.log('error response', response),
-  //     });
-  //   };
+    const run = () => {
+      subscription = API.graphql(
+        graphqlOperation(onCreateOrder, {shopId: 'demo2'})
+      ).subscribe({
+        next: response => console.log('response', response),
+        error: response => console.log('error response', response),
+      });
+    };
 
-  //   run();
+    run();
 
-  //   return () => subscription.unsubscribe();
-  // }, []);
+    return () => subscription.unsubscribe();
+  }, []);
   return (
     <div className={classes.root}>        
       <Board initial={sampleData} />
