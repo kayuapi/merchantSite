@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { onCreateOrder } from '../../graphql/subscriptions';
 import { API, graphqlOperation } from 'aws-amplify';
-
+import {} from 'styled-components/cssprop';
 
 const tables = Array.from({ length: 10 }, (v, k) => k).map(k => {
   const custom = {
@@ -17,7 +17,7 @@ const tables = Array.from({ length: 10 }, (v, k) => k).map(k => {
 });
 
 const initial = Array.from({ length: 10 }, (v, k) => k).map(k => {
-  const custom: Orderette = {
+  const custom   = {
     id: `id-${k}`,
     content: `Orderette ${k}`
   };
@@ -75,7 +75,7 @@ const Orderette = ({ orderette, index }) => (
 )
 
 const Order = React.memo(function Order({ orderettes }) {
-  return orderettes.map((orderette: QuoteType, index: number) => (
+  return orderettes.map((orderette, index) => (
     <Orderette orderette={orderette} index={index} key={orderette.id} />
   ));
 });

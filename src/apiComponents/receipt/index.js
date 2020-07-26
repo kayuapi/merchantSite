@@ -37,23 +37,25 @@ const Receipt = ({props}) => {
   //   });
   // }
 
-  useEffect(() => {
-    console.log('ready');
-    let subscription;
+  // useEffect(() => {
+  //   console.log('ready');
+  //   let subscription;
 
-    const run = () => {
-      subscription = API.graphql(
-        graphqlOperation(onCreateOrder, {shopId: 'demo2'})
-      ).subscribe({
-        next: response => console.log('response', response),
-        error: response => console.log('error response', response),
-      });
-    };
+  //   const run = () => {
+  //     subscription = API.graphql(
+  //       graphqlOperation(onCreateOrder, {shopId: 'demo2'})
+  //     ).subscribe({
+  //       next: response => console.log('response', response),
+  //       error: response => console.log('error response', response),
+  //     });
+  //   };
 
-    run();
+  //   run();
 
-    return () => subscription.unsubscribe();
-  }, []);
+  //   return () => subscription.unsubscribe();
+  // }, []);
+
+  
   return (
     <div className={classes.root}>        
       <Board initial={sampleData} />

@@ -9,6 +9,6 @@ export default [
     <Route exact path="/banner" component={Banner} />,
     <Route exact path="/easyMenu" component={easyMenu} />,
     <Route exact path="/orderMemo" component={orderMemoWithEP} />,
-    <Route exact path="/receipt" component={Receipt} />,
+    <Route exact path="/liveReceipts" component={Receipt} />,
     // <Route exact path="/playground" component={playground} />,
 ];
