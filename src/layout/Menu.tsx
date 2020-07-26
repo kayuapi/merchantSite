@@ -1,7 +1,8 @@
-import React, { createElement, useState } from 'react';
+import * as React from 'react';
+import { FC, createElement, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useMediaQuery, Theme } from '@material-ui/core';
-import { useTranslate, MenuItemLink, getResources } from 'react-admin';
+import { useTranslate, MenuItemLink } from 'react-admin';
 // import { DashboardMenuItem } from 'react-admin';
 // import QrIcon from '@material-ui/icons/CropFree';
 import BannerIcon from '@material-ui/icons/Image';
@@ -9,8 +10,24 @@ import MenuIcon from '@material-ui/icons/Create';
 import OrderMemoIcon from '@material-ui/icons/Note';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 
-const Menu = ({ onMenuClick, dense, logout }) => {
-    // const translate = useTranslate();
+import AllLiveReceiptIcon from '@material-ui/icons/Visibility';
+import DineInIcon from '@material-ui/icons/Deck';
+import DeliveryIcon from '@material-ui/icons/LocalShipping';
+import SelfPickupIcon from '@material-ui/icons/TransferWithinAStation';
+
+import SubMenu from './SubMenu';
+import { AppState } from '../types';
+
+type MenuName = 'menuReceipt';
+
+interface Props {
+  dense: boolean;
+  logout: () => void;
+  onMenuClick: () => void;
+}
+
+const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
+    const translate = useTranslate();
     const [state, setState] = useState({
       menuReceipt: false,
     })
@@ -19,7 +36,11 @@ const Menu = ({ onMenuClick, dense, logout }) => {
     );
     const open = useSelector((state: AppState) => state.admin.ui.sidebarOpen);
     useSelector((state: AppState) => state.theme); // force rerender on theme change
-    const resources = useSelector(getResources);
+    
+    const handleToggle = (menu: MenuName) => {
+      setState(state => ({...state, [menu]: !state[menu]}));
+    }
+
     return (
         <div>
             {' '}
@@ -67,13 +88,49 @@ const Menu = ({ onMenuClick, dense, logout }) => {
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
               />
-              <MenuItemLink
-                to={`/receipt`}
-                primaryText={"Receipt (unstable)"}
-                leftIcon={createElement(ReceiptIcon)}
-                onClick={onMenuClick}
+
+              <SubMenu
+                handleToggle={()=> handleToggle('menuReceipt')}
+                isOpen={state.menuReceipt}
                 sidebarIsOpen={open}
-              />
+                name="Live Receipt (beta)"
+                // name="pos.menu.receipt"
+                icon={createElement(ReceiptIcon)}
+                dense={dense}
+              >
+                <MenuItemLink
+                  to={`/liveReceipts`}
+                  primaryText={"All"}
+                  leftIcon={createElement(AllLiveReceiptIcon)}
+                  onClick={onMenuClick}
+                  sidebarIsOpen={open}
+                  dense={dense}
+                />
+                <MenuItemLink
+                  to={`/liveReceiptOnDineIn`}
+                  primaryText={"Dine in (Coming soon)"}
+                  leftIcon={createElement(DineInIcon)}
+                  onClick={onMenuClick}
+                  sidebarIsOpen={open}
+                  dense={dense}
+                />
+                <MenuItemLink
+                  to={`/liveReceiptOnDelivery`}
+                  primaryText={"Delivery (Coming soon)"}
+                  leftIcon={createElement(DeliveryIcon)}
+                  onClick={onMenuClick}
+                  sidebarIsOpen={open}
+                  dense={dense}
+                />
+                <MenuItemLink
+                  to={`/liveReceiptOnSelfPickup`}
+                  primaryText={"Self pick-up (Coming soon)"}
+                  leftIcon={createElement(SelfPickupIcon)}
+                  onClick={onMenuClick}
+                  sidebarIsOpen={open}
+                  dense={dense}
+                />
+              </SubMenu>
 
               {/* <MenuItemLink
                 to={`/playground`}
