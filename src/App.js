@@ -7,7 +7,6 @@ import MyLogoutButton from './MyLogoutButton';
 // import { UserList } from './users';
 // import jsonServerProvider from 'ra-data-json-server';
 import menuItems from './apiComponents/menu';
-import categories from './apiComponents/categories';
 
 import dataProvider from './dataProvider';
 import englishMessages from './i18n/en';
