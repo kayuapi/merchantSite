@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Route } from 'react-router-dom';
+import arrayMove from 'array-move';
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+import DineInOrderMemo from './primitives/DineInOrderMemo';
+import DeliveryOrderMemo from './primitives/DeliveryOrderMemo';
+import SelfPickupOrderMemo from './primitives/SelfPickupOrderMemo';
 import {
     useTranslate,
     useDataProvider,
@@ -14,7 +19,6 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import { fetchUtils, useAuthenticated } from 'react-admin';
-import OrderMemo from './OrderMemo';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -39,56 +43,83 @@ const sounds = {
   'yellow': new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
 };
 
-const deleteOrder = (firestore, businessId, orderId) => {
-  firestore.delete({
-    collection: 'businesses',
-    doc: businessId,
-    subcollections: [
-      {
-        collection: 'receivedOrders',
-        doc: orderId,
-      },
-    ],
-  });
-}
 
+const OrderMemo = SortableElement(({order}) => {
+  if (order.fulfillmentMethod === 'DINE_IN') {
+    return <DineInOrderMemo {...order} />
+  } else if (order.fulfillmentMethod === 'DELIVERY') {
+    return <DeliveryOrderMemo {...order} />
+  } else if (order.fulfillmentMethod === 'SELF_PICKUP') {
+    return <SelfPickupOrderMemo {...order} />
+  } else {
+    return
+  }
+
+
+});
+
+const TodaysOrderBoard = SortableContainer(({orders}) => {
+  return (
+    <Grid container spacing={2}>
+      {orders.map((order, index) => (
+        <OrderMemo key={`item-${order.id}`} index={index} order={order} />
+      ))}
+    </Grid>
+  )
+});
 
 const OrderPageShow = props => {
-    useAuthenticated();
     const classes = useStyles();
-    const firestore = useFirestore();
-    const businessId = 'demo';
-    const listenedPath = {
-      collection: 'businesses',
-      doc: businessId,
-      subcollections: [
-        {
-          collection: 'receivedOrders',
-          // where ['jfisj', '==', sth],
-        },
-      ],
-      storeAs: 'ReceivedOrdersCollection',
-    };
-    useFirestoreConnect([listenedPath]);
     const receivedOrders = useSelector(
       state => state.firestore.data.ReceivedOrdersCollection,
     );
-    console.log(receivedOrders);
+    const [state, setState] = useState({orders: []});
+    const onSortEnd = ({oldIndex, newIndex}) => {
+      setState(({orders})=> ({
+        orders: arrayMove(orders, oldIndex, newIndex),
+      }));
+    }
 
-    useEffect(()=>{
-      sounds['pink'].play();
-    }, [receivedOrders])
+    useEffect(() => {
+
+      const todaysUnfulfilledOrders = [{
+        createdAt: 'Created At date',
+        shopId: 'demoShopId',
+        orderId: 'demoOrderId',
+        fulfillmentMethod: 'DINE_IN',
+        status: 'UNFULFILLED',
+        paymentMethod: 'E_WALLET',
+        postscript: 'demo postscript',
+        orderedItems: [{
+          id: '12345',
+          name: 'food1',
+          variant: 'variant1',
+          quantity: 8,
+        },{
+          id: '123456',
+          name: 'food2',
+          variant: 'variant1',
+          quantity: 2,
+        }],
+        tableNumber: 'demo table 1'
+      }];
+      // const todaysUnfulfilledOrders = getTodaysUnfulfilledOrders();
+      setState(todaysUnfulfilledOrders);
+    }, []);
 
     return (
       <div className={classes.root}>
-        <Container className={classes.cardGrid} maxWidth="lg">
+        {/* <Container className={classes.cardGrid} maxWidth="lg">
           <Grid container spacing={2}>
 
-            {receivedOrders && Object.values(receivedOrders).map((el,id) => {
+            {receivedOrders && Object.values(receivedOrders).map((receivedOrder, id) => {
               return (<OrderMemo key={id} businessId={businessId} firestore={firestore} onDelete={deleteOrder} details={el}/>);
             })}
           </Grid>
-        </Container>
+        </Container> */}
+
+
+        <TodaysOrderBoard orders={state.orders} onSortEnd={onSortEnd} />
       </div>
     )
 };
