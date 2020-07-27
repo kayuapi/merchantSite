@@ -1,28 +1,39 @@
-// @flow
-import React from 'react';
+import * as React from 'react';
+import { FC } from 'react';
 import styled from '@emotion/styled';
 import { borderRadius, grid } from '../themes/constants';
 import grey from '@material-ui/core/colors/grey';
 import blueGrey from '@material-ui/core/colors/blueGrey';
+import { DraggableProvided } from 'react-beautiful-dnd';
+import { IOrderItem, ReceiptItemType } from '../types';
+
+interface Props {
+  receiptItem: ReceiptItemType;
+  isDragging: boolean;
+  provided: DraggableProvided;
+  isClone?: boolean;
+  isGroupedOver?: boolean;
+  style?: Object;
+  index?: number;
+}
 
 const getBackgroundColor = (
-  isDragging,
-  isGroupedOver,
-  authorColors,
-) => {
+  isDragging: boolean,
+  isGroupedOver?: boolean,
+): string => {
   if (isDragging) {
-    return authorColors.soft;
+    return blueGrey[50];
   }
 
   if (isGroupedOver) {
-    return blueGrey[100];
+    return blueGrey[200];
   }
 
-  return blueGrey[50];
+  return blueGrey[100];
 };
 
-const getBorderColor = (isDragging, authorColors) =>
-  isDragging ? authorColors.hard : 'transparent';
+const getBorderColor = (isDragging: boolean) =>
+  isDragging ? blueGrey[300] : 'transparent';
 
 const imageSize = 40;
 
@@ -46,12 +57,17 @@ const CloneBadge = styled.div`
   align-items: center;
 `;
 
-const Container = styled.a`
+const Container = styled.a<{
+    isDragging: boolean, 
+    isGroupedOver?: boolean, 
+    isClone?: boolean,
+    colors: string,
+  }>`
   border-radius: ${borderRadius}px;
   //border: 2px solid transparent;
-  border-color: ${(props) => getBorderColor(props.isDragging, props.colors)};
+  border-color: ${(props) => getBorderColor(props.isDragging)};
   background-color: ${(props) =>
-    getBackgroundColor(props.isDragging, props.isGroupedOver, props.colors)};
+    getBackgroundColor(props.isDragging, props.isGroupedOver)};
   box-shadow: ${({ isDragging }) =>
     isDragging ? `2px 2px 1px ${blueGrey[200]}` : 'none'};
   box-sizing: border-box;
@@ -123,7 +139,7 @@ const OrderItemRow = styled.div`
   flex-direction: row;
 `;
 
-function getStyle(provided, style) {
+function getStyle(provided: DraggableProvided, style?: Object) {
   if (!style) {
     return provided.draggableProps.style;
   }
@@ -141,15 +157,15 @@ function getStyle(provided, style) {
 // Need to be super sure we are not relying on PureComponent here for
 // things we should be doing in the selector as we do not know if consumers
 // will be using PureComponent
-function OrderItem({
-    orderette,
+const ReceiptItem: FC<Props> = ({
+    receiptItem,
     isDragging,
     provided,
     isClone,
     isGroupedOver,
     style,
     index,
-  }) {
+  }) => {
 
   return (
     <Container
@@ -162,20 +178,20 @@ function OrderItem({
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      style={getStyle(provided, style)}
+      data-style={getStyle(provided, style)}
       data-is-dragging={isDragging}
-      data-testid={orderette.id}
+      data-testid={receiptItem.id}
       data-index={index}
-      aria-label={`${orderette.name} quantity ${orderette.qty} price ${orderette.price}`}
+      aria-label={`${receiptItem.name} quantity ${receiptItem.quantity} price ${receiptItem.price}`}
     >
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <OrderItemRow>
-        <OrderItemNameCell>{orderette.name}</OrderItemNameCell>
-        <OrderItemQtyCell>{orderette.qty}</OrderItemQtyCell>
-        <OrderItemPriceCell>{orderette.price}</OrderItemPriceCell>
+        <OrderItemNameCell>{receiptItem.name}</OrderItemNameCell>
+        <OrderItemQtyCell>{receiptItem.quantity}</OrderItemQtyCell>
+        <OrderItemPriceCell>{receiptItem.price}</OrderItemPriceCell>
       </OrderItemRow>
     </Container>
   );
 }
 
-export default React.memo(OrderItem);
+export default React.memo(ReceiptItem);

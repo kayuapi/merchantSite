@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { grid, borderRadius } from './themes/constants';
 import { Draggable } from 'react-beautiful-dnd';
-import OrderList from './primitives/order-list';
+import OrderList from './primitives/ReceiptList';
 import Title from './primitives/title';
 import green from '@material-ui/core/colors/green';
 import blueGrey from '@material-ui/core/colors/blueGrey';

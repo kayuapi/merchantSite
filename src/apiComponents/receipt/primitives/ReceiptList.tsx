@@ -1,19 +1,52 @@
-import React from 'react';
+import * as React from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import OrderItem from './order-item';
+import ReceiptItem from './ReceiptItem';
 import { grid } from '../themes/constants'
 import Title from './title';
 import red from '@material-ui/core/colors/red';
 import teal from '@material-ui/core/colors/teal';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import grey from '@material-ui/core/colors/grey';
+import { ReceiptItemType, MenuItem } from '../types';
+import { 
+  DroppableProvided, 
+  DroppableStateSnapshot, 
+  DraggableProvided, 
+  DraggableStateSnapshot 
+} from 'react-beautiful-dnd';
 
+
+interface Props {
+  listId?: string;
+  listType?: string;
+  receiptItems: ReceiptItemType[];
+  title?: string;
+  internalScroll?: boolean;
+  scrollContainerStyle?: Object;
+  isDropDisabled?: boolean;
+  isCombineEnabled?: boolean;
+  style?: Object;
+  // may not be provided - and might be null
+  ignoreContainerClipping?: boolean;
+  useClone?: boolean;
+}
+
+interface InnerListProps {
+  dropProvided: DroppableProvided;
+  receiptItems: ReceiptItemType[];
+  title?: string;
+}
+
+interface InnerReceiptListProps {
+  receiptItems: ReceiptItemType[];
+}
 
 export const getBackgroundColor = (
-  isDraggingOver,
-  isDraggingFrom,
-) => {
+  isDraggingOver: boolean,
+  isDraggingFrom: boolean,
+): string => {
   if (isDraggingOver) {
     return red[50];
   }
@@ -61,50 +94,52 @@ const Container = styled.div``;
 /* stylelint-enable */
 
 
-const InnerOrderList = React.memo(function InnerOrderList({
-    orderettes
-  }) {
-  console.log('innerorderlist', orderettes);
-  return orderettes.map((orderette, index) => (
-    <Draggable key={orderette.id} draggableId={orderette.id} index={index}>
-      {(
-        dragProvided,
-        dragSnapshot,
-      ) => (
-        <OrderItem
-          key={orderette.id}
-          orderette={orderette}
-          isDragging={dragSnapshot.isDragging}
-          isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
-          provided={dragProvided}
-        />
-      )}
-    </Draggable>
-  ));
-});
+const InnerReceiptList: FC<InnerReceiptListProps> = React.memo(({
+    receiptItems
+  }) => {
+  return (
+    <>
+      {receiptItems.map((receiptItem: ReceiptItemType, index: number) => (
+        <Draggable key={receiptItem.id} draggableId={receiptItem.id} index={index}>
+          {(
+            dragProvided: DraggableProvided,
+            dragSnapshot: DraggableStateSnapshot,
+          ) => (
+            <ReceiptItem
+              key={receiptItem.id}
+              receiptItem={receiptItem}
+              isDragging={dragSnapshot.isDragging}
+              isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
+              provided={dragProvided}
+            />
+          )}
+        </Draggable>))
+      }
+    </>
+  )});
 
-function InnerList({
+const InnerList: FC<InnerListProps> = ({
   dropProvided,
-  orderettes,
+  receiptItems,
   title: propsTitle
-  }) {
+  }) => {
   const title = propsTitle ? <Title>{propsTitle}</Title> : null;
 
   return (
     <Container>
       {title}
       <DropZone ref={dropProvided.innerRef}>
-        <InnerOrderList orderettes={orderettes} />
+        <InnerReceiptList receiptItems={receiptItems} />
         {dropProvided.placeholder}
       </DropZone>
     </Container>
   );
 }
 
-export default function OrderList({
+const ReceiptList: FC<Props> = ({
     listId = 'LIST',
     listType,
-    orderettes,
+    receiptItems,
     title,
     internalScroll,
     scrollContainerStyle,
@@ -114,7 +149,7 @@ export default function OrderList({
     // may not be provided - and might be null
     ignoreContainerClipping,
     useClone,  
-  }) {
+  }) => {
 
   return (
     <Droppable
@@ -126,19 +161,19 @@ export default function OrderList({
       renderClone={
         useClone
           ? (provided, snapshot, descriptor) => (
-              <OrderItem
-                orderette={orderettes[descriptor.source.index]}
+              <ReceiptItem
+                receiptItem={receiptItems[descriptor.source.index]}
                 provided={provided}
                 isDragging={snapshot.isDragging}
                 isClone
               />
             )
-          : null
+          : undefined
       }
     >
       {(
-        dropProvided,
-        dropSnapshot,
+        dropProvided: DroppableProvided,
+        dropSnapshot: DroppableStateSnapshot,
       ) => (
         <Wrapper
           style={style}
@@ -150,14 +185,14 @@ export default function OrderList({
           {internalScroll ? (
             <ScrollContainer style={scrollContainerStyle}>
               <InnerList
-                orderettes={orderettes}
+                receiptItems={receiptItems}
                 title={title}
                 dropProvided={dropProvided}
               />
             </ScrollContainer>
           ) : (
             <InnerList
-              orderettes={orderettes}
+              receiptItems={receiptItems}
               title={title}
               dropProvided={dropProvided}
             />
@@ -167,3 +202,5 @@ export default function OrderList({
     </Droppable>
   );
 }
+
+export default ReceiptList;
