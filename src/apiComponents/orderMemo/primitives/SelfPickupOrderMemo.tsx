@@ -35,9 +35,10 @@ const useStyles = makeStyles(theme => ({
   },
   cardGrid: {
     marginBottom: theme.spacing(5),
+    height: '100%',
   },
   button: {
-    marginBottom: theme.spacing(20),
+    // marginBottom: theme.spacing(20),
   },
   title: {
     fontSize: 14,
@@ -83,6 +84,10 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
           {firstName} {lastName}
           {vehiclePlateNumber && <span> - Vehicle {vehiclePlateNumber}</span>} 
         </Typography>
+        <Typography variant="body2" component="p">
+          <span>PS: {postscript}</span>
+          <br />
+        </Typography>
         <Typography className={classes.pos} color="textSecondary">
           {phoneNumber && (
             <>
@@ -104,7 +109,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
           {orderedItems.map(orderedItem => {
             const labelId = `checkbox-list-label-${orderedItem.id}`;
             return (
-            <ListItem key={orderedItem.id} role={undefined} dense button>
+            <ListItem key={orderedItem.id} role={undefined} dense>
               <ListItemText id={labelId} primary={orderedItem.name} secondary={orderedItem.variant} />
               <ListItemText id={labelId} primary={orderedItem.quantity} />
             </ListItem>
@@ -114,7 +119,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
       </CardContent>
       </Card>
       <Button className={classes.button}>Cancel</Button>
-      <Button className={classes.button}>Send to kitchen</Button>
+      <Button className={classes.button}>Fulfill</Button>
     </Grid>
   );
 };
