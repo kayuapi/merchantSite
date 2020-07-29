@@ -12,14 +12,12 @@ import {
     Error
 } from 'react-admin';
 import fakeData from './tests/fakeData';
-import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
-import { useFirestore } from 'react-redux-firebase';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import { fetchUtils, useAuthenticated } from 'react-admin';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -70,6 +68,7 @@ const TodaysOrderBoard = SortableContainer(({orders}) => {
 });
 
 const OrderPageShow = props => {
+  useAuthenticated();
     const classes = useStyles();
     const [state, setState] = useState({orders: []});
     const onSortEnd = ({oldIndex, newIndex}) => {
@@ -79,10 +78,154 @@ const OrderPageShow = props => {
     }
 
     useEffect(() => {
-      const todaysUnfulfilledOrders = fakeData;
-      // const todaysUnfulfilledOrders = getTodaysUnfulfilledOrders();
-      setState({orders: todaysUnfulfilledOrders});
+      let subscription;
+      const run = (shopId) => {
+        subscription = API.graphql(
+          graphqlOperation(`
+          subscription OnCreateOrder(
+            $shopId: String!
+          ) {
+            onCreateOrder(
+              shopId: $shopId
+            ) {
+              shopId
+              fulfillmentMethod
+              orderId
+              status
+              paymentMethod
+              postscript
+              tableNumber
+              firstName
+              lastName
+              phoneNumber
+              pickupDate
+              pickupTime
+              vehiclePlateNumber
+              deliveryDate
+              deliveryTime
+              deliveryAddress
+              orderedItems {
+                name
+                variant
+                quantity
+              }
+              createdAt
+              updatedAt
+            }
+          }
+          `, { shopId })
+        ).subscribe({
+          next: response => {
+            setState(prevState => ({
+              ...prevState,
+              orders: [
+                ...prevState.orders, 
+                response['value']['data']['onCreateOrder'],
+              ],
+            }));
+          },
+          error: response => console.log('error response', response),
+        });
+      };
+      async function listTodaysOrders(shopId, fulfillmentMethod, startingOrderId, endingOrderId) {
+        const todaysDineInUnfulfilledOrders = await API.graphql(graphqlOperation(`
+        query ListOrders(
+          $shopId: String
+          $fulfillmentMethodOrderId: ModelOrderPrimaryCompositeKeyConditionInput
+        ) {
+          listOrders(
+            shopId: $shopId
+            fulfillmentMethodOrderId: $fulfillmentMethodOrderId
+          ){
+            items {
+              shopId
+              fulfillmentMethod
+              orderId
+              status
+              paymentMethod
+              postscript
+              tableNumber
+              firstName
+              lastName
+              phoneNumber
+              pickupDate
+              pickupTime
+              vehiclePlateNumber
+              deliveryDate
+              deliveryTime
+              deliveryAddress
+              orderedItems {
+                name
+                variant
+                quantity
+              }      
+            }      
+          }
+        }`, {
+          shopId: `${shopId}`,
+          fulfillmentMethodOrderId: {
+            between: [{fulfillmentMethod, orderId: startingOrderId}, {fulfillmentMethod, orderId: endingOrderId}]
+          }
+        }));
+        return todaysDineInUnfulfilledOrders;
+      }
+
+      Auth.currentUserInfo().then(result => {
+        const shopId = result['username'];
+        const todayStarting = `${new Date().setHours(0,0,0,0)}`;
+        const todayEnding = `${new Date().setHours(23,59,59,999)}`;
+        Promise.all([
+          listTodaysOrders(shopId, 'DINE_IN', todayStarting, todayEnding), 
+          listTodaysOrders(shopId, 'DELIVERY', todayStarting, todayEnding),
+          listTodaysOrders(shopId, 'SELF_PICKUP', todayStarting, todayStarting)
+        ]).then((results) => {
+          const combinedOrderList = [
+            ...results[0]['data']['listOrders']['items'],
+            ...results[1]['data']['listOrders']['items'],
+            ...results[2]['data']['listOrders']['items'],
+          ];
+          if (combinedOrderList.length > 0) {
+            // const todaysUnfulfilledOrders = fakeData;
+            setState(prevState => ({
+              ...prevState,
+              orders: [
+                ...prevState.orders, 
+                ...combinedOrderList
+              ],
+            }));
+          }
+        }).catch(err => console.log(err));
+        
+
+        run(shopId);
+
+      });
+
+      return () => subscription.unsubscribe();
     }, []);
+
+
+  // useEffect(() => {
+  //   console.log('ready');
+  //   let subscription;
+
+  //   const run = () => {
+  //     subscription = API.graphql(
+  //       graphqlOperation(onCreateOrder, {shopId: 'demo2'})
+  //     ).subscribe({
+  //       next: response => console.log('response', response),
+  //       error: response => console.log('error response', response),
+  //     });
+  //   };
+
+  //   run();
+
+  //   return () => subscription.unsubscribe();
+  // }, []);
+
+
+
+
 
     return (
       <div className={classes.root}>

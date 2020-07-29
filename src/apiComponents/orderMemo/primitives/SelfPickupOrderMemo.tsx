@@ -106,10 +106,11 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
         </Typography>
 
         <List>
-          {orderedItems.map(orderedItem => {
-            const labelId = `checkbox-list-label-${orderedItem.id}`;
+          {/* use index as key because assumption of static list here, might change in future */}
+          {orderedItems && orderedItems.map((orderedItem, index) => {
+            const labelId = `checkbox-list-label-${index}`;
             return (
-            <ListItem key={orderedItem.id} role={undefined} dense>
+            <ListItem key={index} role={undefined} dense>
               <ListItemText id={labelId} primary={orderedItem.name} secondary={orderedItem.variant} />
               <ListItemText id={labelId} primary={orderedItem.quantity} />
             </ListItem>
