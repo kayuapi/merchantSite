@@ -89,49 +89,6 @@ const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
                 sidebarIsOpen={open}
               />
 
-              <SubMenu
-                handleToggle={()=> handleToggle('menuReceipt')}
-                isOpen={state.menuReceipt}
-                sidebarIsOpen={open}
-                name="Live Receipt (beta)"
-                // name="pos.menu.receipt"
-                icon={createElement(ReceiptIcon)}
-                dense={dense}
-              >
-                <MenuItemLink
-                  to={`/liveReceipts`}
-                  primaryText={"All"}
-                  leftIcon={createElement(AllLiveReceiptIcon)}
-                  onClick={onMenuClick}
-                  sidebarIsOpen={open}
-                  dense={dense}
-                />
-                <MenuItemLink
-                  to={`/liveReceiptOnDineIn`}
-                  primaryText={"Dine in (Coming soon)"}
-                  leftIcon={createElement(DineInIcon)}
-                  onClick={onMenuClick}
-                  sidebarIsOpen={open}
-                  dense={dense}
-                />
-                <MenuItemLink
-                  to={`/liveReceiptOnDelivery`}
-                  primaryText={"Delivery (Coming soon)"}
-                  leftIcon={createElement(DeliveryIcon)}
-                  onClick={onMenuClick}
-                  sidebarIsOpen={open}
-                  dense={dense}
-                />
-                <MenuItemLink
-                  to={`/liveReceiptOnSelfPickup`}
-                  primaryText={"Self pick-up (Coming soon)"}
-                  leftIcon={createElement(SelfPickupIcon)}
-                  onClick={onMenuClick}
-                  sidebarIsOpen={open}
-                  dense={dense}
-                />
-              </SubMenu>
-
               {/* <MenuItemLink
                 to={`/playground`}
                 primaryText={"Playground"}
