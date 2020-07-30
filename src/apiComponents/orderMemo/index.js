@@ -177,7 +177,7 @@ const OrderPageShow = props => {
         Promise.all([
           listTodaysOrders(shopId, 'DINE_IN', todayStarting, todayEnding), 
           listTodaysOrders(shopId, 'DELIVERY', todayStarting, todayEnding),
-          listTodaysOrders(shopId, 'SELF_PICKUP', todayStarting, todayStarting)
+          listTodaysOrders(shopId, 'SELF_PICKUP', todayStarting, todayEnding)
         ]).then((results) => {
           const combinedOrderList = [
             ...results[0]['data']['listOrders']['items'],

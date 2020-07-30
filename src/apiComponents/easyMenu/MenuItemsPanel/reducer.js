@@ -154,11 +154,11 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
       case UPDATE_MENU_ITEMS_LOCATION: {
         if (draft.menuItems) {
           let k = [];
-          console.log('action.menuItemIdAndLocationArray', action.menuItemIdAndLocationArray);
+          // console.log('action.menuItemIdAndLocationArray', action.menuItemIdAndLocationArray);
           const maxX = action.menuItemIdAndLocationArray.length < 2 ? action.menuItemIdAndLocationArray.length : 2;
           const maxY = Math.ceil(action.menuItemIdAndLocationArray.length/2);
-          console.log('maxX', maxX);
-          console.log('maxY', maxY);
+          // console.log('maxX', maxX);
+          // console.log('maxY', maxY);
           for (let y=0; y < maxY ; y++) {
             for(let x=0; x<maxX; x++) {
               if (action.menuItemIdAndLocationArray.length > 0) {
@@ -172,17 +172,17 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
                   };
                   return min;
                 }, Math.abs(action.menuItemIdAndLocationArray[0].x-x) + Math.abs(action.menuItemIdAndLocationArray[0].y-y));
-                console.log('print', action.menuItemIdAndLocationArray);
-                console.log('minMahattanDistItem', minMahattanDistItem);
+                // console.log('print', action.menuItemIdAndLocationArray);
+                // console.log('minMahattanDistItem', minMahattanDistItem);
                 const foundIndex = draft.menuItems.findIndex(menuItem => menuItem.id === minMahattanDistItem.i);
-                console.log('foundIndex', foundIndex);
+                // console.log('foundIndex', foundIndex);
                 const updatedUiLocation = {
                   x: x,
                   y: y,
                   w: minMahattanDistItem.w,
                   h: minMahattanDistItem.h,
                 };
-                console.log('draft.meuItems', draft.menuItems.target);
+                // console.log('draft.meuItems', draft.menuItems.target);
                 draft.menuItems.forEach(menuItem => {
                   if (menuItem.id === minMahattanDistItem.i) {
                     menuItem.uiLocation = updatedUiLocation;

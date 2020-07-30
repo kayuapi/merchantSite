@@ -30,7 +30,7 @@ import {
 } from './selectors';
 import { makeSelectElegantMenuCanSaveTabAndPanel } from '../Control/selectors';
 import { v4 as uuidv4 } from 'uuid';
-
+import { Controller } from 'react-hook-form';
 import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@material-ui/core";
 
 import Add from "@material-ui/icons/Add";
@@ -79,27 +79,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "100vw"
   },
 }));
-function SetCaretAtEnd(elem) {
-  var elemLen = elem.value.length;
-  // For IE Only
-  if (document.selection) {
-      // Set focus
-      elem.focus();
-      // Use IE Ranges
-      var oSel = document.selection.createRange();
-      // Reset position to 0 & then set at end
-      oSel.moveStart('character', -elemLen);
-      oSel.moveStart('character', elemLen);
-      oSel.moveEnd('character', 0);
-      oSel.select();
-  }
-  else if (elem.selectionStart || elem.selectionStart == '0') {
-      // Firefox/Chrome
-      elem.selectionStart = elemLen;
-      elem.selectionEnd = elemLen;
-      elem.focus();
-  } // if
-} // SetCaretAtEnd()
+
 
 const CategoryTabs = ({
   isCategoryDirty,
@@ -120,12 +100,10 @@ const CategoryTabs = ({
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
-  const composerRef = React.useRef();
   // const categoriesLength = categories ? categories.length: 0;
   // const tabInputRefs = React.useRef([...new Array(categoriesLength)].map(() => React.createRef()));
   const { formState: { dirtyFields }, unregister, getValues } = useFormContext();
   const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || isCategoryDirty;
-  const [isComposing, setIsComposing] = useState(false);
   const updateScrollButton = () => {
     const container = tabsRef.current;
     if (!container) {
@@ -151,15 +129,15 @@ const CategoryTabs = ({
     }
   });
 
-  useEffect(() => {
-    if (isComposing) {
-      if (composerRef.current) {
-        console.log('composerRef', composerRef);
-        // composerRef.current.focus();
-        SetCaretAtEnd(composerRef.current);
-      }  
-    }
-  });
+    // useEffect(() => {
+    //   if (isComposing) {
+    //     if (composerRef.current) {
+    //       console.log('composerRef', composerRef);
+    //       // composerRef.current.focus();
+    //       SetCaretAtEnd(composerRef.current);
+    //     }  
+    //   }
+    // });
 
 
   
@@ -195,35 +173,58 @@ const CategoryTabs = ({
     loadCategories();
   }, [loadCategories]);
   console.log('formstate here', getValues());
-  const MyInputBase = React.forwardRef((props, ref) => {
-    console.log('myinputbase ref', composerRef);
+
+  const MyInputBaseNew = ({index, category}) => {
     return (
-      <InputBase
-        // inputRef={ref}
-        inputRef={currentCategory.id === props.category.id ? composerRef : null}
-        defaultValue={props.category.name ? props.category.name: ''}
-        onBlur={(e) => {
-          e.persist();
-          setIsComposing(false);
-          // updateCategoryName(props.category.id, e.target.value);
-        }}
-        onChange={(e) => {
-          
-          e.persist();
-          console.log('e', e);
-          updateCategoryName(props.category.id, e.target.value);
-          setIsComposing(true);
-          // e.preventDefault();
-        }}
-        multiline
-        inputProps={{ tabIndex: "-1" }}
-        placeholder="New category"
-        classes={{root: classes.tabInput}}
+      <Controller 
+        name={`menuPage.categories[${index}]`} 
+        defaultValue={category.name ? category.name : ''} 
+        render={({onChange, onBlur, value}) => (
+          <InputBase 
+            onBlur={(e) => {
+              updateCategoryName(category.id, e.target.value); 
+              onBlur();
+            }}
+            onChange={onChange}
+            value={value}
+            multiline
+            placeholder="New category"
+            classes={{root: classes.tabInput}}
+          />
+        )}
       />
-    )
-  })
+    ) 
+  };
+
+
+  // const MyInputBase = React.forwardRef((props, ref) => {
+  //   console.log('myinputbase ref', composerRef);
+  //   return (
+  //     <InputBase
+  //       // inputRef={ref}
+  //       inputRef={currentCategory.id === props.category.id ? composerRef : null}
+  //       defaultValue={props.category.name ? props.category.name: ''}
+  //       onBlur={(e) => {
+  //         e.persist();
+  //         setIsComposing(false);
+  //         // updateCategoryName(props.category.id, e.target.value);
+  //       }}
+  //       onChange={(e) => {
+          
+  //         e.persist();
+  //         console.log('e', e);
+  //         updateCategoryName(props.category.id, e.target.value);
+  //         setIsComposing(true);
+  //         // e.preventDefault();
+  //       }}
+  //       multiline
+  //       inputProps={{ tabIndex: "-1" }}
+  //       placeholder="New category"
+  //       classes={{root: classes.tabInput}}
+  //     />
+  //   )
+  // })
   const MyCloseIcon = React.forwardRef((props, ref) => {
-    console.log('mycloseicon ref', ref);
     return (
       <Close id={props.categoryId} onClick={(e) => {
           e.stopPropagation();
@@ -277,12 +278,29 @@ const CategoryTabs = ({
                     scrollButtons={scrollBtn}
                   >
                     {categories.map((category, index) => {
-                      console.log(currentCategory.id === category.id ? composerRef:'no');
                       return(
                         <Tab
                           key={category.id}
                           value={category.id}
-                          label={<MyInputBase category={category} index={index} />}
+                          label={
+                            <Controller 
+                              name={`menuPage.categories[${index}]`} 
+                              defaultValue={category.name ? category.name : ''} 
+                              render={({onChange, onBlur, value}) => (
+                                <InputBase 
+                                  onBlur={(e) => {
+                                    updateCategoryName(category.id, e.target.value); 
+                                    onBlur();
+                                  }}
+                                  onChange={onChange}
+                                  value={value}
+                                  multiline
+                                  placeholder="New category"
+                                  classes={{root: classes.tabInput}}
+                                />
+                              )}
+                            />
+                         }
                           icon={<MyCloseIcon categoryId={category.id} />}
                           classes={{ root: classes.tabRoot, wrapper: classes.myTab2 }}
                         />

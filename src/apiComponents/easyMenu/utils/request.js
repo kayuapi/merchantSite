@@ -80,6 +80,10 @@ export async function saveCategoriesToDb(categories) {
 }
 
 export async function saveCategoriesAndMenuItemsToDb(categories, currentCategoryName, menuItems) {
+  const toSubmitCategories = categories.map(category => ({
+    id: category.id,
+    name: category.name
+  }));
   const apiName = 'amplifyChmboxOrderingApi';
   const path = '/uiplugin/save';
   const myInit = {
@@ -89,7 +93,7 @@ export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory
     body: {
       categories: {
         SK: 'PluginMenuPages',
-        categories,
+        categories: toSubmitCategories,
       },
       menuItems: {
         SK: `PluginMenu#${currentCategoryName}`, 
