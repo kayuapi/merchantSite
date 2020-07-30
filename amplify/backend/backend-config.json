@@ -51,6 +51,25 @@
 					]
 				}
 			]
+		},
+		"orderingAPI": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [
+						{
+							"authenticationType": "AWS_IAM"
+						}
+					],
+					"defaultAuthentication": {
+						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
+						"userPoolConfig": {
+							"userPoolId": "authadminfrontendamplify7fe7cf92"
+						}
+					}
+				}
+			}
 		}
 	}
 }

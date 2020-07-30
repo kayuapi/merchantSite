@@ -7,7 +7,6 @@ import MyLogoutButton from './MyLogoutButton';
 // import { UserList } from './users';
 // import jsonServerProvider from 'ra-data-json-server';
 import menuItems from './apiComponents/menu';
-import categories from './apiComponents/categories';
 
 import dataProvider from './dataProvider';
 import englishMessages from './i18n/en';
@@ -25,11 +24,9 @@ import 'firebase/firestore';
 // import 'firebase/functions' // <- needed if using httpsCallable
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
-import { AmplifySignOut, withAuthenticator } from '@aws-amplify/ui-react';
-// import { Auth } from 'aws-amplify';
+import { buildAuthProvider } from 'react-admin-amplify';
 import customRoutes from './customRoutes';
 import Dashboard from './Dashboard';
-// import { ConfirmSignIn, ConfirmSignUp, ForgotPassword, RequireNewPassword, SignIn, SignUp, VerifyContact } from 'aws-amplify-react';
 
 
 const firebaseConfig = {
@@ -96,6 +93,7 @@ const App = () => {
         // loginPage={MyLoginPage}
         // logoutButton={MyLogoutButton}
         // authProvider={authProvider}
+        authProvider={buildAuthProvider()}
         dataProvider={dataProvider}
         i18nProvider={i18nProvider}
         history={history}
@@ -106,16 +104,6 @@ const App = () => {
       </Admin>
         {/* </ReactReduxFirebaseProvider> */}
     </Provider>
-    <AmplifySignOut />
     </>
 )};
-export default withAuthenticator(App);
-// export default withAuthenticator(App, false, [
-//   <SignIn/>,
-//   <ConfirmSignIn/>,
-//   <VerifyContact/>,
-//   <SignUp/>,
-//   <ConfirmSignUp/>,
-//   <ForgotPassword/>,
-//   <RequireNewPassword />
-// ]);
+export default App;
