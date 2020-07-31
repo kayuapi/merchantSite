@@ -32,7 +32,7 @@ const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
       menuReceipt: false,
     })
     const isXSmall = useMediaQuery((theme: Theme) =>
-        theme.breakpoints.down('xs')
+        theme.breakpoints.down('md')
     );
     const open = useSelector((state: AppState) => state.admin.ui.sidebarOpen);
     useSelector((state: AppState) => state.theme); // force rerender on theme change

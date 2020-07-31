@@ -128,7 +128,7 @@ const Login = () => {
                     <div className={classes.main}>
                         <Card className={classes.card}>
                             <div className={classes.avatar}>
-                                <Avatar variant="rounded" alt="Chmbox logo" className={classes.icon} src={process.env.PUBLIC_URL + '/logo192.png'}>
+                                <Avatar variant="rounded" alt="logo" className={classes.icon} src={process.env.PUBLIC_URL + '/logo192.png'}>
                                   {/* <img alt={'logo'} src={process.env.PUBLIC_URL + '/logo192.png'} /> */}
                                 </Avatar>
                             </div>
