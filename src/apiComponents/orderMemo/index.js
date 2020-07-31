@@ -34,33 +34,48 @@ const useStyles = makeStyles(theme => ({
 }
 ));
 const sounds = {
-  'green': new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3'),
-  'blue': new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3'),
-  'pink': new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3'),
-  'yellow': new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
+  'notificationMandarinCasual': new Audio(`${process.env.PUBLIC_URL}/newOrderCasual.mp3`),
+  'notificationMandarin': new Audio(`${process.env.PUBLIC_URL}/newOrderMandarin.mp3`),
+  'notificationEnglish': new Audio(`${process.env.PUBLIC_URL}/newOrderEnglish.mp3`),
 };
 
+const deleteOrder = (orderId, fulfillmentMethod, state, setState) => {
+  const removedDeletedOrderArray = state.orders.filter(order => {
+    return (order.orderId !== orderId || order.fulfillmentMethod !== fulfillmentMethod);
+  });
+  console.log('orderId', orderId);
+  console.log('removedDeletedORderArray', removedDeletedOrderArray);
+  setState({orders: removedDeletedOrderArray});
+}
 
-const OrderMemo = SortableElement(({order}) => {
-  if (order.fulfillmentMethod === 'DINE_IN') {
-    return <DineInOrderMemo {...order} />
-  } else if (order.fulfillmentMethod === 'DELIVERY') {
-    return <DeliveryOrderMemo {...order} />
-  } else if (order.fulfillmentMethod === 'SELF_PICKUP') {
-    return <SelfPickupOrderMemo {...order} />
-  } else {
-    return
+const OrderMemo = SortableElement(({order, deleteOrder}) => {
+  if (order.status === 'UNFULFILLED') {
+    if (order.fulfillmentMethod === 'DINE_IN') {
+      return <DineInOrderMemo deleteOrder={deleteOrder} {...order} />
+    } else if (order.fulfillmentMethod === 'DELIVERY') {
+      return <DeliveryOrderMemo deleteOrder={deleteOrder} {...order} />
+    } else if (order.fulfillmentMethod === 'SELF_PICKUP') {
+      return <SelfPickupOrderMemo deleteOrder={deleteOrder} {...order} />
+    } else {
+      return
+    }
   }
-
-
+  return
 });
 
-const TodaysOrderBoard = SortableContainer(({orders}) => {
+const TodaysOrderBoard = SortableContainer(({orders, state, setState}) => {
   console.log('orders', orders);
   return (
     <Grid container spacing={2}>
       {orders.map((order, index) => (
-        <OrderMemo key={`item-${order.orderId}`} index={index} order={order} />
+        <OrderMemo 
+          key={`item-${order.orderId}`} 
+          index={index} 
+          order={order} 
+          deleteOrder={() => 
+            deleteOrder(order.orderId, order.fulfillmentMethod, state, setState)
+          } 
+        />
       ))}
     </Grid>
   )  
@@ -79,7 +94,7 @@ const OrderPageShow = props => {
 
     useEffect(() => {
       let subscription;
-      const run = (shopId) => {
+      const run = (shopId, startingOrderId, endingOrderId) => {
         subscription = API.graphql(
           graphqlOperation(`
           subscription OnCreateOrder(
@@ -116,13 +131,17 @@ const OrderPageShow = props => {
           `, { shopId })
         ).subscribe({
           next: response => {
-            setState(prevState => ({
-              ...prevState,
-              orders: [
-                ...prevState.orders, 
-                response['value']['data']['onCreateOrder'],
-              ],
-            }));
+            const receivedOrder = response['value']['data']['onCreateOrder'];
+            if (receivedOrder.orderId > startingOrderId && receivedOrder.orderId < endingOrderId) {
+              sounds['notificationMandarinCasual'].play();
+              setState(prevState => ({
+                ...prevState,
+                orders: [
+                  ...prevState.orders, 
+                  response['value']['data']['onCreateOrder'],
+                ],
+              }));
+            }
           },
           error: response => console.log('error response', response),
         });
@@ -197,7 +216,7 @@ const OrderPageShow = props => {
         }).catch(err => console.log(err));
         
 
-        run(shopId);
+        run(shopId, todayStarting, todayEnding);
 
       });
 
@@ -229,7 +248,15 @@ const OrderPageShow = props => {
 
     return (
       <div className={classes.root}>
-        <TodaysOrderBoard useDragHandle orders={state.orders} axis={'xy'} helperClass={classes.sorting} onSortEnd={onSortEnd} />
+        <TodaysOrderBoard 
+          useDragHandle 
+          orders={state.orders} 
+          axis={'xy'} 
+          helperClass={classes.sorting} 
+          onSortEnd={onSortEnd}
+          state={state}
+          setState={setState}
+        />
       </div>
     )
 };

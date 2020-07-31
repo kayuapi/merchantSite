@@ -59,6 +59,7 @@ const OrderMemo: FC<DineInOrder> = ({
   postscript,
   orderedItems,
   tableNumber,
+  deleteOrder,
 }) => {
   const classes = useStyles();
   return (
@@ -92,7 +93,7 @@ const OrderMemo: FC<DineInOrder> = ({
       </CardContent>
       </Card>
       <Button className={classes.button}>Cancel</Button>
-      <Button className={classes.button}>Fulfill</Button>
+      <Button className={classes.button} onClick={deleteOrder}>Fulfill</Button>
     </Grid>
   );
 };

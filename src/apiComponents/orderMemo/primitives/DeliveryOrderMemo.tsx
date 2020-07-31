@@ -65,6 +65,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
   deliveryDate,
   deliveryTime,
   deliveryAddress,
+  deleteOrder,
 }) => {
   const classes = useStyles();
   let whatsappLink;
@@ -119,7 +120,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
       </CardContent>
       </Card>
       <Button className={classes.button}>Cancel</Button>
-      <Button className={classes.button}>Fulfill</Button>
+      <Button className={classes.button} onClick={deleteOrder}>Fulfill</Button>
     </Grid>
   );
 };
