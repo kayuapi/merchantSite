@@ -7,6 +7,7 @@ import MyLogoutButton from './MyLogoutButton';
 // import { UserList } from './users';
 // import jsonServerProvider from 'ra-data-json-server';
 import menuItems from './apiComponents/menu';
+import Login from './layout/ChmboxLoginPage';
 
 import dataProvider from './dataProvider';
 import englishMessages from './i18n/en';
@@ -27,7 +28,6 @@ import { createFirestoreInstance } from 'redux-firestore';
 import { buildAuthProvider } from 'react-admin-amplify';
 import customRoutes from './customRoutes';
 import Dashboard from './Dashboard';
-
 
 const firebaseConfig = {
     apiKey: 'AIzaSyCHN7a2wDAXpL5udxm0yFa7d_E1k84PO4c',
@@ -90,7 +90,7 @@ const App = () => {
         customRoutes={customRoutes}
         layout={Layout}
         dashboard={Dashboard}
-        // loginPage={MyLoginPage}
+        loginPage={Login}
         // logoutButton={MyLogoutButton}
         // authProvider={authProvider}
         authProvider={buildAuthProvider()}
