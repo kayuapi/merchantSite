@@ -145,7 +145,7 @@ const Login = () => {
                                         name="username"
                                         // @ts-ignore
                                         component={renderInput}
-                                        label={translate('ra.auth.username')}
+                                        label={"Username (case sensitive)"}
                                         disabled={loading}
                                     />
                                 </div>
