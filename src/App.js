@@ -28,7 +28,11 @@ import { createFirestoreInstance } from 'redux-firestore';
 import { buildAuthProvider } from 'react-admin-amplify';
 import customRoutes from './customRoutes';
 import Dashboard from './Dashboard';
-
+import { StylesProvider, createGenerateClassName } from '@material-ui/core/styles';
+const generateClassName = createGenerateClassName({
+  disableGlobal: true,
+  seed: 'chm',
+})
 const firebaseConfig = {
     apiKey: 'AIzaSyCHN7a2wDAXpL5udxm0yFa7d_E1k84PO4c',
     authDomain: 'chmordering.firebaseapp.com',
@@ -82,28 +86,29 @@ const rrfProps = {
 const App = () => {
 
     return(
-        <>
-
-    <Provider store={store}>
-        {/* <ReactReduxFirebaseProvider {...rrfProps}> */}
-      <Admin 
-        customRoutes={customRoutes}
-        layout={Layout}
-        dashboard={Dashboard}
-        loginPage={Login}
-        // logoutButton={MyLogoutButton}
-        // authProvider={authProvider}
-        authProvider={buildAuthProvider()}
-        dataProvider={dataProvider}
-        i18nProvider={i18nProvider}
-        history={history}
-      >
-          
-          <Resource name="menuItems" {...menuItems} />
-          {/* <Resource name="categories" {...categories} /> */}
-      </Admin>
-        {/* </ReactReduxFirebaseProvider> */}
-    </Provider>
-    </>
+      <>
+        <Provider store={store}>
+            {/* <ReactReduxFirebaseProvider {...rrfProps}> */}
+          <StylesProvider generateClassName={generateClassName}>
+            <Admin 
+              customRoutes={customRoutes}
+              layout={Layout}
+              dashboard={Dashboard}
+              loginPage={Login}
+              // logoutButton={MyLogoutButton}
+              // authProvider={authProvider}
+              authProvider={buildAuthProvider()}
+              dataProvider={dataProvider}
+              i18nProvider={i18nProvider}
+              history={history}
+            >
+                
+                <Resource name="menuItems" {...menuItems} />
+                {/* <Resource name="categories" {...categories} /> */}
+            </Admin>
+              {/* </ReactReduxFirebaseProvider> */}
+          </StylesProvider>
+        </Provider>
+      </>
 )};
 export default App;
