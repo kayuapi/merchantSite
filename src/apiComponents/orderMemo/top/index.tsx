@@ -84,11 +84,12 @@ const Top2: FC = (props) => {
                   color="primary" 
                   onChange={(event) => {
                     if (event.target.checked === true) {
+                      // use 00 to zz as suffix to orderId range
                       setFilters({
                         ...filterValues,
                         date_range: [
-                          `${addWeeks(startOfWeek(new Date()), 1).getTime()}`,
-                          `${addWeeks(startOfWeek(new Date()), 2).getTime()}`,
+                          `${addWeeks(startOfWeek(new Date()), 1).getTime()}00`,
+                          `${addWeeks(startOfWeek(new Date()), 2).getTime()}zz`,
                         ],
                       })
                     }
@@ -108,8 +109,8 @@ const Top2: FC = (props) => {
                       setFilters({
                         ...filterValues,
                         date_range: [
-                          `${startOfWeek(new Date()).getTime()}`,
-                          `${addWeeks(startOfWeek(new Date()), 1).getTime()}`,
+                          `${startOfWeek(new Date()).getTime()}00`,
+                          `${addWeeks(startOfWeek(new Date()), 1).getTime()}zz`,
                         ],
                       })
                     }
@@ -129,8 +130,8 @@ const Top2: FC = (props) => {
                       setFilters({
                         ...filterValues,
                         date_range: [
-                          `${subWeeks(startOfWeek(new Date()),1).getTime()}`,
-                          `${startOfWeek(new Date()).getTime()}`,
+                          `${subWeeks(startOfWeek(new Date()),1).getTime()}00`,
+                          `${startOfWeek(new Date()).getTime()}zz`,
                         ],
                       })
                     }
