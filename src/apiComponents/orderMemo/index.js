@@ -51,9 +51,12 @@ const useStyles = makeStyles(theme => ({
   filter: {
     display: 'flex',
   },
-  accordion: {
+  cardGrid: {
+    paddingTop: theme.spacing(5),
     paddingBottom: theme.spacing(5),
-  }
+    height: '100%',
+  },
+
 }
 ));
 const sounds = {
@@ -66,8 +69,6 @@ const deleteOrder = (orderId, fulfillmentMethod, state, setState) => {
   const removedDeletedOrderArray = state.orders.filter(order => {
     return (order.orderId !== orderId || order.fulfillmentMethod !== fulfillmentMethod);
   });
-  console.log('orderId', orderId);
-  console.log('removedDeletedORderArray', removedDeletedOrderArray);
   setState({
     ordersByDate: groupByDate(removedDeletedOrderArray, ['deliveryDate', 'pickupDate']),
     orders: removedDeletedOrderArray
@@ -90,7 +91,6 @@ const OrderMemo = SortableElement(({order, deleteOrder}) => {
 });
 
 const OrderBoard = SortableContainer(({orders, state, setState}) => {
-  console.log('orders', orders);
   return (
     <Grid container spacing={2}>
       {orders.map((order, index) => (
@@ -194,11 +194,11 @@ const OrderPageShow = props => {
                   setState(prevState => {
                     const updatedReceivedOrder = [...prevState.orders, receivedOrder];
                     const updatedReceivedOrderByDate = groupByDate(updatedReceivedOrder, ['deliveryDate', 'pickupDate']);
-                    return ({
+                    return {
                       ...prevState,
                       orders: updatedReceivedOrder,
                       ordersByDate: updatedReceivedOrderByDate,
-                    });
+                    };
                   });
                 }    
               } else {
@@ -208,13 +208,15 @@ const OrderPageShow = props => {
             if (fulfillmentMethod === 'ALL') {
               if (receivedOrder.orderId > startingOrderId && receivedOrder.orderId < endingOrderId) {
                 sounds['notificationMandarinCasual'].play();
-                setState(prevState => ({
-                  ...prevState,
-                  orders: [
-                    ...prevState.orders, 
-                    response['value']['data']['onCreateOrder'],
-                  ],
-                }));
+                setState(prevState => {
+                  const updatedReceivedOrder = [...prevState.orders, receivedOrder];
+                  const updatedReceivedOrderByDate = groupByDate(updatedReceivedOrder, ['deliveryDate', 'pickupDate']);
+                  return {
+                    ...prevState,
+                    orders: updatedReceivedOrder,
+                    ordersByDate: updatedReceivedOrderByDate,
+                  };
+                });
               }  
             }
           },
@@ -270,9 +272,6 @@ const OrderPageShow = props => {
         const startingDate = filterValues['date_range'][0];
         const endingDate = filterValues['date_range'][1];
         const fulfillmentMethod = filterValues['fulfillmentMethod'];
-        console.log('fulfillmentMethod', fulfillmentMethod);
-        console.log('startingDate', startingDate);
-        console.log('endingDate', endingDate);
         // const todayStarting = `${new Date().setHours(0,0,0,0)}`;
         // const todayEnding = `${new Date().setHours(23,59,59,999)}`;
         let callFunc;
@@ -301,9 +300,7 @@ const OrderPageShow = props => {
             combinedOrderList = combinedOrderList.filter(order => order.status !== 'FULFILLED');
           }
           // const todaysUnfulfilledOrders = fakeData;
-          console.log('combined order list', combinedOrderList);
           const combinedOrderListGroupedByDate = groupByDate(combinedOrderList, ['deliveryDate', 'pickupDate']);
-          console.log('combined order list by date', combinedOrderListGroupedByDate);
           setState(prevState => ({
             ...prevState,
             orders: [
@@ -361,7 +358,7 @@ const OrderPageShow = props => {
           state={state}
           setState={setState}
         /> */}
-        <Container maxWidth="lg">
+        <Container className={classes.cardGrid} maxWidth="lg">
             {Object.keys(state.ordersByDate).length === 0 && 
               state.ordersByDate.constructor === Object && 
               <span>No orders received.</span>}          
@@ -371,7 +368,7 @@ const OrderPageShow = props => {
                   // prevent table number from appearing in next week, note diff of customer put ordering date and customer expect receiving date
                   // customer can put ordering for next month
                   return (
-                    <Accordion className={classes.accordion} key={id}>
+                    <Accordion key={id}>
                       <AccordionSummary
                         key={id}
                         expandIcon={<ExpandMoreIcon />}
