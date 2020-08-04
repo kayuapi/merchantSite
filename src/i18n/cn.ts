@@ -1,6 +1,7 @@
+import { TranslationMessages } from 'ra-core';
 import englishMessages from 'ra-language-english';
 
-export default {
+const customChineseMessages: TranslationMessages = {
     ...englishMessages,
     pos: {
         search: 'Search',
@@ -13,6 +14,7 @@ export default {
         },
         dashboard: {
             monthly_revenue: 'Monthly Revenue',
+            month_history: '30 Day Revenue History',
             new_orders: 'New Orders',
             pending_reviews: 'Pending Reviews',
             new_customers: 'New Customers',
@@ -22,7 +24,7 @@ export default {
                     'by %{customer_name}, one item |||| by %{customer_name}, %{nb_items} items',
             },
             welcome: {
-                title: 'Welcome to react-admin demo',
+                title: 'Welcome to the react-admin e-commerce demo',
                 subtitle:
                     "This is the admin of an imaginary poster shop. Feel free to explore and modify the data - it's local to your computer, and will reset each time you reload.",
                 aor_button: 'react-admin site',
@@ -36,6 +38,29 @@ export default {
         },
     },
     resources: {
+        orderMemo: {
+          name: 'Order Memo |||| Order Memos',
+          filters: {
+            date_range: 'Date range of received orders',
+            today: 'Today',
+            next_week: 'Next week',
+            this_week: 'This week',
+            last_week: 'Last week',
+            this_month: 'This month',
+            last_month: 'Last month',
+            earlier: 'Earlier',
+            fulfillmentMethods: 'Fulfillment methods',
+          }
+        },
+        fulfillmentMethods: {
+          name: 'Fulfillment Method |||| Fulfillment Methods',
+          data: {
+              all: 'All',
+              delivery: 'Delivery',
+              selfPickup: 'Self Pick-up',
+              dineIn: 'Dine In',
+          },
+        },
         customers: {
             name: 'Customer |||| Customers',
             fields: {
@@ -48,6 +73,18 @@ export default {
                 total_spent: 'Total spent',
                 password: 'Password',
                 confirm_password: 'Confirm password',
+            },
+            filters: {
+                last_visited: 'Last visited',
+                today: 'Today',
+                this_week: 'This week',
+                last_week: 'Last week',
+                this_month: 'This month',
+                last_month: 'Last month',
+                earlier: 'Earlier',
+                has_ordered: 'Has ordered',
+                has_newsletter: 'Has newsletter',
+                group: 'Segment',
             },
             fieldGroups: {
                 identity: 'Identity',
@@ -99,7 +136,7 @@ export default {
                 address: 'Address',
             },
         },
-        choices: {
+        products: {
             name: 'Poster |||| Posters',
             fields: {
                 category_id: 'Category',
@@ -112,7 +149,6 @@ export default {
                 stock_lte: 'Low Stock',
                 stock: 'Stock',
                 thumbnail: 'Thumbnail',
-                upload_image: 'Image Upload',
                 width_gte: 'Min width',
                 width_lte: 'Max width',
                 width: 'Width',
@@ -120,13 +156,14 @@ export default {
             tabs: {
                 image: 'Image',
                 details: 'Details',
+                description: 'Description',
                 reviews: 'Reviews',
             },
         },
         categories: {
             name: 'Category |||| Categories',
             fields: {
-                menu: 'Menu items',
+                products: 'Products',
             },
         },
         reviews: {
@@ -156,7 +193,7 @@ export default {
             },
         },
         segments: {
-            name: 'Segments',
+            name: 'Segment |||| Segments',
             fields: {
                 customers: 'Customers',
                 name: 'Name',
@@ -173,3 +210,4 @@ export default {
     },
 };
 
+export default customChineseMessages;

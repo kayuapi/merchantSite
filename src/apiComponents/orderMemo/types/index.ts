@@ -10,6 +10,7 @@ interface Order {
   paymentMethod: PaymentMethod;
   postscript?: string;
   orderedItems: MenuItem[];
+  deleteOrder: () => void;
 }
 
 export interface IOrderItem {

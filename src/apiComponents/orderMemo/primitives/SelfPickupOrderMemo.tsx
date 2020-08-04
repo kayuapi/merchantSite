@@ -65,6 +65,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
   pickupDate,
   pickupTime,
   vehiclePlateNumber,
+  deleteOrder,
 }) => {
   const classes = useStyles();
   let whatsappLink;
@@ -78,7 +79,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
         <Typography className={classes.title} color="textSecondary" gutterBottom>
           {orderId} : {fulfillmentMethod}
           <br />
-          Order received time: {createdAt}
+          Order received time: {new Date(createdAt).toLocaleString()}
         </Typography>
         <Typography variant="h5" component="h2">
           {firstName} {lastName}
@@ -120,7 +121,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
       </CardContent>
       </Card>
       <Button className={classes.button}>Cancel</Button>
-      <Button className={classes.button}>Fulfill</Button>
+      <Button className={classes.button} onClick={deleteOrder}>Fulfill</Button>
     </Grid>
   );
 };

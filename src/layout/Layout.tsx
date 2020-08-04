@@ -5,6 +5,18 @@ import AppBar from './AppBar';
 import Menu from './Menu';
 import { darkTheme, lightTheme } from './themes';
 import { AppState } from '../types';
+import { makeStyles } from '@material-ui/core/styles';
+const useSidebarStyles = makeStyles({
+  drawerPaper: {
+    // boxShadow: '2px 4px 18px rgba(0, 0, 0, 0.08)',
+  },
+});
+const MySidebar = (props: any) => {
+  const classes = useSidebarStyles();
+  return (
+      <Sidebar classes={classes} {...props} />
+  );
+};
 
 const CustomSidebar = (props: any) => <Sidebar {...props} size={200} />;
 
@@ -16,7 +28,7 @@ export default (props: any) => {
         <Layout
             {...props}
             appBar={AppBar}
-            sidebar={CustomSidebar}
+            sidebar={MySidebar}
             menu={Menu}
             theme={theme}
         />

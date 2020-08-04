@@ -59,6 +59,7 @@ const OrderMemo: FC<DineInOrder> = ({
   postscript,
   orderedItems,
   tableNumber,
+  deleteOrder,
 }) => {
   const classes = useStyles();
   return (
@@ -68,7 +69,7 @@ const OrderMemo: FC<DineInOrder> = ({
         <Typography className={classes.title} color="textSecondary" gutterBottom>
           {orderId} : {fulfillmentMethod}
           <br />
-          Order received time: {createdAt}
+          Order received time: {new Date(createdAt).toLocaleString()}
         </Typography>
         <Typography variant="h5" component="h2">
           {<span>Table {tableNumber}</span>}
@@ -92,7 +93,7 @@ const OrderMemo: FC<DineInOrder> = ({
       </CardContent>
       </Card>
       <Button className={classes.button}>Cancel</Button>
-      <Button className={classes.button}>Fulfill</Button>
+      <Button className={classes.button} onClick={deleteOrder}>Fulfill</Button>
     </Grid>
   );
 };
