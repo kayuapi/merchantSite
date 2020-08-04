@@ -69,7 +69,7 @@ const OrderMemo: FC<DineInOrder> = ({
         <Typography className={classes.title} color="textSecondary" gutterBottom>
           {orderId} : {fulfillmentMethod}
           <br />
-          Order received time: {createdAt}
+          Order received time: {new Date(createdAt).toLocaleString()}
         </Typography>
         <Typography variant="h5" component="h2">
           {<span>Table {tableNumber}</span>}
