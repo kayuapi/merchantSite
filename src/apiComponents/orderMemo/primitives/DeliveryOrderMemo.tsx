@@ -35,10 +35,9 @@ const useStyles = makeStyles(theme => ({
   },
   cardGrid: {
     marginBottom: theme.spacing(5),
-    height: '100%',
   },
   button: {
-    // marginBottom: theme.spacing(20),
+    marginBottom: theme.spacing(20),
   },
   title: {
     fontSize: 14,
