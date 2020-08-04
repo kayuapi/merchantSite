@@ -115,7 +115,7 @@ const groupByDate = (objectArray, propertyList) => {
   let key;
   return objectArray.reduce((acc, obj) => {
     if (obj !== null) {
-      const pickupTimeOrDeliveryTimeOrNow = obj[propertyList[0]] ?? obj[propertyList[1]] ?? Number(obj['orderId']) ?? new Date().getTime();
+      const pickupTimeOrDeliveryTimeOrNow = obj[propertyList[0]] ?? obj[propertyList[1]] ?? Number(obj['orderId'].substring(0,13)) ?? new Date().getTime();
       key = new Date(pickupTimeOrDeliveryTimeOrNow).toDateString();
       if (!acc[key]) {
          acc[key] = [];
@@ -133,10 +133,11 @@ const OrderPageShow = props => {
     const classes = useStyles();
     const [state, setState] = useState({orders: [], ordersByDate: {}});
     // set default filter to this week and all fulfillmentMethods
+    // use 00 to zz range as suffix to orderId
     const [filterValues, setFilters] =  useState({
       date_range: [
-        `${startOfWeek(new Date()).getTime()}`,
-        `${addWeeks(startOfWeek(new Date()), 1).getTime()}`
+        `${startOfWeek(new Date()).getTime()}00`,
+        `${addWeeks(startOfWeek(new Date()), 1).getTime()}zz`
       ],
       fulfillmentMethod: 'ALL',
     });
