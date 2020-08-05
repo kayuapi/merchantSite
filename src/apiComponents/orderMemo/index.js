@@ -190,7 +190,7 @@ const OrderPageShow = props => {
             if (fulfillmentMethod !== 'ALL') {
               if (receivedOrder.fulfillmentMethod === fulfillmentMethod) {
                 if (receivedOrder.orderId > startingOrderId && receivedOrder.orderId < endingOrderId) {
-                  sounds['notificationMandarinCasual'].play();
+                  sounds['notificationEnglish'].play();
                   setState(prevState => {
                     const updatedReceivedOrder = [...prevState.orders, receivedOrder];
                     const updatedReceivedOrderByDate = groupByDate(updatedReceivedOrder, ['deliveryDate', 'pickupDate']);
@@ -207,7 +207,7 @@ const OrderPageShow = props => {
             }
             if (fulfillmentMethod === 'ALL') {
               if (receivedOrder.orderId > startingOrderId && receivedOrder.orderId < endingOrderId) {
-                sounds['notificationMandarinCasual'].play();
+                sounds['notificationEnglish'].play();
                 setState(prevState => {
                   const updatedReceivedOrder = [...prevState.orders, receivedOrder];
                   const updatedReceivedOrderByDate = groupByDate(updatedReceivedOrder, ['deliveryDate', 'pickupDate']);
