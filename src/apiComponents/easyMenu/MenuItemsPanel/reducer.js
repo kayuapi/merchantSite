@@ -163,7 +163,7 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
             for(let x=0; x<maxX; x++) {
               if (action.menuItemIdAndLocationArray.length > 0) {
                 let minMahattanDistItem = action.menuItemIdAndLocationArray[0];
-                console.log('inside', action.menuItemIdAndLocationArray);
+                // console.log('inside', action.menuItemIdAndLocationArray);
                 action.menuItemIdAndLocationArray.reduce((min, p) => {
                   const mhDist = Math.abs(p.x-x) + Math.abs(p.y-y);
                   if (mhDist < min) {

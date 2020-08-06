@@ -61,7 +61,12 @@ const SwitchTabDialogAction = ({
       <Button
         disabled={isTabAndPanelSaving}
         onClick={()=> {
-          saveTabAndPanel(categories, currentCategory, menuItems);
+          const currentCategoryNewCopy = {...currentCategory};
+          // console.log('equal?', currentCategoryNewCopy == currentCategory);
+          const categoriesNewCopy = {...categories};
+          const menuItemsNewCopy = {...menuItems};
+          // console.log('onclick currentCategory', currentCategoryNewCopy);
+          saveTabAndPanel(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy);
           dispatch(actionToDispatch);
         }} 
         color="primary" 
