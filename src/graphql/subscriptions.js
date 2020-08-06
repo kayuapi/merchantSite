@@ -25,9 +25,6 @@ export const onCreateOrder = /* GraphQL */ `
         variant
         quantity
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -57,9 +54,6 @@ export const onUpdateOrder = /* GraphQL */ `
         variant
         quantity
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
@@ -89,9 +83,6 @@ export const onDeleteOrder = /* GraphQL */ `
         variant
         quantity
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }

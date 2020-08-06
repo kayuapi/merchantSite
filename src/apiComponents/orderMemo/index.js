@@ -71,7 +71,6 @@ const updateOrderStatus = async (shopId, fulfillmentMethod, orderId) => {
     fulfillmentMethod,
     orderId,
     status: 'FULFILLED',
-    _version: 1,
   };
   const receivedOrders = await API.graphql(graphqlOperation(`
     mutation UpdateOrder(
