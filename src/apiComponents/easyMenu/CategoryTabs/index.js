@@ -143,13 +143,13 @@ const CategoryTabs = ({
   
   const handleTabChange = (event, categoryId) => {
     event.stopPropagation();
-    console.log('isDirty', isDirty);
+    // console.log('isDirty', isDirty);
     const category = categories.filter(category => category.id === categoryId)[0];
     if (category.id === currentCategory.id) {
     } else if (category.id !== currentCategory.id && !isDirty) {
       dispatchSwitchCategory(category);
     } else {
-      console.log('ATTENTION');
+      // console.log('ATTENTION');
       const actionToDispatch = switchCategory(category);
       openAlertToContinue(actionToDispatch);      
     }
@@ -172,7 +172,7 @@ const CategoryTabs = ({
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
-  console.log('formstate here', getValues());
+  // console.log('formstate here', getValues());
 
   const MyInputBaseNew = ({index, category}) => {
     return (

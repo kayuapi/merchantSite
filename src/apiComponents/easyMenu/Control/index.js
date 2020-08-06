@@ -79,7 +79,7 @@ const Control = ({
 }) => {    
   const classes = useStyles();
   const { formState: { dirtyFields}, reset } = useFormContext();
-  console.log('menuItemsIsDirty',dirtyFields);
+  // console.log('menuItemsIsDirty',dirtyFields);
   const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty || currentCategory._name !== currentCategory.name;
 
 
