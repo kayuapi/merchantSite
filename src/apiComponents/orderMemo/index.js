@@ -65,14 +65,46 @@ const sounds = {
   'notificationEnglish': new Audio(`${process.env.PUBLIC_URL}/newOrderEnglish.mp3`),
 };
 
+const updateOrderStatus = async (shopId, fulfillmentMethod, orderId) => {
+  const queryingOrderId = {
+    shopId,
+    fulfillmentMethod,
+    orderId,
+    status: 'FULFILLED',
+  };
+  const receivedOrders = await API.graphql(graphqlOperation(`
+    mutation UpdateOrder(
+      $input: UpdateOrderInput!
+    ) {
+      updateOrder(input: $input) {
+        shopId
+        fulfillmentMethod
+        orderId
+        status
+      }
+    }`, {
+      input: queryingOrderId
+  }));
+  return receivedOrders;
+}
+
 const deleteOrder = (orderId, fulfillmentMethod, state, setState) => {
-  const removedDeletedOrderArray = state.orders.filter(order => {
-    return (order.orderId !== orderId || order.fulfillmentMethod !== fulfillmentMethod);
-  });
-  setState({
-    ordersByDate: groupByDate(removedDeletedOrderArray, ['deliveryDate', 'pickupDate']),
-    orders: removedDeletedOrderArray
-  });
+  Auth.currentAuthenticatedUser({
+    bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+  }).then(result => {
+    const shopId = result['username'];
+    updateOrderStatus(shopId, fulfillmentMethod, orderId).then(result => {
+      const removedDeletedOrderArray = state.orders.filter(order => {
+        // use the following filter because to identify a unique order, actually can remove the fulfillment method
+        return (order.orderId !== orderId || order.fulfillmentMethod !== fulfillmentMethod);
+      });
+      setState({
+        ordersByDate: groupByDate(removedDeletedOrderArray, ['deliveryDate', 'pickupDate']),
+        orders: removedDeletedOrderArray
+      });
+    });
+  })
+  .catch(err => console.log(err));
 }
 
 const OrderMemo = SortableElement(({order, deleteOrder}) => {
