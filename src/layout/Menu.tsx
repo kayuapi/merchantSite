@@ -31,8 +31,8 @@ const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
     const [state, setState] = useState({
       menuReceipt: false,
     })
-    const isXSmall = useMediaQuery((theme: Theme) =>
-        theme.breakpoints.down('md')
+    const isXLarge = useMediaQuery((theme: Theme) =>
+        theme.breakpoints.down('xl')
     );
     const open = useSelector((state: AppState) => state.admin.ui.sidebarOpen);
     useSelector((state: AppState) => state.theme); // force rerender on theme change
@@ -97,7 +97,7 @@ const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
                 sidebarIsOpen={open}
               /> */}
 
-            {isXSmall && logout}
+            {isXLarge && logout}
         </div>
     );
 };
