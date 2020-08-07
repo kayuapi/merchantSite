@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { FC } from 'react';
 
-import { fetchUtils } from 'react-admin';
-
 import { DeliveryOrder } from '../types';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 
@@ -10,11 +8,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
 
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 
 import List from '@material-ui/core/List';
@@ -38,6 +33,10 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     marginBottom: theme.spacing(20),
+    backgroundColor: 'aliceblue',
+    width: '100%',
+    minWidth: '275px',
+    maxWidth: '360px',
   },
   title: {
     fontSize: 14,
@@ -118,8 +117,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
         </List>
       </CardContent>
       </Card>
-      <Button className={classes.button}>Cancel</Button>
-      <Button className={classes.button} onClick={deleteOrder}>Fulfill</Button>
+      <Button variant="contained" className={classes.button} onClick={deleteOrder}>Fulfill</Button>
     </Grid>
   );
 };
