@@ -12,7 +12,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import LockIcon from '@material-ui/icons/Lock';
 
 import { Notification } from 'react-admin';
 import { useTranslate, useLogin, useNotify } from 'ra-core';

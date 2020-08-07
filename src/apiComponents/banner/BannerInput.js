@@ -101,7 +101,6 @@ class S3ImageUpload extends React.Component {
   
     render() {
       const { uploadedPercentage } = this.state;
-      const { classes } = this.props;
       return (
         <>
           <div className={styles.container}>
