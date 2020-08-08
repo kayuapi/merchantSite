@@ -4,13 +4,6 @@ import { initialState } from './reducer';
 const selectElegantMenuDomain = state => state.elegantMenu.categoryTabs || initialState;
 const selectCategories = state => state.elegantMenu.categoryTabs.categories || initialState['categories'];
 const selectCurrentCategory = state => state.elegantMenu.categoryTabs.currentCategory || initialState['currentCategory'];
-const selectIsCategoryDirty = state => state.elegantMenu.categoryTabs.isDirty || initialState['isDirty'];
-
-const makeSelectIsCategoryDirty = () =>
-  createSelector(
-    selectIsCategoryDirty,
-    substate => substate,
-  );
 
 const makeSelectCategories = () =>
   createSelector(
@@ -76,7 +69,6 @@ const makeSelectCategoryDeleting = () =>
 export { 
   selectCategories,
   selectCurrentCategory,
-  makeSelectIsCategoryDirty,
   makeSelectCategories, 
   makeSelectCategoriesLoading,
   makeSelectCategoriesError,

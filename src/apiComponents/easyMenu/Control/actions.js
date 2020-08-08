@@ -1,6 +1,7 @@
 
 import { 
   SAVE_TAB_AND_PANEL,
+  SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB,
   SAVE_TAB_AND_PANEL_SUCCESS,
   SAVE_TAB_AND_PANEL_ERROR,
   SAVE_TAB,
@@ -22,6 +23,17 @@ export function saveTabAndPanel(categories, currentCategory, menuItems) {
     menuItems,
   }
 }
+export function saveTabAndPanelThenSwitchTab(categories, currentCategory, menuItems, toCategory) {
+  return {
+    type: SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB,
+    categories,
+    currentCategory,
+    menuItems,
+    toCategory,
+  }
+}
+
+
 export function tabAndPanelSaved() {
   return {
     type: SAVE_TAB_AND_PANEL_SUCCESS,

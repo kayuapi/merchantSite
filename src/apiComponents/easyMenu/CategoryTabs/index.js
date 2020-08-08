@@ -19,8 +19,7 @@ import { useFormContext } from "react-hook-form";
 import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
 
 import { createStructuredSelector } from 'reselect';
-import { 
-  makeSelectIsCategoryDirty,
+import {
   makeSelectCategories, 
   makeSelectCategoriesLoading, 
   makeSelectCategoriesError,
@@ -38,7 +37,6 @@ import Close from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
-import { updateDirtiness } from './actions';
 
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
@@ -82,7 +80,6 @@ const useStyles = makeStyles(theme => ({
 
 
 const CategoryTabs = ({
-  isCategoryDirty,
   categories,
   categoriesLoading,
   categoriesError,
@@ -102,8 +99,8 @@ const CategoryTabs = ({
   const tabsRef = React.useRef();
   // const categoriesLength = categories ? categories.length: 0;
   // const tabInputRefs = React.useRef([...new Array(categoriesLength)].map(() => React.createRef()));
-  const { formState: { dirtyFields }, unregister, getValues } = useFormContext();
-  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || isCategoryDirty;
+  const { formState: { dirtyFields } } = useFormContext();
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
   const updateScrollButton = () => {
     const container = tabsRef.current;
     if (!container) {
@@ -128,28 +125,14 @@ const CategoryTabs = ({
       window.removeEventListener("resize", updateScrollButton);
     }
   });
-
-    // useEffect(() => {
-    //   if (isComposing) {
-    //     if (composerRef.current) {
-    //       console.log('composerRef', composerRef);
-    //       // composerRef.current.focus();
-    //       SetCaretAtEnd(composerRef.current);
-    //     }  
-    //   }
-    // });
-
-
   
   const handleTabChange = (event, categoryId) => {
     event.stopPropagation();
-    // console.log('isDirty', isDirty);
     const category = categories.filter(category => category.id === categoryId)[0];
     if (category.id === currentCategory.id) {
     } else if (category.id !== currentCategory.id && !isDirty) {
       dispatchSwitchCategory(category);
     } else {
-      // console.log('ATTENTION');
       const actionToDispatch = switchCategory(category);
       openAlertToContinue(actionToDispatch);      
     }
@@ -172,7 +155,6 @@ const CategoryTabs = ({
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
-  // console.log('formstate here', getValues());
 
   const MyInputBaseNew = ({index, category}) => {
     return (
@@ -240,6 +222,7 @@ const CategoryTabs = ({
   return (
     <>
       { categoriesLoading && <CircularProgress /> }
+      {/* for initial ui state */}
       { !categoriesLoading && !categories && (
         <AppBar position="sticky" className={classes.appBar}>    
           <Grid className={classes.gridContainer} container alignItems="center" justify="center">
@@ -288,10 +271,11 @@ const CategoryTabs = ({
                               defaultValue={category.name ? category.name : ''} 
                               render={({onChange, onBlur, value}) => (
                                 <InputBase 
-                                  onBlur={(e) => {
-                                    updateCategoryName(category.id, e.target.value); 
-                                    onBlur();
-                                  }}
+                                  // onBlur={(e) => {
+                                  //   updateCategoryName(category.id, e.target.value); 
+                                  //   onBlur();
+                                  // }}
+                                  onBlur={onBlur}
                                   onChange={onChange}
                                   value={value}
                                   multiline
@@ -320,7 +304,6 @@ const CategoryTabs = ({
 
 CategoryTabs.propTypes = {
   canAddCategory: PropTypes.bool,
-  isCategoryDirty: PropTypes.bool,
   canSaveTabAndPanel: PropTypes.bool,
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   categoriesLoading: PropTypes.bool,
@@ -337,7 +320,6 @@ CategoryTabs.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  isCategoryDirty: makeSelectIsCategoryDirty(),
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   categories: makeSelectCategories(),
   categoriesLoading: makeSelectCategoriesLoading(),

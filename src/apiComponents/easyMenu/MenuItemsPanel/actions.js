@@ -14,6 +14,7 @@ import {
   UPDATE_MENU_ITEM_IMAGE,
   UPDATE_MENU_ITEMS_LOCATION,
   UPDATE_MENU_ITEM_VARIANTS,
+  UPDATE_MENU_ITEMS,
   SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
   UPDATE_DIRTINESS,
   RESET_DIRTINESS,
@@ -111,6 +112,13 @@ export function removeMenuItem(menuItemId) {
   return {
     type: REMOVE_MENU_ITEM,
     menuItemId,
+  }
+}
+
+export function updateMenuItems(menuItems) {
+  return {
+    type: UPDATE_MENU_ITEMS,
+    menuItems,
   }
 }
 

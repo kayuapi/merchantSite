@@ -1,6 +1,7 @@
 import produce from 'immer';
 import {
   SAVE_TAB_AND_PANEL,
+  SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB,
   SAVE_TAB_AND_PANEL_SUCCESS,
   SAVE_TAB_AND_PANEL_ERROR,
   SAVE_TAB,
@@ -31,6 +32,12 @@ const controlReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case SAVE_TAB_AND_PANEL: {
+        draft.tabAndPanelSaving = true;
+        draft.tabAndPanelError = false;
+        draft._savedSuccessfully = false;
+        break;
+      }
+      case SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB: {
         draft.tabAndPanelSaving = true;
         draft.tabAndPanelError = false;
         break;

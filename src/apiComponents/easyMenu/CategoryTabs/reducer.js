@@ -12,8 +12,8 @@ import {
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
+  UPDATE_CATEGORIES,
   UPDATE_CATEGORY_NAME,
-  UPDATE_CATEGORY_DIRTINESS,
 } from './constants';
 
 export const initialState = {
@@ -26,7 +26,6 @@ export const initialState = {
   canAddCategory: true,
   categoriesSaving: false,
   categoryDeleting: false,
-  isDirty: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -107,7 +106,6 @@ const categoriesReducer = (state = initialState, action) =>
         draft.categories = action.categories;
         draft.categoriesSaving = false;
         draft.canAddCategory = true;
-        draft.isDirty = false;
         break;
       }
       case SAVE_CATEGORY_ERROR: {
@@ -126,12 +124,11 @@ const categoriesReducer = (state = initialState, action) =>
         const selectedCategoryIndex = draft.categories.findIndex(category => category.id === action.categoryId);
         draft.categories[selectedCategoryIndex].name = action.categoryName;
         draft.currentCategory.name = action.categoryName;
-        draft.isDirty = draft.currentCategory.name !== draft.currentCategory._name;
         break;
       }
 
-      case UPDATE_CATEGORY_DIRTINESS: {
-        draft.isDirty = action._isDirty;
+      case UPDATE_CATEGORIES: {
+        draft.categories = action.categories;
         break;
       }
     }
