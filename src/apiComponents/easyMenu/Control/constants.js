@@ -1,4 +1,5 @@
 export const SAVE_TAB_AND_PANEL = 'app/ElegantMenu/SAVE_TAB_AND_PANEL';
+export const SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB = 'app/ElegantMenu/SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB';
 export const SAVE_TAB_AND_PANEL_SUCCESS = 'app/ElegantMenu/SAVE_TAB_AND_PANEL_SUCCESS';
 export const SAVE_TAB_AND_PANEL_ERROR = 'app/ElegantMenu/SAVE_TAB_AND_PANEL_ERROR';
 

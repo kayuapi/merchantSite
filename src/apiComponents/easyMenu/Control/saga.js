@@ -1,5 +1,5 @@
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
-import { SAVE_TAB_AND_PANEL, TOGGLE_CATEGORY_SORT_MODE_CONTROLLER } from './constants';
+import { SAVE_TAB_AND_PANEL, TOGGLE_CATEGORY_SORT_MODE_CONTROLLER, SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB } from './constants';
 import { makeSelectCategorySortModeOn } from './selectors';
 import { 
   tabAndPanelSaved, 
@@ -8,20 +8,13 @@ import {
   tabSaved, 
   tabSavingError, 
   toggleCategorySortMode,
-  modifyStateToClean,
-  modifyStateToDirty, 
 } from './actions';
-import { saveCategoriesToDb, savePanelToDb, saveCategoriesAndMenuItemsToDb } from '../utils/request';
-import { 
-  selectCategories, 
-  makeSelectCategories, 
-  makeSelectCurrentCategoryId, 
-  makeSelectCurrentCategoryFromId 
-} from '../CategoryTabs/selectors';
+import { switchCategory, updateCategories } from '../CategoryTabs/actions';
+import { saveCategoriesToDb, saveCategoriesAndMenuItemsToDb } from '../utils/request';
+
 import { makeSelectSMOCategoryTabs } from '../CategoryTabsSortModeOn/selectors';
-import { makeSelectMenuItems } from '../MenuItemsPanel/selectors';
 import { closeAlertToContinue } from '../AlertToContinue/actions';
-import { syncPrvMenuItemsInCloudAfterSavingSuccessfully } from '../MenuItemsPanel/actions';
+import { syncPrvMenuItemsInCloudAfterSavingSuccessfully, updateMenuItems } from '../MenuItemsPanel/actions';
 import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
 import { store } from '../../../App';
 // saveCategorySortModeOn
@@ -37,6 +30,52 @@ const validateNoDuplicateCategoryName = (categories) => {
   }
   return false;
 }
+
+export function* saveTabAndPanelThenSwitchTab(action) {
+  try {
+    console.log('1');
+    console.log('action in saga', action);
+    if (validateNoDuplicateCategoryName(action.categories)) {
+    }
+    else {
+      throw new Error({message: 'failed validation: duplicated category names'});
+    }
+    console.log('2');
+    if (!action.categories) {
+      action.categories = [];
+    }
+    if (!action.menuItems) {
+      action.menuItems = [];
+    }
+    // const success = true;
+    const { success } = yield call(
+      saveCategoriesAndMenuItemsToDb, 
+      action.categories ? action.categories : [], 
+      action.currentCategory.name, 
+      action.menuItems ? action.menuItems : []
+    );
+    console.log('succes', success);
+    if (success) {
+      yield put(tabAndPanelSaved());
+      yield put(updateCategories(action.categories));
+      yield put(updateMenuItems(action.menuItems));
+      // yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
+      // console.log('selectElegantMenuAlertToContinueIsAlertOn(store.getState())', selectElegantMenuAlertToContinueIsAlertOn(store.getState()));
+      yield put(closeAlertToContinue());
+      yield put(switchCategory(action.toCategory));
+
+      // if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {
+      //   yield put(closeAlertToContinue());
+      // }
+    } else {
+      throw new Error({message: "error"});
+    }
+  } catch (err) {
+    console.log('err', err);
+    yield put(tabAndPanelSavingError(err));
+  }
+}
+
 
 
 export function* saveTabAndPanel(action) {
@@ -102,6 +141,7 @@ export function* toggleCategorySortModeController() {
 export default function* controlData() {
   yield all([
     takeLatest(SAVE_TAB_AND_PANEL, saveTabAndPanel),
+    takeLatest(SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB, saveTabAndPanelThenSwitchTab),
     takeLatest(TOGGLE_CATEGORY_SORT_MODE_CONTROLLER, toggleCategorySortModeController)
   ])
   // yield takeLatest(TOGGLE_CATEGORY_SORT_MODE_CONTROLLER, toggleCategorySortModeController);

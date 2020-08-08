@@ -20,7 +20,6 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import { fetchUtils, useAuthenticated } from 'react-admin';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
-import Aside from './aside';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';

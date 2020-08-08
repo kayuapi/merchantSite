@@ -9,6 +9,7 @@ import {
   DELETE_MENU_ITEMS_ERROR,
   ADD_MENU_ITEM,
   REMOVE_MENU_ITEM,
+  UPDATE_MENU_ITEMS,
   UPDATE_MENU_ITEM_NAME,
   UPDATE_MENU_ITEM_PRICE,
   UPDATE_MENU_ITEM_IMAGE,
@@ -114,7 +115,10 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
         draft.menuItems = deleteAndAdjustUILocation(draft.menuItems, action.menuItemId);
         break;
       }
-
+      case UPDATE_MENU_ITEMS: {
+        draft.menuItems = action.menuItems;
+        break;
+      }
       case UPDATE_MENU_ITEM_NAME: {
         let k = [];
         draft.menuItems.forEach(menuItem => {

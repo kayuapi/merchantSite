@@ -1,15 +1,15 @@
 import { stringify } from 'query-string'
 import { fetchUtils } from 'react-admin'
-import Cookies from 'universal-cookie'
+// import Cookies from 'universal-cookie'
 import { v4 as uuidv4 } from 'uuid'
 
 //import { store } from 'index'
 
 const camelCaseKeys = require('camelcase-keys')
 
-const snakeCaseKeys = require('snakecase-keys')
+// const snakeCaseKeys = require('snakecase-keys')
 
-const cookies = new Cookies()
+// const cookies = new Cookies()
 
 
 

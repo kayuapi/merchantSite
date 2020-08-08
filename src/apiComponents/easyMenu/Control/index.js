@@ -79,17 +79,16 @@ const Control = ({
 }) => {    
   const classes = useStyles();
   const { formState: { dirtyFields}, reset } = useFormContext();
-  // console.log('menuItemsIsDirty',dirtyFields);
-  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty || currentCategory._name !== currentCategory.name;
+  console.log('dirtyFields', dirtyFields);
+  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty;
 
 
 
   useEffect(() => {
     if (savedSuccessfully) {
       reset({}, {isDirty: false, dirtyFields: false});
-      resetSavedSuccessfully();
     }
-  }, [reset, resetSavedSuccessfully, savedSuccessfully]);
+  }, [reset, savedSuccessfully]);
 
   useEffect(() => {
     if (savedSuccessfully) {

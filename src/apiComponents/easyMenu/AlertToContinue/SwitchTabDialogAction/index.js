@@ -17,8 +17,8 @@ import {
   makeSelectMenuItems,
 } from '../../MenuItemsPanel/selectors';
 
-import { makeSelectTabAndPanelSaving } from '../../Control/selectors';
-import { saveTabAndPanel } from '../../Control/actions';
+import { makeSelectTabAndPanelSaving, makeSelectTabAndPanelSavedSuccessfully } from '../../Control/selectors';
+import { saveTabAndPanel, saveTabAndPanelThenSwitchTab } from '../../Control/actions';
 
 const SwitchTabDialogAction = ({
   revertChangesToTab,
@@ -26,7 +26,9 @@ const SwitchTabDialogAction = ({
   categories,
   menuItems,
   actionToDispatch,
+  saveTabAndPanelThenSwitchTab,
   isTabAndPanelSaving,
+  isTabAndPanelSaved,
   closeAlertToContinue,
   saveTabAndPanel,
   dispatch,
@@ -56,23 +58,26 @@ const SwitchTabDialogAction = ({
         }} 
         color="primary" 
         autoFocus>
-          continue without Saving
+          {!isTabAndPanelSaved && !isTabAndPanelSaving && <span>continue without Saving</span>}
       </Button>
       <Button
-        disabled={isTabAndPanelSaving}
+        disabled={isTabAndPanelSaving || isTabAndPanelSaved}
         onClick={()=> {
           const currentCategoryNewCopy = {...currentCategory};
           // console.log('equal?', currentCategoryNewCopy == currentCategory);
-          const categoriesNewCopy = {...categories};
-          const menuItemsNewCopy = {...menuItems};
+          const categoriesNewCopy = [...categories];
+          const menuItemsNewCopy = [...menuItems];
           // console.log('onclick currentCategory', currentCategoryNewCopy);
-          saveTabAndPanel(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy);
-          dispatch(actionToDispatch);
+          console.log('actionToDispatch', actionToDispatch);
+          saveTabAndPanelThenSwitchTab(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy, actionToDispatch.category);
+          // saveTabAndPanel(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy);
+          // dispatch(actionToDispatch);
         }} 
         color="primary" 
         autoFocus>
-          {isTabAndPanelSaving && <span>Saving...</span>}
-          {!isTabAndPanelSaving && <span>continue with Saving</span>}
+          {isTabAndPanelSaved && <span>Saved</span>}
+          {!isTabAndPanelSaved && isTabAndPanelSaving && <span>Saving...</span>}
+          {!isTabAndPanelSaved && !isTabAndPanelSaving && <span>continue with Saving</span>}
       </Button>
     </DialogActions>
   )
@@ -86,8 +91,10 @@ SwitchTabDialogAction.propTypes = {
   revertChangesToTab: PropTypes.func,
   actionToDispatch: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   isTabAndPanelSaving: PropTypes.bool.isRequired,
+  isTabAndPanelSaved: PropTypes.bool.isRequired,
   closeAlertToContinue: PropTypes.func,
   saveTabAndPanel: PropTypes.func,
+  saveTabAndPanelThenSwitchTab: PropTypes.func,
   dispatch: PropTypes.func,
 }
 
@@ -98,12 +105,14 @@ const mapStateToProps = createStructuredSelector({
 
   actionToDispatch: makeSelectActionToDispatch(),
   isTabAndPanelSaving: makeSelectTabAndPanelSaving(),
+  isTabAndPanelSaved: makeSelectTabAndPanelSavedSuccessfully(),
 })
 
 function mapDispatchToProps(dispatch) {
   return {
     revertChangesToTab: (categoryId, categoryName) => dispatch(updateCategoryName(categoryId, categoryName)),
     saveTabAndPanel: (categories, currentCategory, menuItems) => dispatch(saveTabAndPanel(categories, currentCategory, menuItems)),
+    saveTabAndPanelThenSwitchTab: (categories, currentCategory, menuItems, toCategory) => dispatch(saveTabAndPanelThenSwitchTab(categories, currentCategory, menuItems, toCategory)),
     closeAlertToContinue: () => dispatch(closeAlertToContinue()),
     dispatch,
   };
