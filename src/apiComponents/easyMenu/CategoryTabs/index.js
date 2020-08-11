@@ -19,7 +19,7 @@ import { useFormContext } from "react-hook-form";
 import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
 
 import { createStructuredSelector } from 'reselect';
-import {
+import { 
   makeSelectCategories, 
   makeSelectCategoriesLoading, 
   makeSelectCategoriesError,
@@ -125,7 +125,7 @@ const CategoryTabs = ({
       window.removeEventListener("resize", updateScrollButton);
     }
   });
-  
+
   const handleTabChange = (event, categoryId) => {
     event.stopPropagation();
     const category = categories.filter(category => category.id === categoryId)[0];
@@ -271,11 +271,10 @@ const CategoryTabs = ({
                               defaultValue={category.name ? category.name : ''} 
                               render={({onChange, onBlur, value}) => (
                                 <InputBase 
-                                  // onBlur={(e) => {
-                                  //   updateCategoryName(category.id, e.target.value); 
-                                  //   onBlur();
-                                  // }}
-                                  onBlur={onBlur}
+                                  onBlur={(e) => {
+                                    updateCategoryName(category.id, e.target.value); 
+                                    onBlur();
+                                  }}
                                   onChange={onChange}
                                   value={value}
                                   multiline
@@ -320,6 +319,7 @@ CategoryTabs.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
+  isCategoryDirty: makeSelectIsCategoryDirty(),
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   categories: makeSelectCategories(),
   categoriesLoading: makeSelectCategoriesLoading(),
