@@ -57,11 +57,11 @@ export function* saveTabAndPanelThenSwitchTab(action) {
     console.log('succes', success);
     if (success) {
       yield put(tabAndPanelSaved());
+      yield put(closeAlertToContinue());
       yield put(updateCategories(action.categories));
       yield put(updateMenuItems(action.menuItems));
       // yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
       // console.log('selectElegantMenuAlertToContinueIsAlertOn(store.getState())', selectElegantMenuAlertToContinueIsAlertOn(store.getState()));
-      yield put(closeAlertToContinue());
       yield put(switchCategory(action.toCategory));
 
       // if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {

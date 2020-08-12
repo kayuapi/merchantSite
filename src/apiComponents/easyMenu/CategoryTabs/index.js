@@ -13,11 +13,11 @@ import {
   deleteCategory,
   updateCategoryName,
 } from "./actions.js";
+import { makeSelectIsAlertToContinueOn } from '../AlertToContinue/selectors';
 import { openAlertToContinue } from '../AlertToContinue/actions';
 import { useFormContext } from "react-hook-form";
 
 import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
-
 import { createStructuredSelector } from 'reselect';
 import { 
   makeSelectCategories, 
@@ -37,6 +37,7 @@ import Close from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
+import { resetSavedSuccessfully } from "../Control/actions.js";
 
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
@@ -94,6 +95,8 @@ const CategoryTabs = ({
   dispatchDeleteCategory,
   children,
   updateCategoryName,
+  resetSavedSuccessfully,
+  isAlertToContinueOn,
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
@@ -127,12 +130,16 @@ const CategoryTabs = ({
   });
 
   const handleTabChange = (event, categoryId) => {
+    // the line below is for resetting the open alert saved ui
+    resetSavedSuccessfully();
     event.stopPropagation();
+    event.preventDefault();
     const category = categories.filter(category => category.id === categoryId)[0];
     if (category.id === currentCategory.id) {
     } else if (category.id !== currentCategory.id && !isDirty) {
       dispatchSwitchCategory(category);
     } else {
+
       const actionToDispatch = switchCategory(category);
       openAlertToContinue(actionToDispatch);      
     }
@@ -272,7 +279,9 @@ const CategoryTabs = ({
                               render={({onChange, onBlur, value}) => (
                                 <InputBase 
                                   onBlur={(e) => {
-                                    updateCategoryName(category.id, e.target.value); 
+                                    if (!isAlertToContinueOn) {
+                                      updateCategoryName(category.id, e.target.value); 
+                                    }
                                     onBlur();
                                   }}
                                   onChange={onChange}
@@ -316,10 +325,10 @@ CategoryTabs.propTypes = {
   addCategory: PropTypes.func.isRequired,
   openAlertToContinue: PropTypes.func.isRequired,
   updateCategoryName: PropTypes.func.isRequired,
+  resetSavedSuccessfully: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  isCategoryDirty: makeSelectIsCategoryDirty(),
   canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   categories: makeSelectCategories(),
   categoriesLoading: makeSelectCategoriesLoading(),
@@ -327,6 +336,9 @@ const mapStateToProps = createStructuredSelector({
   canAddCategory: makeSelectCanAddCategory(),
   categoriesSaving: makeSelectCategoriesSaving(),
   currentCategory: makeSelectCurrentCategory(),
+
+  isAlertToContinueOn: makeSelectIsAlertToContinueOn(),
+
 });
 
 function mapDispatchToProps(dispatch) {
@@ -338,7 +350,7 @@ function mapDispatchToProps(dispatch) {
     dispatchDeleteCategory: categoryId => dispatch(deleteCategory(categoryId)),
     dispatchDeleteMenuItems: menuItems => dispatch(deleteMenuItems(menuItems)),
     openAlertToContinue: (actionCreator, actionCreatorArgument) => dispatch(openAlertToContinue(actionCreator, actionCreatorArgument)),
-
+    resetSavedSuccessfully: () => dispatch(resetSavedSuccessfully()),
   };
 }
 

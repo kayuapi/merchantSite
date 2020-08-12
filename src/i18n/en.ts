@@ -4,6 +4,9 @@ import englishMessages from 'ra-language-english';
 const customEnglishMessages: TranslationMessages = {
     ...englishMessages,
     pos: {
+        notification: {
+          saved_successfully: 'Saved successfully!',
+        },
         search: 'Search',
         configuration: 'Configuration',
         language: 'Language',
