@@ -6,6 +6,7 @@ const customEnglishMessages: TranslationMessages = {
     pos: {
         notification: {
           saved_successfully: 'Saved successfully!',
+          issue_addding_new_category_duplicate_category_name: 'Issue adding new category: duplicated category name',
         },
         search: 'Search',
         configuration: 'Configuration',

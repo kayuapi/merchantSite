@@ -31,6 +31,7 @@ import { makeSelectElegantMenuCanSaveTabAndPanel } from '../Control/selectors';
 import { v4 as uuidv4 } from 'uuid';
 import { Controller } from 'react-hook-form';
 import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@material-ui/core";
+import { useNotify } from 'react-admin';
 
 import Add from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
@@ -38,7 +39,7 @@ import { makeStyles } from "@material-ui/styles";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
 import { resetSavedSuccessfully } from "../Control/actions.js";
-
+import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
 // Since I am building an app with react hook only,
@@ -100,6 +101,7 @@ const CategoryTabs = ({
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
+  const notify = useNotify();
   // const categoriesLength = categories ? categories.length: 0;
   // const tabInputRefs = React.useRef([...new Array(categoriesLength)].map(() => React.createRef()));
   const { formState: { dirtyFields } } = useFormContext();
@@ -145,17 +147,22 @@ const CategoryTabs = ({
     }
   };
 
-  const addNewCategory = () => {
+  const addNewCategoryTo = (categories) => {
     const newCategory = {
       id: uuidv4(),
-      _name: false,
-      name: false,
+      _name: "",
+      name: "",
     };
-    addCategory(newCategory);
-    if (isDirty) {
-      openAlertToContinue(switchCategory(newCategory));
+
+    if (validateNoDuplicateCategoryName([...categories, newCategory])) {
+      addCategory(newCategory);
+      if (isDirty) {
+        openAlertToContinue(switchCategory(newCategory));
+      } else {
+        dispatchSwitchCategory(newCategory);
+      }  
     } else {
-      dispatchSwitchCategory(newCategory);
+      notify("pos.notification.issue_addding_new_category_duplicate_category_name", 'warning');
     }
   }
   const [scrollBtn, setScrollBtn] = useState("off");
@@ -236,7 +243,7 @@ const CategoryTabs = ({
             <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
               <IconButton 
                 className={classes.addPageButton} 
-                onClick={addNewCategory} 
+                onClick={() => addNewCategoryTo(categories)} 
                 aria-label="add page"
               >
                 <Add />
@@ -253,7 +260,7 @@ const CategoryTabs = ({
               <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
                 <IconButton 
                   className={classes.addPageButton} 
-                  onClick={addNewCategory} 
+                  onClick={() => addNewCategoryTo(categories)} 
                   aria-label="add page"
                 >
                   <Add />

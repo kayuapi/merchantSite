@@ -18,29 +18,11 @@ import { syncPrvMenuItemsInCloudAfterSavingSuccessfully, updateMenuItems } from 
 import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
 import { store } from '../../../App';
 // saveCategorySortModeOn
-
-const validateNoDuplicateCategoryName = (categories) => {
-  const categoryNames = categories.map(category => category.name);
-  let tmpSet = new Set();
-  categoryNames.forEach(categoryName => {
-    tmpSet.add(categoryName);
-  })
-  if (tmpSet.size === categoryNames.length) {
-    return true;
-  }
-  return false;
-}
+import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
 
 export function* saveTabAndPanelThenSwitchTab(action) {
   try {
-    console.log('1');
     console.log('action in saga', action);
-    if (validateNoDuplicateCategoryName(action.categories)) {
-    }
-    else {
-      throw new Error({message: 'failed validation: duplicated category names'});
-    }
-    console.log('2');
     if (!action.categories) {
       action.categories = [];
     }

@@ -71,8 +71,8 @@ const SwitchTabDialogAction = ({
         onClick={()=> {
           const currentCategoryNewCopy = {...currentCategory};
           // console.log('equal?', currentCategoryNewCopy == currentCategory);
-          const categoriesNewCopy = [...categories];
-          const menuItemsNewCopy = [...menuItems];
+          const categoriesNewCopy = categories? [...categories]: [];
+          const menuItemsNewCopy = menuItems ? [...menuItems] : [];
           // console.log('onclick currentCategory', currentCategoryNewCopy);
           console.log('actionToDispatch', actionToDispatch);
           saveTabAndPanelThenSwitchTab(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy, actionToDispatch.category);
