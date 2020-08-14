@@ -43,6 +43,7 @@
     bottom: 0;
     right: 0;
     cursor: se-resize;
+    margin-right: 1rem;
   }
   
   .react-grid-item > .react-resizable-handle::after {

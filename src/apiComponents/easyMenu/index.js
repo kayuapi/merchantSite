@@ -15,7 +15,7 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
 import { useForm, FormProvider, Controller } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
+// import { DevTool } from "@hookform/devtools";
 
 import { createStructuredSelector } from 'reselect';
 import { makeSelectCategorySortModeOn } from './Control/selectors';
@@ -80,7 +80,7 @@ const EasyMenuPageShow = ({
         </FormProvider>
       </Container>
 
-      <DevTool control={methods.control} />
+      {/* <DevTool control={methods.control} /> */}
     </div>
   )
 };

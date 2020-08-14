@@ -13,13 +13,13 @@ import {
   deleteCategory,
   updateCategoryName,
 } from "./actions.js";
+import { makeSelectIsAlertToContinueOn } from '../AlertToContinue/selectors';
 import { openAlertToContinue } from '../AlertToContinue/actions';
 import { useFormContext } from "react-hook-form";
 
 import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
-
 import { createStructuredSelector } from 'reselect';
-import {
+import { 
   makeSelectCategories, 
   makeSelectCategoriesLoading, 
   makeSelectCategoriesError,
@@ -31,13 +31,15 @@ import { makeSelectElegantMenuCanSaveTabAndPanel } from '../Control/selectors';
 import { v4 as uuidv4 } from 'uuid';
 import { Controller } from 'react-hook-form';
 import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@material-ui/core";
+import { useNotify } from 'react-admin';
 
 import Add from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
-
+import { resetSavedSuccessfully } from "../Control/actions.js";
+import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
 // Since I am building an app with react hook only,
@@ -94,9 +96,12 @@ const CategoryTabs = ({
   dispatchDeleteCategory,
   children,
   updateCategoryName,
+  resetSavedSuccessfully,
+  isAlertToContinueOn,
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
+  const notify = useNotify();
   // const categoriesLength = categories ? categories.length: 0;
   // const tabInputRefs = React.useRef([...new Array(categoriesLength)].map(() => React.createRef()));
   const { formState: { dirtyFields } } = useFormContext();
@@ -125,30 +130,39 @@ const CategoryTabs = ({
       window.removeEventListener("resize", updateScrollButton);
     }
   });
-  
+
   const handleTabChange = (event, categoryId) => {
+    // the line below is for resetting the open alert saved ui
+    resetSavedSuccessfully();
     event.stopPropagation();
+    event.preventDefault();
     const category = categories.filter(category => category.id === categoryId)[0];
     if (category.id === currentCategory.id) {
     } else if (category.id !== currentCategory.id && !isDirty) {
       dispatchSwitchCategory(category);
     } else {
+
       const actionToDispatch = switchCategory(category);
       openAlertToContinue(actionToDispatch);      
     }
   };
 
-  const addNewCategory = () => {
+  const addNewCategoryTo = (categories) => {
     const newCategory = {
       id: uuidv4(),
-      _name: false,
-      name: false,
+      _name: "",
+      name: "",
     };
-    addCategory(newCategory);
-    if (isDirty) {
-      openAlertToContinue(switchCategory(newCategory));
+
+    if (validateNoDuplicateCategoryName([...categories, newCategory])) {
+      addCategory(newCategory);
+      if (isDirty) {
+        openAlertToContinue(switchCategory(newCategory));
+      } else {
+        dispatchSwitchCategory(newCategory);
+      }  
     } else {
-      dispatchSwitchCategory(newCategory);
+      notify("pos.notification.issue_addding_new_category_duplicate_category_name", 'warning');
     }
   }
   const [scrollBtn, setScrollBtn] = useState("off");
@@ -229,7 +243,7 @@ const CategoryTabs = ({
             <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
               <IconButton 
                 className={classes.addPageButton} 
-                onClick={addNewCategory} 
+                onClick={() => addNewCategoryTo(categories)} 
                 aria-label="add page"
               >
                 <Add />
@@ -246,7 +260,7 @@ const CategoryTabs = ({
               <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
                 <IconButton 
                   className={classes.addPageButton} 
-                  onClick={addNewCategory} 
+                  onClick={() => addNewCategoryTo(categories)} 
                   aria-label="add page"
                 >
                   <Add />
@@ -271,11 +285,12 @@ const CategoryTabs = ({
                               defaultValue={category.name ? category.name : ''} 
                               render={({onChange, onBlur, value}) => (
                                 <InputBase 
-                                  // onBlur={(e) => {
-                                  //   updateCategoryName(category.id, e.target.value); 
-                                  //   onBlur();
-                                  // }}
-                                  onBlur={onBlur}
+                                  onBlur={(e) => {
+                                    if (!isAlertToContinueOn) {
+                                      updateCategoryName(category.id, e.target.value); 
+                                    }
+                                    onBlur();
+                                  }}
                                   onChange={onChange}
                                   value={value}
                                   multiline
@@ -317,6 +332,7 @@ CategoryTabs.propTypes = {
   addCategory: PropTypes.func.isRequired,
   openAlertToContinue: PropTypes.func.isRequired,
   updateCategoryName: PropTypes.func.isRequired,
+  resetSavedSuccessfully: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -327,6 +343,9 @@ const mapStateToProps = createStructuredSelector({
   canAddCategory: makeSelectCanAddCategory(),
   categoriesSaving: makeSelectCategoriesSaving(),
   currentCategory: makeSelectCurrentCategory(),
+
+  isAlertToContinueOn: makeSelectIsAlertToContinueOn(),
+
 });
 
 function mapDispatchToProps(dispatch) {
@@ -338,7 +357,7 @@ function mapDispatchToProps(dispatch) {
     dispatchDeleteCategory: categoryId => dispatch(deleteCategory(categoryId)),
     dispatchDeleteMenuItems: menuItems => dispatch(deleteMenuItems(menuItems)),
     openAlertToContinue: (actionCreator, actionCreatorArgument) => dispatch(openAlertToContinue(actionCreator, actionCreatorArgument)),
-
+    resetSavedSuccessfully: () => dispatch(resetSavedSuccessfully()),
   };
 }
 

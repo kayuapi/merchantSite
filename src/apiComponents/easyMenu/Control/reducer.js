@@ -40,6 +40,7 @@ const controlReducer = (state = initialState, action) =>
       case SAVE_TAB_AND_PANEL_THEN_SWITCH_TAB: {
         draft.tabAndPanelSaving = true;
         draft.tabAndPanelError = false;
+        draft._savedSuccessfully = false;
         break;
       }
       case SAVE_TAB_AND_PANEL_SUCCESS: {

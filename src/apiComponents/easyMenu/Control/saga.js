@@ -18,29 +18,11 @@ import { syncPrvMenuItemsInCloudAfterSavingSuccessfully, updateMenuItems } from 
 import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
 import { store } from '../../../App';
 // saveCategorySortModeOn
-
-const validateNoDuplicateCategoryName = (categories) => {
-  const categoryNames = categories.map(category => category.name);
-  let tmpSet = new Set();
-  categoryNames.forEach(categoryName => {
-    tmpSet.add(categoryName);
-  })
-  if (tmpSet.size === categoryNames.length) {
-    return true;
-  }
-  return false;
-}
+import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
 
 export function* saveTabAndPanelThenSwitchTab(action) {
   try {
-    console.log('1');
     console.log('action in saga', action);
-    if (validateNoDuplicateCategoryName(action.categories)) {
-    }
-    else {
-      throw new Error({message: 'failed validation: duplicated category names'});
-    }
-    console.log('2');
     if (!action.categories) {
       action.categories = [];
     }
@@ -57,11 +39,11 @@ export function* saveTabAndPanelThenSwitchTab(action) {
     console.log('succes', success);
     if (success) {
       yield put(tabAndPanelSaved());
+      yield put(closeAlertToContinue());
       yield put(updateCategories(action.categories));
       yield put(updateMenuItems(action.menuItems));
       // yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
       // console.log('selectElegantMenuAlertToContinueIsAlertOn(store.getState())', selectElegantMenuAlertToContinueIsAlertOn(store.getState()));
-      yield put(closeAlertToContinue());
       yield put(switchCategory(action.toCategory));
 
       // if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {

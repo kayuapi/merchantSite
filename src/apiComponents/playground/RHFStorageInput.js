@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
-import { Storage, Auth } from 'aws-amplify';
+import { Storage } from 'aws-amplify';
 import Typography from '@material-ui/core/Typography';
-import awsmobile from '../../aws-exports';
 import { useFormContext } from 'react-hook-form';
 import { updateMenuItemImage } from '../easyMenu/MenuItemsPanel/actions';
 import { makeSelectPrefixUploadedUrl } from '../easyMenu/MenuItemsPanel/selectors';
@@ -98,7 +97,7 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloa
   }
 
   return (
-    <div style={{textAlign: 'center'}}>
+    <div style={{textAlign: 'center', height: '100%'}}>
       {!image && <input style={{height: '100px', width: '100%'}}
           type={!localState.uploaded ? "file" : "hidden"} accept='image/*'
           onChange={(evt) => onChange(evt, uploadedImageUrl)}

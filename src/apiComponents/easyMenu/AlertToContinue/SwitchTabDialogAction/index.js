@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -8,7 +8,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { closeAlertToContinue } from '../actions';
 import { updateCategoryName } from '../../CategoryTabs/actions';
 import { makeSelectActionToDispatch } from '../selectors';
-import { useFormContext } from 'react-hook-form';
+import { useNotify } from 'react-admin';
+
 import {
   makeSelectCurrentCategory,
   makeSelectCategories,
@@ -33,7 +34,12 @@ const SwitchTabDialogAction = ({
   saveTabAndPanel,
   dispatch,
 }) => {
-  const { reset, getValues } = useFormContext();
+  const notify = useNotify();
+  useEffect(() => {
+    if (isTabAndPanelSaved) {
+      notify("pos.notification.saved_successfully");
+    }
+  }, [isTabAndPanelSaved, notify]);
   return (
     <DialogActions>
       <Button
@@ -65,8 +71,8 @@ const SwitchTabDialogAction = ({
         onClick={()=> {
           const currentCategoryNewCopy = {...currentCategory};
           // console.log('equal?', currentCategoryNewCopy == currentCategory);
-          const categoriesNewCopy = [...categories];
-          const menuItemsNewCopy = [...menuItems];
+          const categoriesNewCopy = categories? [...categories]: [];
+          const menuItemsNewCopy = menuItems ? [...menuItems] : [];
           // console.log('onclick currentCategory', currentCategoryNewCopy);
           console.log('actionToDispatch', actionToDispatch);
           saveTabAndPanelThenSwitchTab(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy, actionToDispatch.category);

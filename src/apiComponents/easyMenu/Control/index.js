@@ -7,6 +7,7 @@ import { compose } from 'redux';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
 import { makeStyles } from '@material-ui/core/styles';
 import { 
   makeSelectElegantMenuCanSaveTabAndPanel,
@@ -39,6 +40,7 @@ import {
 } from './actions';
 import { openAlertToContinue } from '../AlertToContinue/actions';
 import { updatePrefixUploadedUrlWithUserId, resetDirtiness } from '../MenuItemsPanel/actions';
+import { useNotify } from 'react-admin';
 
 import { Auth } from 'aws-amplify';
 
@@ -81,7 +83,7 @@ const Control = ({
   const { formState: { dirtyFields}, reset } = useFormContext();
   console.log('dirtyFields', dirtyFields);
   const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty;
-
+  const notify = useNotify();
 
 
   useEffect(() => {
@@ -117,7 +119,11 @@ const Control = ({
         className={classes.button}
         startIcon={<SaveIcon />}
         onClick={() => {
-          saveTabAndPanel(categories, currentCategory, menuItems);
+          if (validateNoDuplicateCategoryName(categories)) {
+            saveTabAndPanel(categories, currentCategory, menuItems);
+          } else {
+            notify("pos.notification.issue_saving_new_category_duplicate_category_name", 'warning');
+          }
         }}
       >
         {!isDirty && <span>Saved</span>}
