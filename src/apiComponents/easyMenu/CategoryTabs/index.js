@@ -99,7 +99,6 @@ const CategoryTabs = ({
   resetSavedSuccessfully,
   isAlertToContinueOn,
 }) => {
-  console.log('catego', categories);
   const classes = useStyles();
   const tabsRef = React.useRef();
   const notify = useNotify();
