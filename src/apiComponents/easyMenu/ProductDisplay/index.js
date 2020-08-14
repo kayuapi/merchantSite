@@ -4,22 +4,17 @@
  *
  */
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo } from 'react';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-// import { connect, useSelector } from 'react-redux';
-// import { FormattedMessage } from 'react-intl';
 import { compose } from 'redux';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-// import FastfoodIcon from '@material-ui/icons/Fastfood';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
-// import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,15 +26,15 @@ import { openVariantsPopUp } from '../VariantsPopUp/actions';
 import { updateMenuItemName, updateMenuItemPrice } from '../MenuItemsPanel/actions';
 import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
 import InputBase from '@material-ui/core/InputBase';
-// import { useInjectReducer } from 'utils/injectReducer';
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { store } from '../../../App';
 
 import StorageInput from '../../playground/RHFStorageInput';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: 345,
+    // maxWidth: 345,
+    marginRight: '1rem',
     height: '100%',
     display: 'flex',
     'flex-direction': 'column',
@@ -64,6 +59,8 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flex: '1 0 auto',
+    display: 'flex',
+    flexDirection: 'column',
   },
   controls: {
     display: 'flex',

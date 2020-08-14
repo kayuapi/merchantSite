@@ -1,14 +1,13 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardMedia from '@material-ui/core/CardMedia';
 import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
 import Add from '@material-ui/icons/Add';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: 345,
+    // maxWidth: 345,
+    marginRight: '1rem',
     height: '100%',
     display: 'flex',
     'flex-direction': 'column',
