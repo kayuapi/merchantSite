@@ -4,9 +4,11 @@
  * Append <AddCard /> by adding it to state.items when component updates again
  * 
  */
+import { PRODUCT_DISPLAY_HEIGHT, PRODUCT_DISPLAY_MIN_HEIGHT, PRODUCT_DISPLAY_VERTICAL_GAP } from './layoutConstants';
+import '../css/styles.css';
 import React, { useEffect } from "react";
 import { WidthProvider, Responsive } from "react-grid-layout";
-import PropTypes, { resetWarningCache } from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import _ from "lodash";
@@ -47,6 +49,32 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+function AddCard2() {
+  const menuItemsCount = selectMenuItems(store.getState()) ? selectMenuItems(store.getState()).length : 0;
+
+  return (
+    <div key={uuidv4()} data-grid={{x: 0, y:0, w: 1, h:PRODUCT_DISPLAY_HEIGHT}}>
+      <AddCard onClick={()=> {
+        store.dispatch(
+          addMenuItem({
+            id: uuidv4(),
+            image: '',
+            name: '',
+            price: '',
+            uiLocation: {
+              x: menuItemsCount % 2,
+              y: Math.floor(menuItemsCount / 2)*PRODUCT_DISPLAY_HEIGHT + menuItemsCount*PRODUCT_DISPLAY_VERTICAL_GAP,
+              w: 1,
+              h: PRODUCT_DISPLAY_HEIGHT,
+              minH: PRODUCT_DISPLAY_MIN_HEIGHT,
+            }
+          })
+        )
+      }} /> 
+    </div>
+  );
+}
+
 
 const createElement = (el, ind, setValue) => {
   const removeStyle = {
@@ -54,94 +82,54 @@ const createElement = (el, ind, setValue) => {
     right: "2px",
     top: 0,
     cursor: "pointer",
-    fontSize: "x-large"
+    fontSize: "x-large",
+    marginRight: "1rem",
   };
-  let productName;
-  if (el.uiLocation) {
-    productName = el.uiLocation.add ? uuidv4() : el.name;
-  } else {
-    productName = el.name;
-    el={...el, uiLocation: {add: false}};
-  }
+  el.uiLocation = {...el.uiLocation, minH:PRODUCT_DISPLAY_MIN_HEIGHT};
   return (
     <div key={el.id} data-grid={el.uiLocation}>
-      {el.uiLocation.add ? (
-        <AddCard onClick={()=> {
-          const menuItemsCount = selectMenuItems(store.getState()) ? selectMenuItems(store.getState()).length : 0;
-          store.dispatch(
-            addMenuItem({
-              id: uuidv4(),
-              image: '',
-              name: '',
-              price: '',
-              uiLocation: {
-                x: menuItemsCount % 2,
-                y: Math.floor(menuItemsCount / 2),
-                w: 1,
-                h: 2,
-              }
-            })
-          )}} 
-        />
-      ) : (
-        <ProductDisplay 
-          key={el.id} 
-          id={el.id} 
-          index={ind} 
-          item={el} 
-          // {...this.props}
-        />
-      )}
-      {el.uiLocation.add ? (
-        <span></span>
-      ) : (
-        <span
-          className="remove"
-          style={removeStyle}
-          onClick={() => {
-            setValue('menuPageIsDirty', uuidv4(), {shouldDirty: true});
-            store.dispatch(removeMenuItem(el.id));
-          }}
-        >
-        x
-        </span>
-      )}
+      <ProductDisplay 
+        key={el.id} 
+        id={el.id} 
+        index={ind} 
+        item={el} 
+        // {...this.props}
+      />
+      <span
+        className="remove"
+        style={removeStyle}
+        onClick={() => {
+          setValue('menuPageIsDirty', uuidv4(), {shouldDirty: true});
+          store.dispatch(removeMenuItem(el.id));
+        }}
+      >x
+      </span>
     </div>
   );        
 }
 
 
 export const AddRemoveLayout = ({
-  currentMenuItemsLayout,
+  // currentMenuItemsLayout,
   currentCategoryId,
   menuItems,
-  menuItemsWithAddItem,
   menuItemsLoading,
   menuItemsError,
   loadMenuItems,
   updateMenuItemsLocation,
 }) => {
   const { reset, setValue } = useFormContext();
+  const classes = useStyles();
 
   useEffect(() => {
-    // const ac = new AbortController();
     loadMenuItems();
-    // to reset the fields of menuitems 
     reset({}, {dirtyFields: false, dirty: false});
-    // return () => ac.abort();
   }, [currentCategoryId, loadMenuItems, reset]);
 
   const onLayoutChange = (layout) => {
     updateMenuItemsLocation(layout);
-    // const newLayout = selectMenuItemsLayout(store.getState())
-    // console.log('going to use layout', newLayout);
-    // setLayout(prev => newLayout);
-    // return ({ layout: newLayout });
   }
-
-  const classes = useStyles();
-  // const [layout, setLayout] = React.useState([]);
-
+  
   if (menuItemsLoading) {
     return <CircularProgress />
   }
@@ -150,55 +138,50 @@ export const AddRemoveLayout = ({
       <TabPanel value={currentCategoryId}>
         <Container className={classes.cardGrid} maxWidth="sm">
           {/* <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} /> */}
-          <div style={{position: "relative"}}>
-          <ResponsiveReactGridLayout
-            onLayoutChange={onLayoutChange}
-            layouts={{lg: currentMenuItemsLayout, md: currentMenuItemsLayout, sm: currentMenuItemsLayout, xs: currentMenuItemsLayout, xxs: currentMenuItemsLayout}}
-            // onBreakpointChange={this.onBreakpointChange}
-            breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
-            cols={{ lg: 2, md: 2, sm: 2, xs: 2, xxs: 2 }}
-            isDraggable={true}
-            draggableCancel="input,textarea, button"
-            isResizable={false}
-            rowHeight={150}
-            className="layout"
-          >
-            {_.map(menuItemsWithAddItem, (el,ind) => createElement(el,ind, setValue))}
-          </ResponsiveReactGridLayout> 
+          {menuItems.length > 0 && 
+            <div style={{position: "relative"}}>
+              <ResponsiveReactGridLayout
+                onLayoutChange={onLayoutChange}
+                // layouts={{lg: currentMenuItemsLayout, md: currentMenuItemsLayout, sm: currentMenuItemsLayout, xs: currentMenuItemsLayout, xxs: currentMenuItemsLayout}}
+                // onBreakpointChange={this.onBreakpointChange}
+                breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+                cols={{ lg: 2, md: 2, sm: 2, xs: 2, xxs: 2 }}
+                isDraggable={true}
+                draggableCancel="input,textarea, button"
+                isResizable={true}
+                rowHeight={1}
+                className="layout"
+                margin={[0,0]}
+                verticalCompact={false}
+              >
+                {_.map(menuItems, (el,ind) => createElement(el,ind, setValue))}
+              </ResponsiveReactGridLayout> 
+            </div>
+          }
+
+          <div style={{position: "relative", marginTop: '1rem'}}>
+            <ResponsiveReactGridLayout
+              // onLayoutChange={onLayoutChange}
+              // layouts={{lg: currentMenuItemsLayout, md: currentMenuItemsLayout, sm: currentMenuItemsLayout, xs: currentMenuItemsLayout, xxs: currentMenuItemsLayout}}
+              // onBreakpointChange={this.onBreakpointChange}
+              breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+              cols={{ lg: 2, md: 2, sm: 2, xs: 2, xxs: 2 }}
+              // isDraggable={true}
+              margin= {[0, 0]}
+
+              draggableCancel="input,textarea, button"
+              isResizable={false}
+              rowHeight={1}
+              className="layout"
+            >
+              {AddCard2()}
+            </ResponsiveReactGridLayout> 
           </div>           
         </Container>
         <VariantsPopUp />
       </TabPanel>
-    )        }
-
-  //   setTimeout(() => {
-  //     return (
-  //       <TabPanel value={currentCategoryId}>
-  //         <Container className={classes.cardGrid} maxWidth="sm">
-  //           {/* <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} /> */}
-  //           <div style={{position: "relative"}}>
-  //           <ResponsiveReactGridLayout
-  //             onLayoutChange={onLayoutChange}
-  //             layouts={{lg: currentMenuItemsLayout, md: currentMenuItemsLayout, sm: currentMenuItemsLayout, xs: currentMenuItemsLayout, xxs: currentMenuItemsLayout}}
-  //             // onBreakpointChange={this.onBreakpointChange}
-  //             breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
-  //             cols={{ lg: 2, md: 2, sm: 2, xs: 2, xxs: 2 }}
-  //             isDraggable={true}
-  //             draggableCancel="input,textarea, button"
-  //             isResizable={false}
-  //             rowHeight={150}
-  //             className="layout"
-  //           >
-  //             {_.map(menuItemsWithAddItem, (el,ind) => createElement(el,ind, setValue))}
-  //           </ResponsiveReactGridLayout> 
-  //           </div>           
-  //         </Container>
-  //         <VariantsPopUp />
-  //       </TabPanel>
-  //     )        
-  //   }, 1000);
-  //   return null;
-  // }
+    )
+  }
 }
 
 AddRemoveLayout.propTypes = {
@@ -213,10 +196,9 @@ AddRemoveLayout.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  currentMenuItemsLayout: makeSelectMenuItemsLayout(),
+  // currentMenuItemsLayout: makeSelectMenuItemsLayout(),
   currentCategoryId: makeSelectCurrentCategoryId(),
   menuItems: makeSelectMenuItems(),
-  menuItemsWithAddItem: makeSelectMenuItemsWithAddItem(),
   menuItemsLoading: makeSelectMenuItemsLoading(),
   menuItemsError: makeSelectMenuItemsError(),
 });
