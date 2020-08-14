@@ -153,16 +153,20 @@ const CategoryTabs = ({
       _name: "",
       name: "",
     };
-
-    if (validateNoDuplicateCategoryName([...categories, newCategory])) {
-      addCategory(newCategory);
-      if (isDirty) {
-        openAlertToContinue(switchCategory(newCategory));
+    if (categories) {
+      if (validateNoDuplicateCategoryName([...categories, newCategory])) {
+        addCategory(newCategory);
+        if (isDirty) {
+          openAlertToContinue(switchCategory(newCategory));
+        } else {
+          dispatchSwitchCategory(newCategory);
+        }  
       } else {
-        dispatchSwitchCategory(newCategory);
+        notify("pos.notification.issue_addding_new_category_duplicate_category_name", 'warning');
       }  
     } else {
-      notify("pos.notification.issue_addding_new_category_duplicate_category_name", 'warning');
+      addCategory(newCategory);
+      dispatchSwitchCategory(newCategory);
     }
   }
   const [scrollBtn, setScrollBtn] = useState("off");

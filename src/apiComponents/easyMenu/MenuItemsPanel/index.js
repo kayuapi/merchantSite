@@ -83,7 +83,6 @@ const createElement = (el, ind, setValue) => {
     top: 0,
     cursor: "pointer",
     fontSize: "x-large",
-    marginRight: "1rem",
   };
   el.uiLocation = {...el.uiLocation, minH:PRODUCT_DISPLAY_MIN_HEIGHT};
   return (

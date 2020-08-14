@@ -45,8 +45,8 @@ const useStyles = makeStyles(theme => ({
     // paddingTop: '56.25%', // 16:9
     // width: 'auto',
     // height: 'auto',
-    width: '80%',
-    'align-self': 'center',
+    // width: '80%',
+    // 'align-self': 'center',
     'object-fit': 'contain',
   },
   textField: {
@@ -118,10 +118,10 @@ export function ProductDisplay({
           component={StorageInput}
           alt={name}
           menuItemId={id}
-          height="100"
-          width="100"
+          // height="100"
+          // width="100"
           index={index}
-          className={classes.cardMedia}
+          // className={classes.cardMedia}
           downloadedImage={image}
           image={image}
           title={name}
