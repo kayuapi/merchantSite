@@ -14,7 +14,8 @@ export async function grabFromDb(item) {
       response: false
     };
 
-    const currentUserInfo = await Auth.currentUserInfo();
+    // const currentUserInfo = await Auth.currentUserInfo();
+    const currentUserInfo = await Auth.currentAuthenticatedUser();
     const path = `${basePath}/${currentUserInfo.username}/${uriEncodedItem}`;
     const retrievedItem = await API.get(apiName, path, myInit);
     return retrievedItem;
@@ -146,7 +147,8 @@ export async function deleteFromDb(item) {
       },
       response: false
     };  
-    const currentUserInfo = await Auth.currentUserInfo();
+    // const currentUserInfo = await Auth.currentUserInfo();
+    const currentUserInfo = await Auth.currentAuthenticatedUser();
     const path = `${basePath}/${currentUserInfo.username}/${item}`;
     const response = await API.del(apiName, path,  myInit);
     return response;
