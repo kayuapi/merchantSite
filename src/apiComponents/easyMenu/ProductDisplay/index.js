@@ -34,6 +34,7 @@ import StorageInput from '../../playground/RHFStorageInput';
 const useStyles = makeStyles(theme => ({
   root: {
     // maxWidth: 345,
+    marginLeft: '0.5rem',
     marginRight: '1rem',
     height: '100%',
     display: 'flex',
@@ -59,15 +60,20 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flex: '1 0 auto',
-    display: 'flex',
+    display: 'block',
     flexDirection: 'column',
+    padding: theme.spacing(2),
+    paddingTop: theme.spacing(0),
+    paddingBottom: theme.spacing(0),
+    marginBottom: theme.spacing(0),
   },
   controls: {
-    display: 'flex',
+    display: 'block',
     alignItems: 'center',
     paddingLeft: theme.spacing(1),
     paddingBottom: theme.spacing(1),
     justifyContent: 'center',
+    marginBottom: theme.spacing(0),    
   },
   gridItem: {
     display: 'inline-grid',
