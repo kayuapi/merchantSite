@@ -102,11 +102,11 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloa
           type={!localState.uploaded ? "file" : "hidden"} accept='image/*'
           onChange={(evt) => onChange(evt, uploadedImageUrl)}
       />}
-      {!image && localState.uploaded && <img height="100%" style={{objectFit: 'contain'}} alt={uploadedImageUrl} src={uploadedImageUrl} />}
+      {!image && localState.uploaded && <img height="100%" width="100%" style={{objectFit: 'contain'}} alt={uploadedImageUrl} src={uploadedImageUrl} />}
       {!image && localState.uploadedPercentage > 0 && <LinearProgressWithLabel value={localState.uploadedPercentage} /> }
       {/* used to check dirtiness */}
       {<input ref={register} hidden name={`menuPage.items[${index}].image`} />}
-      {image && <img height="100%" style={{objectFit: 'contain'}} alt={image} src={image} />}
+      {image && <img height="100%" width="100%" style={{objectFit: 'contain'}} alt={image} src={image} />}
     </div>
   );
 }
