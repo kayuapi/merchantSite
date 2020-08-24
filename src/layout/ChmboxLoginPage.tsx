@@ -56,6 +56,9 @@ const useStyles = makeStyles(theme => ({
     input: {
         marginTop: '1em',
     },
+    firstTimeLogin: {
+      fontSize: '0.9rem',
+    },
     actions: {
         padding: '0 1em 1em 1em',
     },
@@ -157,6 +160,20 @@ const Login = () => {
                                         type="password"
                                         disabled={loading}
                                     />
+                                </div>
+                            </div>
+                            <div className={classes.form}>
+                                <div className={classes.firstTimeLogin}>
+                                  <a href="/#/first_time_login">First time login</a>
+                                  
+                                    {/* <Field
+                                        autoFocus
+                                        name="username"
+                                        // @ts-ignore
+                                        component={renderInput}
+                                        label={"Username (case sensitive)"}
+                                        disabled={loading}
+                                    /> */}
                                 </div>
                             </div>
                             <CardActions className={classes.actions}>
