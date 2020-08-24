@@ -7,8 +7,8 @@ import MyLogoutButton from './MyLogoutButton';
 // import { UserList } from './users';
 // import jsonServerProvider from 'ra-data-json-server';
 import menuItems from './apiComponents/menu';
-import Login from './layout/ChmboxLoginPage';
-
+// import Login from './layout/ChmboxLoginPage';
+import Login from './layout/Login/FirstTimeLogin';
 import dataProvider from './dataProvider';
 import englishMessages from './i18n/en';
 import { Layout } from './layout';
@@ -67,9 +67,11 @@ const history = createHashHistory();
 // Create store with reducers and initial state
 // const initialState = {}
 // const store = createStore(rootReducer, initialState)
+const authProvider = buildAuthProvider();
 
 export const store = createAdminStore({
     // authProvider,
+    authProvider,
     dataProvider,
     history,
 });
@@ -91,18 +93,18 @@ const App = () => {
             {/* <ReactReduxFirebaseProvider {...rrfProps}> */}
           <StylesProvider generateClassName={generateClassName}>
             <Admin 
+              history={history}
               customRoutes={customRoutes}
               layout={Layout}
               dashboard={Dashboard}
               loginPage={Login}
               // logoutButton={MyLogoutButton}
               // authProvider={authProvider}
-              authProvider={buildAuthProvider()}
+              authProvider={authProvider}
               dataProvider={dataProvider}
               i18nProvider={i18nProvider}
-              history={history}
             >
-                
+
                 <Resource name="menuItems" {...menuItems} />
                 {/* <Resource name="categories" {...categories} /> */}
             </Admin>
