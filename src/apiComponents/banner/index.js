@@ -5,7 +5,7 @@ import ImageDisplayTypeSelection from './ImageDisplayTypeSelection';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { grabFromDb, grabUploadingPath } from './utils/request';
-
+import { useAuthenticated } from 'react-admin';
 const useStyles = makeStyles(theme => ({
     button: {
       'margin': theme.spacing(1),
@@ -74,6 +74,7 @@ function reducer(state, action) {
 }
 
 const Banner = ({props}) => {
+  useAuthenticated();
   const [state, dispatch] = useReducer(reducer, initialState, init);
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true);

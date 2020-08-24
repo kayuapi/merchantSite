@@ -7,6 +7,8 @@ const customChineseMessages: TranslationMessages = {
         notification: {
           saved_successfully: 'Saved successfully!',
           issue_addding_new_category_duplicate_category_name: 'Issue adding new category: duplicated category name',
+          fill_in_category_name: 'Please fill in the category name before creating another category',
+          order_memo_copied: 'Copied',
         },
         search: 'Search',
         configuration: 'Configuration',
