@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     color: "inherit",
     backgroundColor: "a09b87",
     height: '64px',
-    top: '55px', // hard coded need to be changed
+    top: '40px', // hard coded need to be changed
     "& .myTab": {
       backgroundColor: "yellow",
       color: "green"

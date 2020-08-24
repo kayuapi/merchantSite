@@ -44,9 +44,13 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
-    // paddingTop: theme.spacing(8),
-    // paddingBottom: theme.spacing(8),
+    paddingLeft: theme.spacing(0.5),
+    paddingRight: theme.spacing(0.5),
   },
+  tabPanel: {
+    paddingLeft: theme.spacing(0),
+    paddingRight: theme.spacing(0),
+  }
 }));
 
 function AddCard2() {
@@ -134,7 +138,7 @@ export const AddRemoveLayout = ({
   }
   else {
     return (
-      <TabPanel value={currentCategoryId}>
+      <TabPanel className={classes.tabPanel} value={currentCategoryId}>
         <Container className={classes.cardGrid} maxWidth="sm">
           {/* <input hidden name={`menuPage.pageId`} readOnly value={this.props.pageId} ref={this.props.register} /> */}
           {menuItems.length > 0 && 
