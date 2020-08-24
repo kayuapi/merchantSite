@@ -162,7 +162,7 @@ const CategoryTabs = ({
           dispatchSwitchCategory(newCategory);
         }  
       } else {
-        notify("pos.notification.issue_addding_new_category_duplicate_category_name", 'warning');
+        notify("pos.notification.fill_in_category_name", 'warning');
       }  
     } else {
       addCategory(newCategory);
