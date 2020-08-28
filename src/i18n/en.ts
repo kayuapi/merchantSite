@@ -21,6 +21,9 @@ const customEnglishMessages: TranslationMessages = {
         dashboard: {
             monthly_revenue: 'Monthly Revenue',
             month_history: '30 Day Revenue History',
+            monthly_order: 'Monthly Order',
+            monthly_order_history: '30 Day Order History',
+            today_order: 'Today Order',
             new_orders: 'New Orders',
             pending_reviews: 'Pending Reviews',
             new_customers: 'New Customers',
