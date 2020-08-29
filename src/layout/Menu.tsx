@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FC, createElement, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useMediaQuery, Theme } from '@material-ui/core';
-import { useTranslate, MenuItemLink } from 'react-admin';
+import { useTranslate, MenuItemLink, DashboardMenuItem } from 'react-admin';
 // import { DashboardMenuItem } from 'react-admin';
 // import QrIcon from '@material-ui/icons/CropFree';
 import BannerIcon from '@material-ui/icons/Image';
@@ -28,6 +28,7 @@ const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
     return (
         <div>
             {' '}
+              <DashboardMenuItem onClick={onMenuClick} sidebarIsOpen={open} />
               <MenuItemLink
                 to={`/banner`}
                 primaryText={"Banner"}
