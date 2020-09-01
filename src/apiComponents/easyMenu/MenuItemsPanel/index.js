@@ -91,11 +91,12 @@ const createElement = (el, ind, setValue) => {
   el.uiLocation = {...el.uiLocation, minH:PRODUCT_DISPLAY_MIN_HEIGHT};
   return (
     <div key={el.id} data-grid={el.uiLocation}>
+      <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
       <ProductDisplay 
         key={el.id} 
         id={el.id} 
         index={ind} 
-        item={el} 
+        item={el}
         // {...this.props}
       />
       <span
@@ -107,6 +108,7 @@ const createElement = (el, ind, setValue) => {
         }}
       >x
       </span>
+      <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
     </div>
   );        
 }
@@ -156,6 +158,14 @@ export const AddRemoveLayout = ({
                 className="layout"
                 margin={[0,0]}
                 verticalCompact={false}
+                onDragStart={(layout, oldItem, newItem, placeholder, e, element) => {
+                  element.children[0].style.display="block";
+                  element.children[3].style.display="block";
+                }}
+                onDragStop={(layout, oldItem, newItem, placeholder, e, element) => {
+                  element.children[0].style.display="none";
+                  element.children[3].style.display="none";
+                }}
               >
                 {_.map(menuItems, (el,ind) => createElement(el,ind, setValue))}
               </ResponsiveReactGridLayout> 
