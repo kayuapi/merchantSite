@@ -27,7 +27,8 @@ import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
 import { buildAuthProvider } from 'react-admin-amplify';
 import customRoutes from './customRoutes';
-import Dashboard from './Dashboard';
+// import Dashboard from './Dashboard';
+import { Dashboard } from './dashboard';
 import { StylesProvider, createGenerateClassName } from '@material-ui/core/styles';
 const generateClassName = createGenerateClassName({
   disableGlobal: true,

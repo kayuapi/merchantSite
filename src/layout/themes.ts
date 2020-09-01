@@ -10,7 +10,7 @@ export const darkTheme = {
 export const lightTheme = {
   palette: {
       primary: {
-          main: '#4f3cc9',
+          main: '#000000',
       },
       secondary: {
           light: '#5f5fc4',
@@ -38,7 +38,7 @@ export const lightTheme = {
               borderLeft: '3px solid #fff',
           },
           active: {
-              borderLeft: '3px solid #4f3cc9',
+              borderLeft: '3px solid #000000',
           },
       },
       MuiPaper: {
@@ -53,7 +53,7 @@ export const lightTheme = {
       MuiButton: {
           contained: {
               backgroundColor: '#fff',
-              color: '#4f3cc9',
+              color: '#000000',
               boxShadow: 'none',
           },
       },

@@ -21,6 +21,9 @@ const customChineseMessages: TranslationMessages = {
         dashboard: {
             monthly_revenue: 'Monthly Revenue',
             month_history: '30 Day Revenue History',
+            monthly_order_history: '30 Day Order History',
+            monthly_order: 'Monthly Order',
+            today_order: 'Today Order',
             new_orders: 'New Orders',
             pending_reviews: 'Pending Reviews',
             new_customers: 'New Customers',
@@ -30,12 +33,13 @@ const customChineseMessages: TranslationMessages = {
                     'by %{customer_name}, one item |||| by %{customer_name}, %{nb_items} items',
             },
             welcome: {
-                title: 'Welcome to the react-admin e-commerce demo',
-                subtitle:
-                    "This is the admin of an imaginary poster shop. Feel free to explore and modify the data - it's local to your computer, and will reset each time you reload.",
-                aor_button: 'react-admin site',
-                demo_button: 'Source for this demo',
-            },
+              hi: 'Hi',
+              title: 'Welcome to CHM ordering system admin site',
+              subtitle:
+                  "We express our gratitude for using the system. If you encounter any problems, feel free to contact us.",
+              contact_by_facebook_button: 'Contact us by facebook messenger',
+              contact_by_whatsapp_button: 'Contact us by whatsapp +60125281994',
+          },
         },
         menu: {
             sales: 'Sales',
