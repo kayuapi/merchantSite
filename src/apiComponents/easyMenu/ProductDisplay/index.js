@@ -159,6 +159,7 @@ export function ProductDisplay({
                 value={value}
                 placeholder="Product name (e.g: Apple)"
                 classes={{input: classes.productTitleInput}}
+                style={{width: '100%'}}
                 inputProps={{'aria-label': 'put product title' }} 
               />
             )}
@@ -173,6 +174,7 @@ export function ProductDisplay({
                 value={value}
                 placeholder="Product price (e.g: RM 10)"
                 classes={{input: classes.priceInput}}
+                style={{width: '100%'}}
                 inputProps={{ 'aria-label': 'put a price' }}  
               />
             )}
