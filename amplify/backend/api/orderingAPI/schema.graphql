@@ -62,4 +62,5 @@ enum PaymentMethod {
   CASH_ON_DELIVERY
   ONLINE_BANKING
   CARD
+  QRPAY
 }
