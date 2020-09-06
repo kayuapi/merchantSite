@@ -26,8 +26,9 @@ import {
     endOfYesterday,
     startOfWeek,
     subWeeks,
-    addWeeks,
     startOfMonth,
+    endOfMonth,
+    endOfWeek,
     subMonths,
 } from 'date-fns';
 
@@ -78,7 +79,7 @@ const Top2: FC = (props) => {
           </FormLabel>
           <RadioGroup row aria-label="position" name="position" defaultValue="this_week">
             <FormControlLabel
-              value="next_week"
+              value="this_month"
               control={
                 <Radio 
                   color="primary" 
@@ -88,15 +89,15 @@ const Top2: FC = (props) => {
                       setFilters({
                         ...filterValues,
                         date_range: [
-                          `${addWeeks(startOfWeek(new Date()), 1).getTime()}00`,
-                          `${addWeeks(startOfWeek(new Date()), 2).getTime()}zz`,
+                          `${startOfMonth(new Date()).getTime()}00`,
+                          `${endOfMonth(new Date()).getTime()}zz`,
                         ],
                       })
                     }
                   }} 
                 />
               }
-              label={translate("resources.orderMemo.filters.next_week")}
+              label={translate("resources.orderMemo.filters.this_month")}
               labelPlacement="top"
             />
             <FormControlLabel
@@ -110,7 +111,7 @@ const Top2: FC = (props) => {
                         ...filterValues,
                         date_range: [
                           `${startOfWeek(new Date()).getTime()}00`,
-                          `${addWeeks(startOfWeek(new Date()), 1).getTime()}zz`,
+                          `${endOfWeek(new Date()).getTime()}zz`,
                         ],
                       })
                     }
@@ -131,7 +132,7 @@ const Top2: FC = (props) => {
                         ...filterValues,
                         date_range: [
                           `${subWeeks(startOfWeek(new Date()),1).getTime()}00`,
-                          `${startOfWeek(new Date()).getTime()}zz`,
+                          `${startOfWeek(new Date()).getTime()-1}zz`,
                         ],
                       })
                     }
@@ -139,6 +140,27 @@ const Top2: FC = (props) => {
                 />
               }
               label={translate("resources.orderMemo.filters.last_week")}
+              labelPlacement="top"
+            />
+            <FormControlLabel
+              value="last_month"
+              control={
+                <Radio 
+                  color="primary" 
+                  onChange={(event) => {
+                    if (event.target.checked === true) {
+                      setFilters({
+                        ...filterValues,
+                        date_range: [
+                          `${subMonths(startOfMonth(new Date()),1).getTime()}00`,
+                          `${startOfMonth(new Date()).getTime()-1}zz`,
+                        ],
+                      })
+                    }
+                  }} 
+                />
+              }
+              label={translate("resources.orderMemo.filters.last_month")}
               labelPlacement="top"
             />
           </RadioGroup>
