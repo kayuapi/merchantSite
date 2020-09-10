@@ -38,24 +38,24 @@ const CardWithIcon: FC<Props> = props => {
     const classes = useStyles(props);
     return (
         <Card className={classes.card}>
-            <Link to={to}>
-                <div className={classes.main}>
-                    <Box width="3em" className="icon">
-                        {createElement(icon, { fontSize: 'large' })}
-                    </Box>
-                    <Box textAlign="right" style={{marginTop: '100px'}}>
-                        <Typography
-                            className={classes.title}
-                            color="textSecondary"
-                        >
-                            {title}
-                        </Typography>
-                        <Typography variant="h5" component="h2">
-                            {subtitle || ' '}
-                        </Typography>
-                    </Box>
-                </div>
-            </Link>
+            {/* <Link to={to}> */}
+              <div className={classes.main}>
+                  <Box width="3em" className="icon">
+                      {createElement(icon, { fontSize: 'large' })}
+                  </Box>
+                  <Box textAlign="right" style={{marginTop: '100px'}}>
+                      <Typography
+                          className={classes.title}
+                          color="textSecondary"
+                      >
+                          {title}
+                      </Typography>
+                      <Typography variant="h5" component="h2">
+                          {subtitle || ' '}
+                      </Typography>
+                  </Box>
+              </div>
+            {/* </Link> */}
             {children && <Divider />}
             {children}
         </Card>
