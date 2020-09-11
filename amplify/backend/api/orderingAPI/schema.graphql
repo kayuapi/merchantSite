@@ -57,7 +57,7 @@ enum OrderStatus {
 enum PaymentMethod {
   E_WALLET
   E_WALLET_TOUCHNGO
-  E_WALET_BOOST
+  E_WALLET_BOOST
   CASH
   CASH_ON_DELIVERY
   ONLINE_BANKING
