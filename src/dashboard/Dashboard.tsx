@@ -43,6 +43,7 @@ const VerticalSpacer = () => <span style={{ height: '1em' }} />;
 
 const Dashboard: FC = () => {
     const [state, setState] = useState<State>({});
+    const [user, setUser] = useState('');
     const version = useVersion();
     const isXSmall = useMediaQuery((theme: Theme) =>
         theme.breakpoints.down('xs')
@@ -89,15 +90,14 @@ const Dashboard: FC = () => {
           fetchThisMonthOrders(shopId, 'DELIVERY', startingMontlyDate, endingMontlyDate),
           fetchThisMonthOrders(shopId, 'SELF_PICKUP', startingMontlyDate, endingMontlyDate)
         ]);
+        setUser(shopId);
         callFunc().then((results: any[]) => {
           const thisMonthOrderList = [
             ...results[0]['data']['listOrders']['items'],
             ...results[1]['data']['listOrders']['items'],
             ...results[2]['data']['listOrders']['items'],
           ];
-          console.log('this month', thisMonthOrderList);
           const todayCOunt = thisMonthOrderList.filter(order => order.orderId >= startingDailyDate && order.orderId <= endingDailyDate).length;
-          console.log('what', todayCOunt);
           setState(state => ({
             ...state,
             recentOrders: thisMonthOrderList,
@@ -116,7 +116,7 @@ const Dashboard: FC = () => {
     return isXSmall ? (
         <div>
             <div style={styles.flexColumn as CSSProperties}>
-                <Welcome />
+                <Welcome user={user} />
                 <MonthlyOrder value={monthlyOrderCount} />
                 <VerticalSpacer />
                 <TodayOrder value={todayOrderCount} />
@@ -126,7 +126,7 @@ const Dashboard: FC = () => {
     ) : isSmall ? (
         <div style={styles.flexColumn as CSSProperties}>
             <div style={styles.singleCol}>
-                <Welcome />
+                <Welcome user={user} />
             </div>
             <div style={styles.flex}>
                 <MonthlyOrder value={monthlyOrderCount} />
@@ -139,7 +139,7 @@ const Dashboard: FC = () => {
         </div>
     ) : (
         <>
-            <Welcome />
+            <Welcome user={user} />
             <div style={styles.flex}>
                 <div style={styles.leftCol}>
                     <div style={styles.flex}>

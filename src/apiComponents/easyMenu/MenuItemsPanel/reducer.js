@@ -1,6 +1,6 @@
 import produce, { setAutoFreeze } from 'immer';
 import { 
-  UPDATE_PREFIX_UPLOADED_URL,
+  UPDATE_USER_ID,
   LOAD_MENU_ITEMS,
   LOAD_MENU_ITEMS_SUCCESS,
   LOAD_MENU_ITEMS_ERROR,
@@ -27,6 +27,7 @@ export const initialState = {
     menuItemsLength: 0
   }, 
   _prefixUploadedUrl: `https://${awsmobile.aws_user_files_s3_bucket}.s3-${awsmobile.aws_user_files_s3_bucket_region}.amazonaws.com/protected/`,
+  _userId: '',
   _isDirty: false,
   menuItems: false,
   _menuItemsInCloud: false,
@@ -222,8 +223,8 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
         break;
       }
 
-      case UPDATE_PREFIX_UPLOADED_URL: {
-        draft._prefixUploadedUrl = draft._prefixUploadedUrl+action.userId+'/';
+      case UPDATE_USER_ID: {
+        draft._userId = action.userId;
         break;
       }
 
