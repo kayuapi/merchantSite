@@ -1,6 +1,6 @@
 
 import { 
-  UPDATE_PREFIX_UPLOADED_URL,
+  UPDATE_USER_ID,
   LOAD_MENU_ITEMS,
   LOAD_MENU_ITEMS_SUCCESS,
   LOAD_MENU_ITEMS_ERROR,
@@ -58,9 +58,9 @@ export function syncPrvMenuItemsInCloudAfterSavingSuccessfully(_menuItems) {
   }
 }
 
-export function updatePrefixUploadedUrlWithUserId(userId) {
+export function updateUserId(userId) {
   return {
-    type: UPDATE_PREFIX_UPLOADED_URL,
+    type: UPDATE_USER_ID,
     userId,
   }
 }

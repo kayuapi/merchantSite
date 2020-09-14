@@ -55,7 +55,7 @@ const makeSelectIsMenuItemsDirty = () =>
 const makeSelectPrefixUploadedUrl = () =>
   createSelector(
     selectElegantMenuItemsPanelDomain,
-    substate => substate._prefixUploadedUrl,
+    substate => substate._prefixUploadedUrl+substate._userId,
   );
 
 // const makeSelectMenuItemsLayout = () =>

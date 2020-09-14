@@ -7,7 +7,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useTranslate } from 'react-admin';
 
 import logoImage from './logo_white.svg';
-import { Auth } from 'aws-amplify';
+
+interface Props {
+  user?: string;
+}
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -39,11 +42,9 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Welcome: FC = () => {
+const Welcome: FC<Props> = ({ user }) => {
     const translate = useTranslate();
     const classes = useStyles();
-    const [user, setUser] = React.useState('');
-    Auth.currentAuthenticatedUser().then(user => setUser(user['username']));
     return (
         <Card className={classes.root}>
             <Box display="flex">

@@ -39,7 +39,7 @@ import {
   toggleCategorySortModeController,
 } from './actions';
 import { openAlertToContinue } from '../AlertToContinue/actions';
-import { updatePrefixUploadedUrlWithUserId, resetDirtiness } from '../MenuItemsPanel/actions';
+import { resetDirtiness, updateUserId } from '../MenuItemsPanel/actions';
 import { useNotify } from 'react-admin';
 
 import { Auth } from 'aws-amplify';
@@ -78,6 +78,7 @@ const Control = ({
 
   openAlertToContinue,
   updatePrefixUploadedUrlWithUserId,
+  updateUserId,
 }) => {    
   const classes = useStyles();
   const { formState: { dirtyFields}, reset } = useFormContext();
@@ -104,9 +105,9 @@ const Control = ({
       return userInfo.id;
     };
     getUserId().then(userId => {
-      updatePrefixUploadedUrlWithUserId(userId);
+      updateUserId(userId);
     });
-  }, [updatePrefixUploadedUrlWithUserId]);
+  }, [updateUserId]);
 
   return (
     <div className={classes.buttonContainer}>
@@ -175,7 +176,7 @@ Control.propTypes = {
   toggleCategorySortModeController: PropTypes.func.isRequired,
 
   openAlertToContinue: PropTypes.func,
-  updatePrefixUploadedUrlWithUserId: PropTypes.func,
+  updateUserId: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -201,7 +202,7 @@ function mapDispatchToProps(dispatch) {
     saveTab: () => dispatch(saveTab()),
     toggleCategorySortModeController: () => dispatch(toggleCategorySortModeController()),
     openAlertToContinue: (actionToContinue) => dispatch(openAlertToContinue(actionToContinue)),
-    updatePrefixUploadedUrlWithUserId: (userId) => dispatch(updatePrefixUploadedUrlWithUserId(userId)),
+    updateUserId: (userId) => dispatch(updateUserId(userId)),
 
     resetSavedSuccessfully: () => dispatch(resetSavedSuccessfully()),
     resetDirtiness: () => dispatch(resetDirtiness()),

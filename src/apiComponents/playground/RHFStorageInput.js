@@ -78,7 +78,7 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloa
         },
     })
     .then (result => {
-        const uploadedImageUrl = encodeURI(uploadedImageUrlOnChange+result['key']);
+        const uploadedImageUrl = encodeURI(uploadedImageUrlOnChange+'/'+result['key']);
         setValue(`menuPage.items[${index}].image`, uploadedImageUrl, { shouldDirty: true });
         setTimeout(() => {
           setLocalState(state => ({
