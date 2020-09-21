@@ -4,6 +4,8 @@ export const LOAD_CATEGORIES = 'app/ElegantMenu/LOAD_CATEGORIES';
 export const LOAD_CATEGORIES_SUCCESS = 'app/ElegantMenu/LOAD_CATEGORIES_SUCCESS';
 export const LOAD_CATEGORIES_ERROR = 'app/ElegantMenu/LOAD_CATEGORIES_ERROR';
 
+export const RESET_CURRENT_CATEGORY = 'app/ElegantMenu/RESET_CURRENT_CATEGORY';
+
 // non-network action has no success status
 export const ADD_CATEGORY = 'app/ElegantMenu/ADD_CATEGORY';
 export const ADD_CATEGORY_ERROR = 'app/ElegantMenu/ADD_CATEGORY_ERROR';

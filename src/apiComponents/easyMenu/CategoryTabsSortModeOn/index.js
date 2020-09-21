@@ -38,10 +38,11 @@ export class CategoryTabsSortModeOn extends Component {
     const {tabs, activeIndex} = this.state;
     const tabsTemplate = [];
     tabs.forEach((tab, index) => {
-      tabsTemplate.push(<DragTab key={index} label={'abc'}>{tab.name}</DragTab>)
+      tabsTemplate.push(<DragTab key={index}>{tab.name}</DragTab>)
     })
     return (
       <Tabs activeIndex={activeIndex}
+          showModalButton={false}
           onTabChange={this.handleTabChange}
           onTabSequenceChange={this.handleTabSequenceChange}
           customStyle={md2}>

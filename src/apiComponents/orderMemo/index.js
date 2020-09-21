@@ -139,12 +139,14 @@ const OrderBoard = SortableContainer(({orders, state, setState}) => {
 
 });
 
+const sortObject = o => Object.keys(o).sort((a,b) => {return new Date(a) - new Date(b)}).reduce((r, k) => (r[k] = o[k], r), {});
+
 // propertyList can only take in 2 properties of the objects, 
 // each object can only have either 1 of the property
 // if both property are falsy, use date now
 const groupByDate = (objectArray, propertyList) => {
   let key;
-  return objectArray.reduce((acc, obj) => {
+  const groupedByDate = objectArray.reduce((acc, obj) => {
     if (obj !== null) {
       const pickupTimeOrDeliveryTimeOrNow = obj[propertyList[0]] ?? obj[propertyList[1]] ?? Number(obj['orderId'].substring(0,13)) ?? new Date().getTime();
       key = new Date(pickupTimeOrDeliveryTimeOrNow).toDateString();
@@ -156,7 +158,9 @@ const groupByDate = (objectArray, propertyList) => {
       return acc;  
     }
     return acc;
- }, {});  
+  }, {});
+  const sorted = sortObject(groupedByDate);
+  return sorted;
 }
 
 const OrderPageShow = props => {

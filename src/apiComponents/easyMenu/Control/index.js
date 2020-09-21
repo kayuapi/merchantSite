@@ -82,7 +82,7 @@ const Control = ({
 }) => {    
   const classes = useStyles();
   const { formState: { dirtyFields}, reset } = useFormContext();
-  console.log('dirtyFields', dirtyFields);
+  // console.log('dirtyFields', dirtyFields);
   const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object) || menuItemsIsDirty;
   const notify = useNotify();
 
@@ -131,9 +131,9 @@ const Control = ({
         {isDirty && tabAndPanelSaving && <span>Saving...</span>}
         {isDirty && !tabAndPanelSaving && <span>Save page</span>}
       </Button>
-      {/* <ToggleButton
+      <ToggleButton
         value="check"
-        disabled={ tabAndPanelSaving }
+        disabled={ isDirty || tabAndPanelSaving }
         selected={isCategorySortModeOn}
         onChange={() => {
           if (isDirty) {
@@ -146,7 +146,7 @@ const Control = ({
         {isCategorySortModeOn && <span>Sort Category Mode: On</span>}
         {isCategorySortModeOn && isCategoryTabSaving && <span>Sort Category Mode: On - Submitting...</span>}
         {!isCategorySortModeOn && <span>Sort Category Mode: Off</span>}
-      </ToggleButton> */}
+      </ToggleButton>
     </div>
   )
 };

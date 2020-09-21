@@ -9,7 +9,7 @@ import {
   tabSavingError, 
   toggleCategorySortMode,
 } from './actions';
-import { switchCategory, updateCategories } from '../CategoryTabs/actions';
+import { resetCurrentCategory, switchCategory, updateCategories } from '../CategoryTabs/actions';
 import { saveCategoriesToDb, saveCategoriesAndMenuItemsToDb } from '../utils/request';
 
 import { makeSelectSMOCategoryTabs } from '../CategoryTabsSortModeOn/selectors';
@@ -102,6 +102,7 @@ export function* toggleCategorySortModeController() {
   console.log('CATEGORY SORT MODE', categorySortModeOn);
   if (!categorySortModeOn) {
     yield put(toggleCategorySortMode());
+    yield put(resetCurrentCategory());
   }
   else {
     yield put(saveTab());
