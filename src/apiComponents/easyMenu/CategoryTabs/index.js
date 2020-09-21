@@ -56,12 +56,15 @@ const useStyles = makeStyles(theme => ({
       color: "green"
     }
   },
+  scrollButtons: {
+    color: 'white',
+  },
   gridContainer: {
     // maxWidth: '700px'
   },
   tabRoot: {
-    minWidth: 100,
-    width: 120,
+    minWidth: 50,
+    // width: 120,
   },
   myTab2: {
     flexDirection: "row-reverse",
@@ -277,6 +280,7 @@ const CategoryTabs = ({
                     variant="scrollable"
                     aria-label="simple tabs example"
                     scrollButtons={scrollBtn}
+                    classes={{scrollButtons: classes.scrollButtons}}
                   >
                     {categories.map((category, index) => {
                       return(
@@ -298,6 +302,7 @@ const CategoryTabs = ({
                                   onChange={onChange}
                                   value={value}
                                   multiline
+                                  rowsMax={2}
                                   placeholder="New category"
                                   classes={{root: classes.tabInput}}
                                 />

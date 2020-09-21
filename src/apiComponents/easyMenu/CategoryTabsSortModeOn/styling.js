@@ -5,7 +5,7 @@ let {TabListStyle, ActionButtonStyle, TabStyle, PanelStyle} = styledTabTab;
 
 TabListStyle = styled(TabListStyle)`
 
-  background-color: #3f51b5;
+  background-color: #000000;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
   border: 0;
   ul {
@@ -27,14 +27,16 @@ TabStyle = styled(TabStyle)`
     `
   : null}
   &:hover {
+    cursor: grab;
     background-color: transparent;
-    color: #283593;
+    color: #dbdbdb;
     border-bottom: 2px solid #283593;
   }
 `;
 
 ActionButtonStyle = styled(ActionButtonStyle)`
   background-color: transparent;
+  color: #ff0000;
   border-radius: 0;
   &:hover {
     background-color: #eee;

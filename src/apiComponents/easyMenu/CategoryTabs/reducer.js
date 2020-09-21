@@ -14,6 +14,7 @@ import {
   SWITCH_CATEGORY,
   UPDATE_CATEGORIES,
   UPDATE_CATEGORY_NAME,
+  RESET_CURRENT_CATEGORY,
 } from './constants';
 
 export const initialState = {
@@ -56,6 +57,10 @@ const categoriesReducer = (state = initialState, action) =>
       case LOAD_CATEGORIES_ERROR: {
         draft.categoriesLoading = false;
         draft.categoriesError = action.error;
+        break;
+      }
+      case RESET_CURRENT_CATEGORY: {
+        draft.currentCategory = false;
         break;
       }
       

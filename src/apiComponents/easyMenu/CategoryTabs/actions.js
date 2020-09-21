@@ -14,6 +14,7 @@ import {
   SWITCH_CATEGORY,
   UPDATE_CATEGORY_NAME,
   UPDATE_CATEGORIES,
+  RESET_CURRENT_CATEGORY,
 } from './constants';
 
 // Load categories
@@ -73,12 +74,20 @@ export function categoryDeletingError(error) {
   }
 }
 
+// Reset category
+export function resetCurrentCategory() {
+  return {
+    type: RESET_CURRENT_CATEGORY,
+  }
+}
+
 // Save category
 export function saveCategory() {
   return {
     type: SAVE_CATEGORY,
   }
 }
+
 export function categorySaved(categories) {
   return {
     type: SAVE_CATEGORY_SUCCESS,
