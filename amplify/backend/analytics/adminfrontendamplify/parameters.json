@@ -1,0 +1,21 @@
+{
+    "appName": "adminfrontendamplify",
+    "roleName": "pinpointLambdaRole91a8bf83",
+    "cloudformationPolicyName": "cloudformationPolicy91a8bf83",
+    "cloudWatchPolicyName": "cloudWatchPolicy91a8bf83",
+    "pinpointPolicyName": "pinpointPolicy91a8bf83",
+    "authPolicyName": "pinpoint_amplify_91a8bf83",
+    "unauthPolicyName": "pinpoint_amplify_91a8bf83",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}
