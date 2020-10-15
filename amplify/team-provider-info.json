@@ -17,6 +17,13 @@
       },
       "function": {
         "adminfrontendamplify4cb2a585": {}
+      },
+      "notifications": {
+        "Pinpoint": {
+          "Name": "adminfrontendamplify-dev",
+          "Id": "07fe3e419e6e46899c6a70c1c8b73be0",
+          "Region": "us-west-2"
+        }
       }
     }
   },

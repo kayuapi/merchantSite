@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "analytics": {
+      "adminfrontendamplify": [
+        "create",
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
