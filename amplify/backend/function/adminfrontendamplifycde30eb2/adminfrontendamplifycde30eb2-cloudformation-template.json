@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Lambda resource stack creation using Amplify CLI",
+  "Description": "Lambda Function resource stack creation using Amplify CLI",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -10,13 +10,21 @@
     "env": {
       "Type": "String"
     },
-    "storageamplifyChmboxorderingDdbName": {
+    "apiorderingAPIGraphQLAPIIdOutput": {
       "Type": "String",
-      "Default": "storageamplifyChmboxorderingDdbName"
+      "Default": "apiorderingAPIGraphQLAPIIdOutput"
     },
-    "storageamplifyChmboxorderingDdbArn": {
+    "apiorderingAPIGraphQLAPIEndpointOutput": {
       "Type": "String",
-      "Default": "storageamplifyChmboxorderingDdbArn"
+      "Default": "apiorderingAPIGraphQLAPIEndpointOutput"
+    },
+    "analyticsadminfrontendamplifyId": {
+      "Type": "String",
+      "Default": "analyticsadminfrontendamplifyId"
+    },
+    "analyticsadminfrontendamplifyRegion": {
+      "Type": "String",
+      "Default": "analyticsadminfrontendamplifyRegion"
     }
   },
   "Conditions": {
@@ -41,12 +49,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "adminfrontendamplify4cb2a585",
+            "newOrderNotificationTrigger",
             {
               "Fn::Join": [
                 "",
                 [
-                  "adminfrontendamplify4cb2a585",
+                  "newOrderNotificationTrigger",
                   "-",
                   {
                     "Ref": "env"
@@ -63,6 +71,12 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
+            },
+            "ANALYTICS_ADMINFRONTENDAMPLIFY_ID": {
+              "Ref": "analyticsadminfrontendamplifyId"
+            },
+            "ANALYTICS_ADMINFRONTENDAMPLIFY_REGION": {
+              "Ref": "analyticsadminfrontendamplifyRegion"
             }
           }
         },
@@ -73,12 +87,12 @@
           ]
         },
         "Runtime": "nodejs12.x",
+        "Layers": [],
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-adminfrontendamplify-dev-191430-deployment",
-          "S3Key": "amplify-builds/adminfrontendamplify4cb2a585-4232576a653633333435-build.zip"
-        },
-        "Layers": []
+          "S3Key": "amplify-builds/adminfrontendamplifycde30eb2-336e5574714733556766-build.zip"
+        }
       }
     },
     "LambdaExecutionRole": {
@@ -87,12 +101,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "adminfrontendamplifyLambdaRole083482e3",
+            "adminfrontendamplifyLambdaRole18240f28",
             {
               "Fn::Join": [
                 "",
                 [
-                  "adminfrontendamplifyLambdaRole083482e3",
+                  "adminfrontendamplifyLambdaRole18240f28",
                   "-",
                   {
                     "Ref": "env"
@@ -158,30 +172,72 @@
                   }
                 ]
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    "AmplifyResourcesPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
             {
               "Effect": "Allow",
               "Action": [
-                "dynamodb:DescribeTable",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem"
+                "mobiletargeting:Put*",
+                "mobiletargeting:Create*",
+                "mobiletargeting:Send*",
+                "mobiletargeting:Get*",
+                "mobiletargeting:List*"
               ],
               "Resource": [
                 {
-                  "Ref": "storageamplifyChmboxorderingDdbArn"
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:mobiletargeting:",
+                      {
+                        "Ref": "analyticsadminfrontendamplifyRegion"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":apps/",
+                      {
+                        "Ref": "analyticsadminfrontendamplifyId"
+                      }
+                    ]
+                  ]
                 },
                 {
                   "Fn::Join": [
-                    "/",
+                    "",
                     [
+                      "arn:aws:mobiletargeting:",
                       {
-                        "Ref": "storageamplifyChmboxorderingDdbArn"
+                        "Ref": "analyticsadminfrontendamplifyRegion"
                       },
-                      "index/*"
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":apps/",
+                      {
+                        "Ref": "analyticsadminfrontendamplifyId"
+                      },
+                      "/*"
                     ]
                   ]
                 }
@@ -189,6 +245,62 @@
             }
           ]
         }
+      }
+    },
+    "LambdaTriggerPolicyOrder": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy-Order",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:DescribeStream",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:ListStreams"
+              ],
+              "Resource": {
+                "Fn::ImportValue": {
+                  "Fn::Sub": "${apiorderingAPIGraphQLAPIIdOutput}:GetAtt:OrderTable:StreamArn"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "LambdaEventSourceMappingOrder": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "DependsOn": [
+        "LambdaTriggerPolicyOrder",
+        "LambdaExecutionRole"
+      ],
+      "Properties": {
+        "BatchSize": 100,
+        "Enabled": true,
+        "EventSourceArn": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${apiorderingAPIGraphQLAPIIdOutput}:GetAtt:OrderTable:StreamArn"
+          }
+        },
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaFunction",
+            "Arn"
+          ]
+        },
+        "StartingPosition": "LATEST"
       }
     }
   },
