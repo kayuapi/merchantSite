@@ -63,4 +63,6 @@ enum PaymentMethod {
   ONLINE_BANKING
   CARD
   QRPAY
+  FAVEPAY
+  GRABPAY
 }

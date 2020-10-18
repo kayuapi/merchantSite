@@ -29,7 +29,8 @@ import InputBase from '@material-ui/core/InputBase';
 import { Controller } from "react-hook-form";
 import { store } from '../../../App';
 
-import StorageInput from '../../playground/RHFStorageInput';
+// import StorageInput from '../../playground/RHFStorageInput';
+import StorageInput from '../../playground/SwitchableImagePicker';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -205,14 +206,17 @@ export function ProductDisplay({
               </IconButton>
             </Grid>
             <Grid item xs={6} className={classes.gridItem}>
-              <IconButton
-                disabled
-                className={classes.gridItem2}
-                edge="end"
-              >
-                <MoveIcon />
-                <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
-              </IconButton>
+              {/* the dragme handler is used in react grid layout to enable dragging */}
+              <div class="dragme">
+                <IconButton
+                  disabled
+                  className={classes.gridItem2}
+                  edge="end"
+                >
+                  <MoveIcon />
+                  <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
+                </IconButton>
+              </div>
             </Grid>
           </Grid>
         </CardActions>

@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { grabFromDb, grabUploadingPath } from './utils/request';
 import { useAuthenticated } from 'react-admin';
+import styles from './bannerStyle.module.css';
 const useStyles = makeStyles(theme => ({
     button: {
       'margin': theme.spacing(1),
@@ -109,14 +110,18 @@ const Banner = ({props}) => {
             <ImageDisplayTypeSelection
               localState={state} 
               dispatch={dispatch} 
-            />          
-            <BannerInput 
-              uploadedImagePath={uploadedImagePath}
-              _banner={state._banner}
-              banner={state.banner} 
-              bannerDisplayType={state.bannerDisplayType} 
-              dispatch={dispatch} 
-            />          
+            />
+            <div className={styles.smartphone}>
+              <div className={styles.content}>          
+                <BannerInput 
+                  uploadedImagePath={uploadedImagePath}
+                  _banner={state._banner}
+                  banner={state.banner} 
+                  bannerDisplayType={state.bannerDisplayType} 
+                  dispatch={dispatch} 
+                />
+              </div>          
+            </div>
           </>
         }
       </Container>

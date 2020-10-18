@@ -115,12 +115,18 @@ export function VariantPopUp({
                   return (
                     <TableRow key={variantEntry.id}>
                       <TableCell style={{width: '0%'}}>
-                        <input 
+                        {/* <input 
                           hidden 
                           name={`variantsAlt[${nestedIndex}].id`} 
                           readOnly 
                           value={variantEntry.id} 
                           ref={register} 
+                        /> */}
+                        <Controller
+                          as={<input hidden readOnly />}
+                          name={`variantsAlt[${nestedIndex}].id`}
+                          defaultValue={variantEntry.id}
+                          placeholder=""
                         />
                       </TableCell>
                       <TableCell className={classes.tablecell}>
