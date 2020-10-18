@@ -153,6 +153,7 @@ export const AddRemoveLayout = ({
                 cols={{ lg: 2, md: 2, sm: 2, xs: 2, xxs: 2 }}
                 isDraggable={true}
                 draggableCancel="input,textarea, button"
+                draggableHandle=".dragme"
                 isResizable={true}
                 rowHeight={1}
                 className="layout"
