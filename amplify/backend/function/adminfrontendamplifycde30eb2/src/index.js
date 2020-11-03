@@ -69,9 +69,10 @@ exports.handler = event => {
     console.log('DynamoDB Record: %j', record.dynamodb);
     if (record.eventName === 'INSERT') {
       handle_insert(record).then(result => {
+        console.log('result', result);
         return Promise.resolve(result);
       }).catch(err => console.log('final err', err));
     }
   });
-  return Promise.resolve('Successfully processed DynamoDB record');
+  // return Promise.resolve('Successfully processed DynamoDB record');
 };
