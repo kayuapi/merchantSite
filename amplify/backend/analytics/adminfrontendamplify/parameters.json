@@ -1,11 +1,11 @@
 {
     "appName": "adminfrontendamplify",
-    "roleName": "pinpointLambdaRole91a8bf83",
-    "cloudformationPolicyName": "cloudformationPolicy91a8bf83",
-    "cloudWatchPolicyName": "cloudWatchPolicy91a8bf83",
-    "pinpointPolicyName": "pinpointPolicy91a8bf83",
-    "authPolicyName": "pinpoint_amplify_91a8bf83",
-    "unauthPolicyName": "pinpoint_amplify_91a8bf83",
+    "roleName": "pinpointLambdaRole828cec4c",
+    "cloudformationPolicyName": "cloudformationPolicy828cec4c",
+    "cloudWatchPolicyName": "cloudWatchPolicy828cec4c",
+    "pinpointPolicyName": "pinpointPolicy828cec4c",
+    "authPolicyName": "pinpoint_amplify_828cec4c",
+    "unauthPolicyName": "pinpoint_amplify_828cec4c",
     "authRoleName": {
         "Ref": "AuthRoleName"
     },

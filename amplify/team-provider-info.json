@@ -45,13 +45,12 @@
       },
       "function": {
         "adminfrontendamplify4cb2a585": {},
-        "amplifyChmboxorderingDdb": {},
-        "adminfrontendamplifycde30eb2": {}
+        "amplifyChmboxorderingDdb": {}
       },
       "notifications": {
         "Pinpoint": {
           "Name": "adminfrontendamplify-master",
-          "Id": "0101826bb1074686a4f8f3ed85ae0dca",
+          "Id": "b9eb8ca8a3b04437ad9ba94b784ac517",
           "Region": "us-west-2"
         }
       }
