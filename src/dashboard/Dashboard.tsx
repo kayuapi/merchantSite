@@ -61,6 +61,7 @@ const Dashboard: FC = () => {
             listOrders(
               shopId: $shopId
               fulfillmentMethodOrderId: $fulfillmentMethodOrderId
+              limit: 1000
             ){
               items {
                 orderId
