@@ -17,6 +17,12 @@ import _ from "lodash";
 import Container from '@material-ui/core/Container';
 // import { withHookHoc } from './withHookHoc';
 import { CircularProgress } from '@material-ui/core';
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Popper from "@material-ui/core/Popper";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import MenuItem from "@material-ui/core/MenuItem";
+import MenuList from "@material-ui/core/MenuList";
 import AddCard from '../AddCard';
 import ProductDisplay from '../ProductDisplay';
 import { v4 as uuidv4 } from 'uuid';
@@ -50,6 +56,9 @@ const useStyles = makeStyles(theme => ({
   tabPanel: {
     paddingLeft: theme.spacing(0),
     paddingRight: theme.spacing(0),
+  },
+  menuItem: {
+    justifyContent: 'flex-end',
   }
 }));
 
@@ -80,14 +89,22 @@ function AddCard2() {
 }
 
 
-const createElement = (el, ind, setValue) => {
+const createElement = (el, ind, setValue, handleSetAnchorEl) => {
   const removeStyle = {
     position: "absolute",
-    right: "2px",
+    right: "0px",
     top: 0,
     cursor: "pointer",
-    fontSize: "x-large",
+    fontSize: "large",
   };
+  const optionStyle = {
+    position: "absolute",
+    right: "0px",
+    top: 25,
+    cursor: "pointer",
+    fontSize: "large",
+  };
+
   el.uiLocation = {...el.uiLocation, minH:PRODUCT_DISPLAY_MIN_HEIGHT};
   return (
     <div key={el.id} data-grid={el.uiLocation}>
@@ -106,7 +123,13 @@ const createElement = (el, ind, setValue) => {
           setValue('menuPageIsDirty', uuidv4(), {shouldDirty: true});
           store.dispatch(removeMenuItem(el.id));
         }}
-      >x
+      >🗙
+      </span>
+      <span
+        className="options"
+        style={optionStyle}
+        onClick={handleSetAnchorEl}
+      >🞃
       </span>
       <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
     </div>
@@ -125,6 +148,17 @@ export const AddRemoveLayout = ({
 }) => {
   const { reset, setValue } = useFormContext();
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleSetAnchorEl = (event) => {
+    setAnchorEl(prev => event.currentTarget);
+    setOpen(prev => !prev);
+  };
+
+  const handleClose = (event) => {
+    setAnchorEl(prev => null);
+    setOpen(false);
+  };
 
   useEffect(() => {
     loadMenuItems();
@@ -168,7 +202,7 @@ export const AddRemoveLayout = ({
                   element.children[3].style.display="none";
                 }}
               >
-                {_.map(menuItems, (el,ind) => createElement(el,ind, setValue))}
+                {_.map(menuItems, (el,ind) => createElement(el,ind, setValue, handleSetAnchorEl))}
               </ResponsiveReactGridLayout> 
             </div>
           }
@@ -189,8 +223,40 @@ export const AddRemoveLayout = ({
               className="layout"
             >
               {AddCard2()}
-            </ResponsiveReactGridLayout> 
-          </div>           
+            </ResponsiveReactGridLayout>
+          </div>
+          <Popper
+            open={open}
+            anchorEl={anchorEl}
+            role={undefined}
+            transition
+            disablePortal
+            placement="bottom-end"
+          >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === "bottom" ? "center top" : "center bottom"
+              }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MenuList
+                    
+                    autoFocusItem={open}
+                    id="menu-list-grow"
+                    // onKeyDown={handleListKeyDown}
+                  >
+                    <MenuItem onClick={handleClose} classes={{root: classes.menuItem}}>✔A la carte</MenuItem>
+                    <MenuItem onClick={handleClose} classes={{root: classes.menuItem}}>Combo</MenuItem>
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+          </Popper>
         </Container>
         <VariantsPopUp />
       </TabPanel>
