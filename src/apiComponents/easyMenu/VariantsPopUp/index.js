@@ -40,7 +40,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-
+import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 import Paper from '@material-ui/core/Paper';
 import { addVariantEntry, removeVariantEntry, closeVariantsPopUp } from './actions';
 import { updateMenuItemVariants, updateDirtiness } from '../MenuItemsPanel/actions';
@@ -83,6 +83,9 @@ export function VariantPopUp({
   // useInjectReducer({ key: 'product', reducer });
   const classes = useStyles();
   const { getValues, register } = useFormContext();
+
+  const { updateMenuItem } = useMenuItemsWorkingArea();
+
   return (
     <>
       <Dialog
@@ -178,6 +181,8 @@ export function VariantPopUp({
           <Button
             onClick={() => {
               const variantEntries1 = getValues({nest: true})['variantsAlt'];
+              console.log('variantEntries1', variantEntries1);
+              updateMenuItem(menuItemId, 'variants', variantEntries1);
               updateMenuItemVariants(menuItemId, variantEntries1);
               updateDirtiness(menuItemId, {variants: variantEntries1});
               closeVariantsPopUp();

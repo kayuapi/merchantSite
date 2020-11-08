@@ -28,7 +28,7 @@ import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
 import InputBase from '@material-ui/core/InputBase';
 import { Controller } from "react-hook-form";
 import { store } from '../../../App';
-
+import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 // import StorageInput from '../../playground/RHFStorageInput';
 import StorageInput from '../../playground/SwitchableImagePicker';
 
@@ -117,6 +117,7 @@ export function ProductDisplay({
   dispatch,
 }) {
   const classes = useStyles();
+  const { updateMenuItem } = useMenuItemsWorkingArea();
   return (
     <>
       <Card className={classes.root}>
@@ -155,7 +156,7 @@ export function ProductDisplay({
             defaultValue={name}
             render={({onChange, onBlur, value}) => (
               <InputBase
-                onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value)); onBlur();}}
+                onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value)); updateMenuItem(id, 'name', e.target.value); onBlur();}}
                 onChange={onChange}
                 value={value}
                 placeholder="Product name (e.g: Apple)"
@@ -170,7 +171,7 @@ export function ProductDisplay({
             defaultValue={price}
             render={({onChange, onBlur, value}) => (
               <InputBase
-                onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); onBlur();}}
+                onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); updateMenuItem(id, 'price', e.target.value); onBlur();}}
                 onChange={onChange}
                 value={value}
                 placeholder="Product price (e.g: RM 10)"

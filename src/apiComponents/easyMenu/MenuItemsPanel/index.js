@@ -29,6 +29,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { loadMenuItems, addMenuItem, removeMenuItem } from "./actions.js";
 import { updateMenuItemsLocation } from '../MenuItemsPanel/actions';
 import { createStructuredSelector } from 'reselect';
+
+import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormContext } from 'react-hook-form';
 import {
@@ -128,7 +131,7 @@ const createElement = (el, ind, setValue, handleSetAnchorEl) => {
       <span
         className="options"
         style={optionStyle}
-        onClick={handleSetAnchorEl}
+        onClick={e => handleSetAnchorEl(e, el.id)}
       >🞃
       </span>
       <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
@@ -146,13 +149,24 @@ export const AddRemoveLayout = ({
   loadMenuItems,
   updateMenuItemsLocation,
 }) => {
+  const { menuItems: newMenuItems, loadMenuItems: newLoadMenuItems, updateMenuItem, createMenuItem, deleteMenuItem } = useMenuItemsWorkingArea();
   const { reset, setValue } = useFormContext();
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [selectedMenuId, setSelectedMenuId] = React.useState(false);
+  const [once, setOnce] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleSetAnchorEl = (event) => {
+  const handleSetAnchorEl = (event, menuItemId) => {
     setAnchorEl(prev => event.currentTarget);
     setOpen(prev => !prev);
+    setSelectedMenuId(menuItemId);
+    console.log('menuItemId', menuItemId);
+  };
+
+  const handleMenuItemTypeChosen = (event, menuItemId, type) => {
+    updateMenuItem(menuItemId, 'type', type);
+    setAnchorEl(prev => null);
+    setOpen(false);
   };
 
   const handleClose = (event) => {
@@ -162,8 +176,24 @@ export const AddRemoveLayout = ({
 
   useEffect(() => {
     loadMenuItems();
+    setOnce(true);
     reset({}, {dirtyFields: false, dirty: false});
   }, [currentCategoryId, loadMenuItems, reset]);
+
+  useEffect(() => {
+    if (once && menuItems.length > 0) {
+      newLoadMenuItems(menuItems);
+      setOnce(false);
+    }
+    // console.log('menuItems', menuItems);
+  }, [menuItems, newLoadMenuItems, once])
+  console.log('newMenuItems', newMenuItems);
+  // useEffect(() => {
+  //   if (menuItems.length > 0) {
+  //     newLoadMenuItems(menuItems);
+  //     console.log('newMenuItems', newMenuItems);
+  //   }
+  // }, [menuItems, newLoadMenuItems, newMenuItems]);
 
   const onLayoutChange = (layout) => {
     updateMenuItemsLocation(layout);
@@ -249,8 +279,12 @@ export const AddRemoveLayout = ({
                     id="menu-list-grow"
                     // onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose} classes={{root: classes.menuItem}}>✔A la carte</MenuItem>
-                    <MenuItem onClick={handleClose} classes={{root: classes.menuItem}}>Combo</MenuItem>
+                    <MenuItem onClick={e => handleMenuItemTypeChosen(e, selectedMenuId, 'A_LA_CARTE')} classes={{root: classes.menuItem}}>
+                      {newMenuItems.filter(el => el.id === selectedMenuId)[0].type !== 'COMBO' &&<span>✔</span>}A la carte
+                    </MenuItem>
+                    <MenuItem onClick={e => handleMenuItemTypeChosen(e, selectedMenuId, 'COMBO')} classes={{root: classes.menuItem}}>
+                    {newMenuItems.filter(el => el.id === selectedMenuId)[0].type === 'COMBO' &&<span>✔</span>}Combo
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

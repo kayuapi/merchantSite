@@ -10,6 +10,7 @@ import DraggableTabs from './CategoryTabsSortModeOn';
 import Control from './Control';
 import MenuItemsPanel from './MenuItemsPanel';
 
+import { MenuItemsWorkingAreaProvider } from './Context/MenuItemsWorkingArea/MenuItemsWorkingAreaProvider';
 
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -55,26 +56,27 @@ const EasyMenuPageShow = ({
       <Container className={classes.cardGrid} maxWidth="md">
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <Control />
-            { isCategorySortModeOn && 
-              <DraggableTabs />
-            }
-            { !isCategorySortModeOn && 
-              <CategoryTabs>
-                <MenuItemsPanel />
-              </CategoryTabs>
-            }
-            <Controller
-              name={`menuPageIsDirty`}
-              defaultValue={''}
-              render={({onChange, onBlur, value}) => (
-                <InputBase
-                  type="hidden"
-                  readOnly
-                />
-              )}
-            />
-
+            <MenuItemsWorkingAreaProvider>
+              <Control />
+              { isCategorySortModeOn && 
+                <DraggableTabs />
+              }
+              { !isCategorySortModeOn && 
+                <CategoryTabs>
+                  <MenuItemsPanel />
+                </CategoryTabs>
+              }
+              <Controller
+                name={`menuPageIsDirty`}
+                defaultValue={''}
+                render={({onChange, onBlur, value}) => (
+                  <InputBase
+                    type="hidden"
+                    readOnly
+                  />
+                )}
+              />
+            </MenuItemsWorkingAreaProvider>
           </form>
           <AlertToContinue />
         </FormProvider>
