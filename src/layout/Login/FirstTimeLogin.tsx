@@ -205,7 +205,7 @@ const Login = () => {
                             <div className={classes.hint}>
                                 CHM Ordering System
                                 <br />
-                                v 2.0.13
+                                v 2.0.14
                                 <br />
                             </div>
                             <div className={classes.form}>
