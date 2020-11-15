@@ -1,9 +1,8 @@
 import { call, all, put, select, takeLatest } from 'redux-saga/effects';
 import { LOAD_MENU_ITEMS, DELETE_MENU_ITEMS } from './constants';
 import { menuItemsLoaded, menuItemsLoadingError } from './actions';
-import { grabFromDb, deleteFromDb } from '../utils/request';
-import { makeSelectCurrentCategoryId, makeSelectCurrentCategory, selectCurrentCategory } from '../CategoryTabs/selectors';
-import { current } from 'immer';
+import { grabFromDb } from '../utils/request';
+import { selectCurrentCategory } from '../CategoryTabs/selectors';
 
 export function* getMenuItems() {
   try {

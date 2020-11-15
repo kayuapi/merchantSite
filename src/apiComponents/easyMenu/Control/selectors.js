@@ -9,11 +9,10 @@ const makeSelectCategorySortModeOn = () =>
     substate => substate.categorySortModeOn,
   );
 
-
-const makeSelectElegantMenuCanSaveTabAndPanel = () =>
+const makeSelectIsTabAndPanelDirty = () =>
   createSelector(
     selectElegantMenuControlDomain,
-    substate => substate.canSaveTabAndPanel,
+    substate => substate.isTabAndPanelDirty,
   );
 
 const makeSelectTabAndPanelSaving = () =>
@@ -46,27 +45,20 @@ const makeSelectTabSavingError = () =>
     substate => substate.tabSavingError,
   );
 
-const makeSelectIsCategoryStateAndMenuItemsPanelDirty = () =>
-  createSelector(
-    selectElegantMenuControlDomain,
-    substate => substate.canSaveTabAndPanel,
-  );
-
 const makeSelectSavedSuccessfully = () =>
   createSelector(
     selectElegantMenuControlDomain,
     substate => substate._savedSuccessfully,
   );
 
-export { 
-  makeSelectElegantMenuCanSaveTabAndPanel, 
+export {
   makeSelectTabAndPanelSaving,
   makeSelectTabAndPanelError,
   makeSelectCategorySortModeOn,
   makeSelectTabSaving,
   makeSelectTabSavingError,
-  makeSelectIsCategoryStateAndMenuItemsPanelDirty,
   makeSelectSavedSuccessfully,
   makeSelectTabAndPanelSavedSuccessfully,
+  makeSelectIsTabAndPanelDirty,
 };
 

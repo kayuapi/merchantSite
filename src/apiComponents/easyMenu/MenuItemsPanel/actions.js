@@ -9,47 +9,9 @@ import {
   DELETE_MENU_ITEMS_ERROR,
   ADD_MENU_ITEM,
   REMOVE_MENU_ITEM,
-  UPDATE_MENU_ITEM_NAME,
-  UPDATE_MENU_ITEM_PRICE,
-  UPDATE_MENU_ITEM_IMAGE,
-  UPDATE_MENU_ITEMS_LOCATION,
-  UPDATE_MENU_ITEM_VARIANTS,
   UPDATE_MENU_ITEMS,
   SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
-  UPDATE_DIRTINESS,
-  RESET_DIRTINESS,
 } from './constants';
-
-import { isEqual } from 'lodash';
-import { store } from '../../../App';
-import { selectPrvMenuItemsInCloud } from './selectors';
-
-export function resetDirtiness() {
-  return {
-    type: RESET_DIRTINESS,
-  }
-}
-
-export function updateDirtiness(menuItemId, fields) {
-  let matchedMenuItem;
-  const prvMenuItemsInCloud = selectPrvMenuItemsInCloud(store.getState());
-  if (prvMenuItemsInCloud) {
-    matchedMenuItem = prvMenuItemsInCloud.filter(menuItem => menuItem.id === menuItemId)[0];
-  }
-  
-  const key = Object.keys(fields)[0];
-  let _isDirty;
-  if (matchedMenuItem) {
-    let { [key]: value } = matchedMenuItem;
-    _isDirty = !isEqual(fields[key], value);
-  } else {
-    _isDirty = !isEqual(fields[key], []);
-  }
-  return {
-    type: UPDATE_DIRTINESS,
-    _isDirty,
-  }
-}
 
 export function syncPrvMenuItemsInCloudAfterSavingSuccessfully(_menuItems) {
   return {
@@ -119,44 +81,5 @@ export function updateMenuItems(menuItems) {
   return {
     type: UPDATE_MENU_ITEMS,
     menuItems,
-  }
-}
-
-export function updateMenuItemName(menuItemId, menuItemName) {
-  return {
-    type: UPDATE_MENU_ITEM_NAME,
-    menuItemId,
-    menuItemName,
-  }
-}
-
-export function updateMenuItemPrice(menuItemId, menuItemPrice) {
-  return {
-    type: UPDATE_MENU_ITEM_PRICE,
-    menuItemId,
-    menuItemPrice,
-  }
-}
-
-export function updateMenuItemImage(menuItemId, menuItemImage) {
-  return {
-    type: UPDATE_MENU_ITEM_IMAGE,
-    menuItemId,
-    menuItemImage,
-  }
-}
-
-export function updateMenuItemsLocation(menuItemIdAndLocationArray) {
-  return {
-    type: UPDATE_MENU_ITEMS_LOCATION,
-    menuItemIdAndLocationArray,
-  }
-}
-
-export function updateMenuItemVariants(menuItemId, variants) {
-  return {
-    type: UPDATE_MENU_ITEM_VARIANTS,
-    menuItemId,
-    variants,
   }
 }

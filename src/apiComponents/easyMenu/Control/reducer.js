@@ -9,21 +9,19 @@ import {
   SAVE_TAB_ERROR,
   TOGGLE_CATEGORY_SORT_MODE,
   TOGGLE_CATEGORY_SORT_MODE_CONTROLLER,
-  MODIFY_STATE_TO_CLEAN,
-  MODIFY_STATE_TO_DIRTY,
   RESET_SAVED_SUCCESSFULLY,
+  MODIFY_TAB_AND_PANEL_DIRTINESS,
 } from './constants';
 
 export const initialState = {
   // _savedSuccessfully is used to make save page ui button works
   _savedSuccessfully: false,
-  canSaveTabAndPanel: false,
   tabAndPanelSaving: false,
   tabAndPanelError: false,
   categorySortModeOn: false,
   tabSaving: false,
   tabSavingError: false,
-
+  isTabAndPanelDirty: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -44,14 +42,12 @@ const controlReducer = (state = initialState, action) =>
         break;
       }
       case SAVE_TAB_AND_PANEL_SUCCESS: {
-        draft.canSaveTabAndPanel = false;
         draft.tabAndPanelSaving = false;
         draft.tabAndPanelError = false;
         draft._savedSuccessfully = true;
         break;
       }
       case SAVE_TAB_AND_PANEL_ERROR: {
-        draft.canSaveTabAndPanel = true;
         draft.tabAndPanelSaving = false;
         draft.tabAndPanelError = action.error;
         break;
@@ -82,16 +78,10 @@ const controlReducer = (state = initialState, action) =>
       case TOGGLE_CATEGORY_SORT_MODE_CONTROLLER: {
         break;
       }
-      case MODIFY_STATE_TO_DIRTY: {
-        draft.canSaveTabAndPanel = true;
+      case MODIFY_TAB_AND_PANEL_DIRTINESS: {
+        draft.isTabAndPanelDirty = action.status;
         break;
       }
-      case MODIFY_STATE_TO_CLEAN: {
-        draft.canSaveTabAndPanel = false;
-        break;
-      }
-
-      
     }
   })
 

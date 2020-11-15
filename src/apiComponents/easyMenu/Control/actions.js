@@ -9,9 +9,8 @@ import {
   SAVE_TAB_ERROR,
   TOGGLE_CATEGORY_SORT_MODE,
   TOGGLE_CATEGORY_SORT_MODE_CONTROLLER,
-  MODIFY_STATE_TO_DIRTY,
-  MODIFY_STATE_TO_CLEAN,
   RESET_SAVED_SUCCESSFULLY,
+  MODIFY_TAB_AND_PANEL_DIRTINESS,
 } from './constants';
 
 // Save tab and panel
@@ -77,20 +76,18 @@ export function toggleCategorySortModeController() {
     type: TOGGLE_CATEGORY_SORT_MODE_CONTROLLER,
   }
 }
-export function modifyStateToClean() {
-  return {
-    type: MODIFY_STATE_TO_CLEAN,
-  }
-}
-export function modifyStateToDirty() {
-  return {
-    type: MODIFY_STATE_TO_DIRTY,
-  }
-}
 
 export function resetSavedSuccessfully() {
   return {
     type: RESET_SAVED_SUCCESSFULLY,
+  }
+}
+
+
+export function modifyTabAndPanelDirtiness(status) {
+  return {
+    type: MODIFY_TAB_AND_PANEL_DIRTINESS,
+    status,
   }
 }
 
