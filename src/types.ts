@@ -137,10 +137,10 @@ export interface FilterProps<Params = {}> {
     resource?: string;
 }
 
-export interface DatagridProps<RecordType = Record>
-    extends Partial<ListControllerProps<RecordType>> {
-    hasBulkActions?: boolean;
-}
+// export interface DatagridProps<RecordType = Record>
+//     extends Partial<ListControllerProps<RecordType>> {
+//     hasBulkActions?: boolean;
+// }
 
 export interface ResourceComponentProps<
     Params extends { [K in keyof Params]?: string } = {},
