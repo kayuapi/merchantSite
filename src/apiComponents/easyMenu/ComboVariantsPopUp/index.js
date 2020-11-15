@@ -6,11 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
-import { createStructuredSelector } from 'reselect';
-import { connect } from 'react-redux';
 // import { FormattedMessage } from 'react-intl';
-import { compose } from 'redux';
 import Button from '@material-ui/core/Button';
 
 import VariantItemSectionCard from './VariantItemSectionCard';
@@ -20,10 +16,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 import { useVariantItemSectionsWorkingArea } from '../Context/VariantItemsWorkingArea/useVariantItemSectionsWorkingArea';
-import { closeVariantsPopUp } from './actions';
-import { makeSelectIsVariantPopUpOpen, makeSelectOpenedMenuItemId } from './selectors';
 
 const useStyles = makeStyles(theme => ({
   dialog: {
@@ -33,17 +26,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function VariantPopUp({ 
+export function ComboVariantPopUp({ 
     menuItemId,
+    selectedMenuItem,
+    updateMenuItem,
     isVariantPopUpOpen,
     closeVariantsPopUp,
   }) {
 
   const classes = useStyles();
 
-  const { menuItems, updateMenuItem } = useMenuItemsWorkingArea();
+  // const { menuItems, updateMenuItem } = useMenuItemsWorkingArea();
   const { variantItemSections, loadVariantItemSections, createVariantItemSection } = useVariantItemSectionsWorkingArea();
-  const selectedMenuItem = menuItems.filter(el => el.id === menuItemId)[0];
+  // const selectedMenuItem = menuItems.filter(el => el.id === menuItemId)[0];
   const [isExistingComboVariantsLoaded, setIsExistingComboVariantsLoaded] = useState(false);
   useEffect(() => {
     if (!isExistingComboVariantsLoaded && selectedMenuItem.comboVariants) {
@@ -97,28 +92,4 @@ export function VariantPopUp({
   );
 }
 
-VariantPopUp.propTypes = {
-  menuItemId: PropTypes.string,
-  isVariantPopUpOpen: PropTypes.bool.isRequired,
-  closeVariantsPopUp: PropTypes.func,
-};
-
-const mapStateToProps = createStructuredSelector({
-  menuItemId: makeSelectOpenedMenuItemId(),
-  isVariantPopUpOpen: makeSelectIsVariantPopUpOpen(),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    closeVariantsPopUp: () => dispatch(closeVariantsPopUp()),
-  };
-}
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
-
-export default compose(
-  withConnect,
-)(VariantPopUp);
+export default ComboVariantPopUp;

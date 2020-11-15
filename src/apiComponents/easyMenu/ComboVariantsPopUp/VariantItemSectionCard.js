@@ -73,6 +73,7 @@ export function VariantItemSectionCard({
               {title}
             </Typography>
             {required && <Chip color="primary" size="small" label="Required" />}
+            {!required && <Chip color="primary" size="small" label="Optional" />}
           </Grid>
           {minSelectionNumber !== maxSelectionNumber && 
             <>
