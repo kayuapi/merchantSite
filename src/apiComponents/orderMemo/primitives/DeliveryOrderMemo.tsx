@@ -150,12 +150,12 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
             <>
               <a href={whatsappLink}><WhatsAppIcon /></a>
               <span>{phoneNumber}</span>
-              <br />
               <Tooltip title="add phone number to clipboard">
                 <IconButton onClick={copyPhoneNumberClipBoard} size='medium'>
                   <CopyToClipboardIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
+              <br />
             </>
           )}
           <span> Delivered to: {deliveryAddress}</span>
