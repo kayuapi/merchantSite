@@ -352,7 +352,7 @@ const OrderPageShow = props => {
 
       });
 
-      return () => subscription.unsubscribe();
+      return () => subscription && subscription.unsubscribe();
     }, [filterValues]);
 
 
