@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -23,11 +23,8 @@ import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import MoveIcon from '@material-ui/icons/OpenWith';
 import { openVariantsPopUp } from '../VariantsPopUp/actions';
-import { updateMenuItemName, updateMenuItemPrice } from '../MenuItemsPanel/actions';
-import { selectMenuItemsVariants } from '../MenuItemsPanel/selectors';
 import InputBase from '@material-ui/core/InputBase';
 import { Controller } from "react-hook-form";
-import { store } from '../../../App';
 import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 // import StorageInput from '../../playground/RHFStorageInput';
 import StorageInput from '../../playground/SwitchableImagePicker';
@@ -105,17 +102,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const handlePlusMinusChange = (menuItemId) => {
-  // obtain variants from menuItem with the amentioned menuItemId
-  const variants = selectMenuItemsVariants(store.getState(), menuItemId);
-  store.dispatch(openVariantsPopUp(menuItemId, variants));
-};
-
-export function ProductDisplay({
-  item: { id, name, price, image, variants=[{id: 'abc', name:'abcname', price:'rm5'}], uiLocation: {x, y} },
-  index,
-  dispatch,
-}) {
+export const ProductDisplay = ({
+  item: { id, name, price, image },
+  openVariantsPopUp,
+})  => {
   const classes = useStyles();
   const { updateMenuItem } = useMenuItemsWorkingArea();
   return (
@@ -128,99 +118,84 @@ export function ProductDisplay({
           menuItemId={id}
           // height="100"
           // width="100"
-          index={index}
           // className={classes.cardMedia}
           downloadedImage={image}
           image={image}
           title={name}
         />
-        <CardContent className={classes.content}>
-          {/* <InputBase
-            onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value));}}
-            defaultValue={name}
-            placeholder="Product name (e.g: Apple)"
-            classes={{input: classes.productTitleInput}}
-            inputProps={{'aria-label': 'put product title' }} 
-          />
-          <InputBase
-            onChange={(e)=>{
-              console.log('e', e);
-            }}
-            defaultValue={price}
-            placeholder="Product price (e.g: RM 10)"
-            classes={{input: classes.priceInput}}
-            inputProps={{'aria-label': 'put a price' }} 
-          /> */}
-          <Controller
-            name={`menuPage.menuItems[${index}].name`}
-            defaultValue={name}
-            render={({onChange, onBlur, value}) => (
-              <InputBase
-                onBlur={(e)=>{dispatch(updateMenuItemName(id, e.target.value)); updateMenuItem(id, 'name', e.target.value); onBlur();}}
-                onChange={onChange}
-                value={value}
-                placeholder="Product name (e.g: Apple)"
-                classes={{input: classes.productTitleInput}}
-                style={{width: '100%'}}
-                inputProps={{'aria-label': 'put product title' }} 
-              />
-            )}
-          />
-          <Controller
-            name={`menuPage.menuItems[${index}].price`}
-            defaultValue={price}
-            render={({onChange, onBlur, value}) => (
-              <InputBase
-                onBlur={(e)=>{dispatch(updateMenuItemPrice(id, e.target.value)); updateMenuItem(id, 'price', e.target.value); onBlur();}}
-                onChange={onChange}
-                value={value}
-                placeholder="Product price (e.g: RM 10)"
-                classes={{input: classes.priceInput}}
-                style={{width: '100%'}}
-                inputProps={{ 'aria-label': 'put a price' }}  
-              />
-            )}
-          />
+        <div>
+          <CardContent className={classes.content}>
+            <Controller
+              name={`productDisplay-name-${id}`}
+              defaultValue={name}
+              render={({onChange, onBlur, value}) => (
+                <InputBase
+                  onBlur={(e)=>{updateMenuItem(id, 'name', e.target.value); onBlur();}}
+                  onChange={onChange}
+                  value={value}
+                  placeholder="Product name (e.g: Apple)"
+                  classes={{input: classes.productTitleInput}}
+                  style={{width: '100%'}}
+                  multiline
+                  inputProps={{'aria-label': 'put product title' }} 
+                />
+              )}
+            />
+            <Controller
+              name={`productDisplay-price-${id}`}
+              defaultValue={price}
+              render={({onChange, onBlur, value}) => (
+                <InputBase
+                  onBlur={(e)=>{updateMenuItem(id, 'price', e.target.value); onBlur();}}
+                  onChange={onChange}
+                  value={value}
+                  placeholder="Product price (e.g: RM 10)"
+                  classes={{input: classes.priceInput}}
+                  style={{width: '100%'}}
+                  inputProps={{ 'aria-label': 'put a price' }}  
+                />
+              )}
+            />
+          </CardContent>
 
-        </CardContent>
-
-        <CardActions className={classes.controls}>
-          <Grid container>
-            <Grid item xs={12}>
-              <TextField
-                disabled
-                variant="outlined"
-                placeholder="0"
-                fullWidth
-                type="number"
-                InputProps={{classes: { input: classes.resize }}}
-                className={classes.textField}
-              />
-            </Grid>
-            <Grid item xs={6} className={classes.gridItem}>
-              <IconButton
-                className={classes.gridItem2}
-                onClick={() => {handlePlusMinusChange(id)}}
-                edge="start"
-              >
-                <AddIcon />
-              </IconButton>
-            </Grid>
-            <Grid item xs={6} className={classes.gridItem}>
-              {/* the dragme handler is used in react grid layout to enable dragging */}
-              <div class="dragme">
-                <IconButton
+          <CardActions className={classes.controls}>
+            <Grid container>
+              <Grid item xs={12}>
+                <TextField
                   disabled
+                  variant="outlined"
+                  placeholder="0"
+                  fullWidth
+                  type="number"
+                  InputProps={{classes: { input: classes.resize }}}
+                  className={classes.textField}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.gridItem}>
+                <IconButton
                   className={classes.gridItem2}
-                  edge="end"
+                  onClick={() => {openVariantsPopUp(id)}}
+                  edge="start"
                 >
-                  <MoveIcon />
-                  <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
+                  <AddIcon />
                 </IconButton>
-              </div>
+              </Grid>
+              <Grid item xs={6} className={classes.gridItem}>
+                {/* the dragme handler is used in react grid layout to enable dragging */}
+                <div className="dragme">
+                  <IconButton
+                    disabled
+                    className={classes.gridItem2}
+                    edge="end"
+                  >
+                    <MoveIcon />
+                    <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
+                  </IconButton>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </CardActions>
+          </CardActions>
+        </div>
       </Card>
     </>
   );
@@ -228,13 +203,12 @@ export function ProductDisplay({
 
 ProductDisplay.propTypes = {
   item: PropTypes.object,
-  id: PropTypes.any,
-  dispatch: PropTypes.func,
+  openVariantsPopUp: PropTypes.func,
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch
+    openVariantsPopUp: (menuItemId) => dispatch(openVariantsPopUp(menuItemId)),
   }
 }
 const withConnect = connect(
@@ -244,5 +218,5 @@ const withConnect = connect(
 
 export default compose(
   withConnect,
-  memo,
-)(ProductDisplay);
+  // memo,
+)(React.memo(ProductDisplay));
