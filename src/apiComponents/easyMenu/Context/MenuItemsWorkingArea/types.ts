@@ -4,12 +4,20 @@ import { Id } from "../../../orderMemo/types";
 export type MenuItem = {
   id: Id;
   name: string;
-  price: number;
+  price: string;
   image: string;
   type: "A_LA_CARTE" | "COMBO";
   uiLocation: {[key: string]: any};
   variants?: {[key: string]: any}[] | null;
-  comboVariant?: {[key: string]: any}[] | null;
+  comboVariants?: {[key: string]: any}[] | null;
+};
+
+export type MinimumRequiredParametersForRGLObject = {
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  minH: number
 };
 
 export type MenuItemAttributeKey = 
@@ -19,18 +27,18 @@ export type MenuItemAttributeKey =
   "type" | 
   "uiLocation" | 
   "variants" | 
-  "comboVariant";
+  "comboVariants";
 
 export type MenuItemsWorkingAreaState = {
   menuItems: MenuItem[];
 };
 export type MenuItemAttributeValueNameType = string;
-export type MenuItemAttributeValuePriceType = number;
+export type MenuItemAttributeValuePriceType = string;
 export type MenuItemAttributeValueImageType = string;
 export type MenuItemAttributeValueTypeType = "A_LA_CARTE" | "COMBO";
-export type MenuItemAttributeValueUiLocationType = {[key: string]: any};
+export type MenuItemAttributeValueRGLLayoutType = {[key: string]: any}[];
 export type MenuItemAttributeValueVariantsType = {[key: string]: any}[];
-export type MenuItemAttributeValueComboVariantType = {[key: string]: any}[];
+export type MenuItemAttributeValueComboVariantsType = {[key: string]: any}[];
 
 
 export type MenuItemAction =
@@ -47,12 +55,16 @@ export type MenuItemAction =
         MenuItemAttributeValuePriceType |
         MenuItemAttributeValueImageType |
         MenuItemAttributeValueTypeType |
-        MenuItemAttributeValueUiLocationType |
         MenuItemAttributeValueVariantsType |
-        MenuItemAttributeValueComboVariantType;
+        MenuItemAttributeValueComboVariantsType;
+    }
+  | {
+      type: "updateMenuItemLayout";
+      layout: MenuItemAttributeValueRGLLayoutType;
     }
   | {
       type: "createMenuItem";
+      uiLocation: MinimumRequiredParametersForRGLObject;
     }
   | {
       type: "deleteMenuItem";
@@ -65,7 +77,8 @@ export interface useMenuItemsWorkingAreaInterface {
       menuItems: MenuItem[];
       loadMenuItems: (menuItems: MenuItem[]) => void;
       updateMenuItem: (id: Id, attributeKey: MenuItemAttributeKey, attributeValue: any) => void;
-      createMenuItem: () => void;
+      updateMenuItemLayout: (layout: MenuItemAttributeValueRGLLayoutType) => void;
+      createMenuItem: (location: MinimumRequiredParametersForRGLObject) => void;
       deleteMenuItem: (id: Id) => void;
   };
 }

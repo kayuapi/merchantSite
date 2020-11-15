@@ -25,8 +25,11 @@ export const useMenuItemsWorkingArea: useMenuItemsWorkingAreaInterface = () => {
     const updateMenuItem = (id: any, attributeKey: any, attributeValue: any) => {
       dispatch({type: 'updateMenuItem', id, attributeKey, attributeValue});
     };
-    const createMenuItem = () => {
-      dispatch({type: 'createMenuItem'});
+    const updateMenuItemLayout = (layout: any) => {
+      dispatch({type: 'updateMenuItemLayout', layout});
+    };
+    const createMenuItem = (location: any) => {
+      dispatch({type: 'createMenuItem', uiLocation: location});
     };
     const deleteMenuItem = (id: any) => {
       dispatch({type: 'deleteMenuItem', id});
@@ -36,6 +39,7 @@ export const useMenuItemsWorkingArea: useMenuItemsWorkingAreaInterface = () => {
       menuItems: state.menuItems,
       loadMenuItems,
       updateMenuItem,
+      updateMenuItemLayout,
       createMenuItem,
       deleteMenuItem
     };
