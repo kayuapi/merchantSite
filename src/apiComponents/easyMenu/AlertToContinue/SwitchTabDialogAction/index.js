@@ -9,14 +9,11 @@ import { closeAlertToContinue } from '../actions';
 import { updateCategoryName } from '../../CategoryTabs/actions';
 import { makeSelectActionToDispatch } from '../selectors';
 import { useNotify } from 'react-admin';
-
+import { useMenuItemsWorkingArea } from '../../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 import {
   makeSelectCurrentCategory,
   makeSelectCategories,
 } from '../../CategoryTabs/selectors';
-import {
-  makeSelectMenuItems,
-} from '../../MenuItemsPanel/selectors';
 
 import { makeSelectTabAndPanelSaving, makeSelectTabAndPanelSavedSuccessfully } from '../../Control/selectors';
 import { saveTabAndPanel, saveTabAndPanelThenSwitchTab } from '../../Control/actions';
@@ -25,7 +22,6 @@ const SwitchTabDialogAction = ({
   revertChangesToTab,
   currentCategory,
   categories,
-  menuItems,
   actionToDispatch,
   saveTabAndPanelThenSwitchTab,
   isTabAndPanelSaving,
@@ -40,6 +36,7 @@ const SwitchTabDialogAction = ({
       notify("pos.notification.saved_successfully");
     }
   }, [isTabAndPanelSaved, notify]);
+  const { menuItems: newMenuItems } = useMenuItemsWorkingArea();
   return (
     <DialogActions>
       <Button
@@ -70,12 +67,11 @@ const SwitchTabDialogAction = ({
         disabled={isTabAndPanelSaving || isTabAndPanelSaved}
         onClick={()=> {
           const currentCategoryNewCopy = {...currentCategory};
-          // console.log('equal?', currentCategoryNewCopy == currentCategory);
           const categoriesNewCopy = categories? [...categories]: [];
-          const menuItemsNewCopy = menuItems ? [...menuItems] : [];
           // console.log('onclick currentCategory', currentCategoryNewCopy);
-          console.log('actionToDispatch', actionToDispatch);
-          saveTabAndPanelThenSwitchTab(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy, actionToDispatch.category);
+          // console.log('actionToDispatch', actionToDispatch);
+          // console.log('newMenuItems', newMenuItems);
+          saveTabAndPanelThenSwitchTab(categoriesNewCopy, currentCategoryNewCopy, newMenuItems, actionToDispatch.category);
           // saveTabAndPanel(categoriesNewCopy, currentCategoryNewCopy, menuItemsNewCopy);
           // dispatch(actionToDispatch);
         }} 
@@ -92,7 +88,6 @@ const SwitchTabDialogAction = ({
 SwitchTabDialogAction.propTypes = {
   currentCategory: PropTypes.object,
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-  menuItems: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
 
   revertChangesToTab: PropTypes.func,
   actionToDispatch: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -107,7 +102,6 @@ SwitchTabDialogAction.propTypes = {
 const mapStateToProps = createStructuredSelector({
   currentCategory: makeSelectCurrentCategory(),
   categories: makeSelectCategories(),
-  menuItems: makeSelectMenuItems(),
 
   actionToDispatch: makeSelectActionToDispatch(),
   isTabAndPanelSaving: makeSelectTabAndPanelSaving(),

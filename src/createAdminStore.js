@@ -2,9 +2,9 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import { routerMiddleware, connectRouter } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import categoryTabsSaga from './apiComponents/easyMenu/CategoryTabs/saga';
-import menuItemsPanelSaga from './apiComponents/easyMenu/MenuItemsPanel/saga';
-import controlSaga from './apiComponents/easyMenu/Control/saga';
+// import categoryTabsSaga from './apiComponents/easyMenu/CategoryTabs/saga';
+// import menuItemsPanelSaga from './apiComponents/easyMenu/MenuItemsPanel/saga';
+// import controlSaga from './apiComponents/easyMenu/Control/saga';
 import { createInjectorsEnhancer } from "redux-injectors";
 import {
     adminReducer,

@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Route } from 'react-router-dom';
+
 import arrayMove from 'array-move';
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import DineInOrderMemo from './primitives/DineInOrderMemo';
 import DeliveryOrderMemo from './primitives/DeliveryOrderMemo';
 import SelfPickupOrderMemo from './primitives/SelfPickupOrderMemo';
-import {
-    useTranslate,
-    useDataProvider,
-    Loading,
-    Error
-} from 'react-admin';
-import fakeData from './tests/fakeData';
+
+// import fakeData from './tests/fakeData';
 import Typography from '@material-ui/core/Typography';
 
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
-import { fetchUtils, useAuthenticated } from 'react-admin';
+import { useAuthenticated } from 'react-admin';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -27,12 +21,12 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Top from './top';
 import { TopFulfillmentMethod } from './top';
 import {
-  endOfYesterday,
+  // endOfYesterday,
   startOfWeek,
-  subWeeks,
+  // subWeeks,
   addWeeks,
-  startOfMonth,
-  subMonths,
+  // startOfMonth,
+  // subMonths,
 } from 'date-fns';
 
 const useStyles = makeStyles(theme => ({
@@ -139,6 +133,7 @@ const OrderBoard = SortableContainer(({orders, state, setState}) => {
 
 });
 
+// eslint-disable-next-line no-sequences
 const sortObject = o => Object.keys(o).sort((a,b) => {return new Date(a) - new Date(b)}).reduce((r, k) => (r[k] = o[k], r), {});
 
 // propertyList can only take in 2 properties of the objects, 
@@ -353,7 +348,7 @@ const OrderPageShow = props => {
 
       });
 
-      return () => subscription.unsubscribe();
+      return () => subscription && subscription.unsubscribe();
     }, [filterValues]);
 
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { FC, createElement, useState } from 'react';
+import { FC, createElement } from 'react';
 import { useSelector } from 'react-redux';
 import { useMediaQuery, Theme } from '@material-ui/core';
-import { useTranslate, MenuItemLink, DashboardMenuItem } from 'react-admin';
+import { MenuItemLink, DashboardMenuItem, MenuProps } from 'react-admin';
 // import { DashboardMenuItem } from 'react-admin';
 // import QrIcon from '@material-ui/icons/CropFree';
 import BannerIcon from '@material-ui/icons/Image';
@@ -18,7 +18,7 @@ interface Props {
   onMenuClick: () => void;
 }
 
-const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
+const Menu: FC<MenuProps> = ({ onMenuClick, dense, logout }) => {
     const isXLarge = useMediaQuery((theme: Theme) =>
         theme.breakpoints.down('xl')
     );
@@ -38,7 +38,7 @@ const Menu: FC<Props> = ({ onMenuClick, dense, logout }) => {
               />
               <MenuItemLink
                 to={`/easyMenu`}
-                primaryText={"Simple Menu (beta)"}
+                primaryText={"Menu"}
                 leftIcon={createElement(MenuIcon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}

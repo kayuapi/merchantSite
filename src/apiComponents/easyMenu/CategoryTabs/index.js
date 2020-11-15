@@ -15,19 +15,18 @@ import {
 } from "./actions.js";
 import { makeSelectIsAlertToContinueOn } from '../AlertToContinue/selectors';
 import { openAlertToContinue } from '../AlertToContinue/actions';
-import { useFormContext } from "react-hook-form";
 
+import { makeSelectMenuItems, makeSelectMenuItemsLoading, makeSelectMenuItemsError } from '../MenuItemsPanel/selectors';
+import { makeSelectIsTabAndPanelDirty } from '../Control/selectors';
 import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
 import { createStructuredSelector } from 'reselect';
 import { 
   makeSelectCategories, 
   makeSelectCategoriesLoading, 
   makeSelectCategoriesError,
-  makeSelectCanAddCategory,
   makeSelectCategoriesSaving,
   makeSelectCurrentCategory,
 } from './selectors';
-import { makeSelectElegantMenuCanSaveTabAndPanel } from '../Control/selectors';
 import { v4 as uuidv4 } from 'uuid';
 import { Controller } from 'react-hook-form';
 import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@material-ui/core";
@@ -88,27 +87,25 @@ const CategoryTabs = ({
   categories,
   categoriesLoading,
   categoriesError,
-  canAddCategory,
   categoriesSaving,
-  canSaveTabAndPanel,
   currentCategory,
   loadCategories,
   dispatchSwitchCategory,
   openAlertToContinue,
   addCategory,
-  dispatchDeleteCategory,
   children,
   updateCategoryName,
   resetSavedSuccessfully,
   isAlertToContinueOn,
+  menuItems,
+  menuItemsLoading,
+  isDirty,
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
   const notify = useNotify();
   // const categoriesLength = categories ? categories.length: 0;
   // const tabInputRefs = React.useRef([...new Array(categoriesLength)].map(() => React.createRef()));
-  const { formState: { dirtyFields } } = useFormContext();
-  const isDirty = !(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object);
   const updateScrollButton = () => {
     const container = tabsRef.current;
     if (!container) {
@@ -151,90 +148,50 @@ const CategoryTabs = ({
   };
 
   const addNewCategoryTo = (categories) => {
-    const newCategory = {
-      id: uuidv4(),
-      _name: "",
-      name: "",
-    };
-    if (categories) {
-      if (validateNoDuplicateCategoryName([...categories, newCategory])) {
-        addCategory(newCategory);
-        if (isDirty) {
-          openAlertToContinue(switchCategory(newCategory));
+    if (!isDirty) {
+      const newCategory = {
+        id: uuidv4(),
+        _name: "",
+        name: "",
+      };
+      if (categories) {
+        if (validateNoDuplicateCategoryName([...categories, newCategory])) {
+          addCategory(newCategory);
+          if (isDirty) {
+            openAlertToContinue(switchCategory(newCategory));
+          } else {
+            dispatchSwitchCategory(newCategory);
+          }  
         } else {
-          dispatchSwitchCategory(newCategory);
+          notify("pos.notification.fill_in_category_name", 'warning');
         }  
       } else {
-        notify("pos.notification.fill_in_category_name", 'warning');
-      }  
+        addCategory(newCategory);
+        dispatchSwitchCategory(newCategory);
+      }
     } else {
-      addCategory(newCategory);
-      dispatchSwitchCategory(newCategory);
+      notify("pos.notification.saved_before_adding_new_category", 'warning');
     }
   }
+
   const [scrollBtn, setScrollBtn] = useState("off");
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
 
-  const MyInputBaseNew = ({index, category}) => {
-    return (
-      <Controller 
-        name={`menuPage.categories[${index}]`} 
-        defaultValue={category.name ? category.name : ''} 
-        render={({onChange, onBlur, value}) => (
-          <InputBase 
-            onBlur={(e) => {
-              updateCategoryName(category.id, e.target.value); 
-              onBlur();
-            }}
-            onChange={onChange}
-            value={value}
-            multiline
-            placeholder="New category"
-            classes={{root: classes.tabInput}}
-          />
-        )}
-      />
-    ) 
-  };
 
-
-  // const MyInputBase = React.forwardRef((props, ref) => {
-  //   console.log('myinputbase ref', composerRef);
-  //   return (
-  //     <InputBase
-  //       // inputRef={ref}
-  //       inputRef={currentCategory.id === props.category.id ? composerRef : null}
-  //       defaultValue={props.category.name ? props.category.name: ''}
-  //       onBlur={(e) => {
-  //         e.persist();
-  //         setIsComposing(false);
-  //         // updateCategoryName(props.category.id, e.target.value);
-  //       }}
-  //       onChange={(e) => {
-          
-  //         e.persist();
-  //         console.log('e', e);
-  //         updateCategoryName(props.category.id, e.target.value);
-  //         setIsComposing(true);
-  //         // e.preventDefault();
-  //       }}
-  //       multiline
-  //       inputProps={{ tabIndex: "-1" }}
-  //       placeholder="New category"
-  //       classes={{root: classes.tabInput}}
-  //     />
-  //   )
-  // })
   const MyCloseIcon = React.forwardRef((props, ref) => {
     return (
       <Close id={props.categoryId} onClick={(e) => {
           e.stopPropagation();
-          const deletingCategoryIndex = categories.findIndex(category => category.id === props.categoryId);
-          // const deletingCategory = categories.filter(category=>category.id === props.categoryId)[0];
-          const actionToDispatch = deleteCategory(categories, categories[deletingCategoryIndex], currentCategory);
-          openAlertToContinue(actionToDispatch);
+          if (!isDirty || props.categoryId === currentCategory.id) {
+            const deletingCategoryIndex = categories.findIndex(category => category.id === props.categoryId);
+            // const deletingCategory = categories.filter(category=>category.id === props.categoryId)[0];
+            const actionToDispatch = deleteCategory(categories, categories[deletingCategoryIndex], currentCategory);
+            openAlertToContinue(actionToDispatch);  
+          } else {
+            notify("pos.notification.saved_before_deleting_another_category", 'warning');
+          }
         }} 
       />
     )
@@ -319,7 +276,9 @@ const CategoryTabs = ({
               </Grid>
             </Grid>
           </AppBar>
-          { categories && currentCategory && children }
+          { categories && currentCategory && menuItemsLoading && <CircularProgress /> }
+          { categories && currentCategory && !menuItemsLoading && children(currentCategory.id, menuItems) }
+
         </TabContext>
       )}
     </>
@@ -327,8 +286,6 @@ const CategoryTabs = ({
 };
 
 CategoryTabs.propTypes = {
-  canAddCategory: PropTypes.bool,
-  canSaveTabAndPanel: PropTypes.bool,
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   categoriesLoading: PropTypes.bool,
   categoriesError: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -337,23 +294,27 @@ CategoryTabs.propTypes = {
   
   loadCategories: PropTypes.func.isRequired,
   dispatchSwitchCategory: PropTypes.func.isRequired,
-  dispatchDeleteCategory: PropTypes.func.isRequired,
   addCategory: PropTypes.func.isRequired,
   openAlertToContinue: PropTypes.func.isRequired,
   updateCategoryName: PropTypes.func.isRequired,
   resetSavedSuccessfully: PropTypes.func.isRequired,
+  isDirty: PropTypes.bool,
 };
 
 const mapStateToProps = createStructuredSelector({
-  canSaveTabAndPanel: makeSelectElegantMenuCanSaveTabAndPanel(),
   categories: makeSelectCategories(),
   categoriesLoading: makeSelectCategoriesLoading(),
   categoriesError: makeSelectCategoriesError(),
-  canAddCategory: makeSelectCanAddCategory(),
   categoriesSaving: makeSelectCategoriesSaving(),
   currentCategory: makeSelectCurrentCategory(),
 
+
+  menuItems: makeSelectMenuItems(),
+  menuItemsLoading: makeSelectMenuItemsLoading(),
+  menuItemsError: makeSelectMenuItemsError(),
+
   isAlertToContinueOn: makeSelectIsAlertToContinueOn(),
+  isDirty: makeSelectIsTabAndPanelDirty(),
 
 });
 
@@ -363,7 +324,6 @@ function mapDispatchToProps(dispatch) {
     loadCategories: () => dispatch(loadCategories()),
     dispatchSwitchCategory: category => dispatch(switchCategory(category)),
     addCategory: (category) => dispatch(addCategory(category)),
-    dispatchDeleteCategory: categoryId => dispatch(deleteCategory(categoryId)),
     dispatchDeleteMenuItems: menuItems => dispatch(deleteMenuItems(menuItems)),
     openAlertToContinue: (actionCreator, actionCreatorArgument) => dispatch(openAlertToContinue(actionCreator, actionCreatorArgument)),
     resetSavedSuccessfully: () => dispatch(resetSavedSuccessfully()),

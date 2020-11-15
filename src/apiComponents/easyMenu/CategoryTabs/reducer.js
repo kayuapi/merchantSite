@@ -15,6 +15,7 @@ import {
   UPDATE_CATEGORIES,
   UPDATE_CATEGORY_NAME,
   RESET_CURRENT_CATEGORY,
+  RESET_DELETED_SUCCESSFULLY,
 } from './constants';
 
 export const initialState = {
@@ -27,6 +28,7 @@ export const initialState = {
   canAddCategory: true,
   categoriesSaving: false,
   categoryDeleting: false,
+  deletedSuccessfully: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -94,6 +96,7 @@ const categoriesReducer = (state = initialState, action) =>
           draft.categories = filteredCategories;
         }
         draft.categoryDeleting = false;
+        draft.deletedSuccessfully = true;
         break;
       }
       case DELETE_CATEGORY_ERROR: {
@@ -121,6 +124,11 @@ const categoriesReducer = (state = initialState, action) =>
       
       case SWITCH_CATEGORY: {
         draft.currentCategory = action.category;
+        break;
+      }
+
+      case RESET_DELETED_SUCCESSFULLY: {
+        draft.deletedSuccessfully = false;
         break;
       }
 

@@ -47,6 +47,12 @@ const makeSelectCurrentCategory = () =>
     substate => substate.currentCategory,
   );
 
+const makeSelectDeletedSuccessfully = () =>
+  createSelector(
+    selectElegantMenuDomain,
+    substate => substate.deletedSuccessfully,
+  );
+
 
 const makeSelectCurrentCategoryFromId = (id) =>
   createSelector(
@@ -78,4 +84,5 @@ export {
   makeSelectCurrentCategoryFromId,
   makeSelectCategoryDeleting,
   makeSelectCurrentCategory,
+  makeSelectDeletedSuccessfully,
 };

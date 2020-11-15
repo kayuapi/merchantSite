@@ -3,7 +3,18 @@ export const darkTheme = {
       primary: {
           main: '#90caf9',
       },
-      type: 'dark', // Switching the dark mode on is a single property value change.
+      secondary: {
+        main: '#FBBA72',
+      },
+      type: 'dark' as 'dark', // Switching the dark mode on is a single property value change.
+  },
+  overrides: {
+    MuiAppBar: {
+      colorSecondary: {
+          color: '#ffffffb3',
+          backgroundColor: '#616161e6',
+      },
+    },
   },
 };
 
@@ -28,6 +39,7 @@ export const lightTheme = {
           //   background-size: cover;
           // `,
       },
+      type: 'light' as 'light',
   },
   shape: {
       borderRadius: 10,

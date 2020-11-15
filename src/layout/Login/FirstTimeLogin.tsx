@@ -12,9 +12,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import { useLocation, useHistory } from 'react-router-dom';
+// import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Notification } from 'react-admin';
-import { useTranslate, useLogin, useNotify } from 'ra-core';
+// import { useTranslate, useLogin, useNotify } from 'ra-core';
+import { useTranslate, useNotify } from 'ra-core';
 import { lightTheme } from '../themes';
 import { Auth } from 'aws-amplify';
 
@@ -88,6 +90,7 @@ const { Form } = withTypes<FormValues>();
 
 
 function validateEmail(email:string) {
+  // eslint-disable-next-line no-useless-escape
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
@@ -98,8 +101,8 @@ const Login = () => {
     const translate = useTranslate();
     const classes = useStyles();
     const notify = useNotify();
-    const login = useLogin();
-    const location = useLocation<{ nextPathname: string } | null>();
+    // const login = useLogin();
+    // const location = useLocation<{ nextPathname: string } | null>();
 
     const [newPasswordChallenge, setNewPasswordChallenge] = useState(false);
     const [requiredAttributes, setRequiredAttributes] = useState<String[]>([]);
@@ -205,7 +208,7 @@ const Login = () => {
                             <div className={classes.hint}>
                                 CHM Ordering System
                                 <br />
-                                v 2.0.14
+                                v 2.0.15
                                 <br />
                             </div>
                             <div className={classes.form}>

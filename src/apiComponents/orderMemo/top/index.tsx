@@ -1,29 +1,24 @@
 import * as React from 'react';
-import { FC, ChangeEvent } from 'react';
+import { FC } from 'react';
 import {
     Box,
     Card,
     CardContent,
     Typography,
-    IconButton,
-    InputAdornment,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction,
+    // IconButton,
+    // List,
+    // ListItem,
+    // ListItemText,
+    // ListItemSecondaryAction,
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOnOutlined';
-import MailIcon from '@material-ui/icons/MailOutline';
 import LocalOfferIcon from '@material-ui/icons/LocalOfferOutlined';
-import CancelIcon from '@material-ui/icons/CancelOutlined';
-import { Form } from 'react-final-form';
-import { TextInput, useTranslate } from 'react-admin';
+// import CancelIcon from '@material-ui/icons/CancelOutlined';
+import { useTranslate } from 'react-admin';
 import {
-    endOfYesterday,
+    // endOfYesterday,
     startOfWeek,
     subWeeks,
     startOfMonth,
@@ -221,160 +216,160 @@ export const TopFulfillmentMethod: FC = (props) => {
 
 
 
-const Top: FC = props => {
-    const { filterValues, setFilters } = props as any;
-    const classes = useStyles(props);
-    const translate = useTranslate();
+// const Top: FC = props => {
+//     const { filterValues, setFilters } = props as any;
+//     const classes = useStyles(props);
+//     const translate = useTranslate();
 
-    const setFilter = (values: any) => {
-        setFilters({ ...filterValues, ...values });
-    };
+//     const setFilter = (values: any) => {
+//         setFilters({ ...filterValues, ...values });
+//     };
 
-    // defining this component here allows to skip passing filterValues and setFilter as props
-    const FilterButton: FC<{ label: string; value: any }> = props => {
-        const { label, value } = props;
-        const isSelected = Object.keys(value).reduce(
-            (acc, key) => acc && value[key] == filterValues[key], // eslint-disable-line eqeqeq
-            true
-        );
-        const addFilter = () => {
-            if (isSelected) {
-                // remove the filter
-                const inverseValues = Object.keys(value).reduce(
-                    (acc, key) => {
-                        acc[key] = undefined;
-                        return acc;
-                    },
-                    {} as any
-                );
-                setFilter(inverseValues);
-            } else {
-                setFilter(value);
-            }
-        };
-        return (
-            <ListItem
-                button
-                onClick={addFilter}
-                selected={isSelected}
-                className={classes.listItem}
-            >
-                <ListItemText
-                    primary={translate(label)}
-                    className={classes.listItemText}
-                />
-                {isSelected && (
-                    <ListItemSecondaryAction>
-                        <IconButton size="small" onClick={addFilter}>
-                            <CancelIcon />
-                        </IconButton>
-                    </ListItemSecondaryAction>
-                )}
-            </ListItem>
-        );
-    };
+//     // defining this component here allows to skip passing filterValues and setFilter as props
+//     const FilterButton: FC<{ label: string; value: any }> = props => {
+//         const { label, value } = props;
+//         const isSelected = Object.keys(value).reduce(
+//             (acc, key) => acc && value[key] == filterValues[key], // eslint-disable-line eqeqeq
+//             true
+//         );
+//         const addFilter = () => {
+//             if (isSelected) {
+//                 // remove the filter
+//                 const inverseValues = Object.keys(value).reduce(
+//                     (acc, key) => {
+//                         acc[key] = undefined;
+//                         return acc;
+//                     },
+//                     {} as any
+//                 );
+//                 setFilter(inverseValues);
+//             } else {
+//                 setFilter(value);
+//             }
+//         };
+//         return (
+//             <ListItem
+//                 button
+//                 onClick={addFilter}
+//                 selected={isSelected}
+//                 className={classes.listItem}
+//             >
+//                 <ListItemText
+//                     primary={translate(label)}
+//                     className={classes.listItemText}
+//                 />
+//                 {isSelected && (
+//                     <ListItemSecondaryAction>
+//                         <IconButton size="small" onClick={addFilter}>
+//                             <CancelIcon />
+//                         </IconButton>
+//                     </ListItemSecondaryAction>
+//                 )}
+//             </ListItem>
+//         );
+//     };
 
-    return (
-        <Card className={classes.root}>
-            <CardContent>
-                <FilterSection
-                    icon={AccessTimeIcon}
-                    label="resources.orderMemo.filters.last_visited"
-                />
-                <List dense disablePadding>
-                    <FilterButton
-                        value={{
-                            last_seen_gte: endOfYesterday().toISOString(),
-                            last_seen_lte: undefined,
-                        }}
-                        label="resources.orderMemo.filters.today"
-                    />
-                    <FilterButton
-                        value={{
-                            last_seen_gte: startOfWeek(
-                                new Date()
-                            ).toISOString(),
-                            last_seen_lte: undefined,
-                        }}
-                        label="resources.orderMemo.filters.this_week"
-                    />
-                    <FilterButton
-                        value={{
-                            last_seen_gte: subWeeks(
-                                startOfWeek(new Date()),
-                                1
-                            ).toISOString(),
-                            last_seen_lte: startOfWeek(
-                                new Date()
-                            ).toISOString(),
-                        }}
-                        label="resources.orderMemo.filters.last_week"
-                    />
-                    <FilterButton
-                        value={{
-                            last_seen_gte: startOfMonth(
-                                new Date()
-                            ).toISOString(),
-                            last_seen_lte: undefined,
-                        }}
-                        label="resources.orderMemo.filters.this_month"
-                    />
-                    <FilterButton
-                        value={{
-                            last_seen_gte: subMonths(
-                                startOfMonth(new Date()),
-                                1
-                            ).toISOString(),
-                            last_seen_lte: startOfMonth(
-                                new Date()
-                            ).toISOString(),
-                        }}
-                        label="resources.orderMemo.filters.last_month"
-                    />
-                    <FilterButton
-                        value={{
-                            last_seen_gte: undefined,
-                            last_seen_lte: subMonths(
-                                startOfMonth(new Date()),
-                                1
-                            ).toISOString(),
-                        }}
-                        label="resources.orderMemo.filters.earlier"
-                    />
-                </List>
+//     return (
+//         <Card className={classes.root}>
+//             <CardContent>
+//                 <FilterSection
+//                     icon={AccessTimeIcon}
+//                     label="resources.orderMemo.filters.last_visited"
+//                 />
+//                 <List dense disablePadding>
+//                     <FilterButton
+//                         value={{
+//                             last_seen_gte: endOfYesterday().toISOString(),
+//                             last_seen_lte: undefined,
+//                         }}
+//                         label="resources.orderMemo.filters.today"
+//                     />
+//                     <FilterButton
+//                         value={{
+//                             last_seen_gte: startOfWeek(
+//                                 new Date()
+//                             ).toISOString(),
+//                             last_seen_lte: undefined,
+//                         }}
+//                         label="resources.orderMemo.filters.this_week"
+//                     />
+//                     <FilterButton
+//                         value={{
+//                             last_seen_gte: subWeeks(
+//                                 startOfWeek(new Date()),
+//                                 1
+//                             ).toISOString(),
+//                             last_seen_lte: startOfWeek(
+//                                 new Date()
+//                             ).toISOString(),
+//                         }}
+//                         label="resources.orderMemo.filters.last_week"
+//                     />
+//                     <FilterButton
+//                         value={{
+//                             last_seen_gte: startOfMonth(
+//                                 new Date()
+//                             ).toISOString(),
+//                             last_seen_lte: undefined,
+//                         }}
+//                         label="resources.orderMemo.filters.this_month"
+//                     />
+//                     <FilterButton
+//                         value={{
+//                             last_seen_gte: subMonths(
+//                                 startOfMonth(new Date()),
+//                                 1
+//                             ).toISOString(),
+//                             last_seen_lte: startOfMonth(
+//                                 new Date()
+//                             ).toISOString(),
+//                         }}
+//                         label="resources.orderMemo.filters.last_month"
+//                     />
+//                     <FilterButton
+//                         value={{
+//                             last_seen_gte: undefined,
+//                             last_seen_lte: subMonths(
+//                                 startOfMonth(new Date()),
+//                                 1
+//                             ).toISOString(),
+//                         }}
+//                         label="resources.orderMemo.filters.earlier"
+//                     />
+//                 </List>
 
-                <FilterSection
-                    icon={LocalOfferIcon}
-                    label="resources.orderMemo.filters.fulfillmentMethods"
-                />
-                <List dense disablePadding>
-                    {segments.map(segment => (
-                        <FilterButton
-                            value={{ groups: segment.id }}
-                            label={segment.name}
-                            key={segment.id}
-                        />
-                    ))}
-                </List>
-            </CardContent>
-        </Card>
-    );
-};
+//                 <FilterSection
+//                     icon={LocalOfferIcon}
+//                     label="resources.orderMemo.filters.fulfillmentMethods"
+//                 />
+//                 <List dense disablePadding>
+//                     {segments.map(segment => (
+//                         <FilterButton
+//                             value={{ groups: segment.id }}
+//                             label={segment.name}
+//                             key={segment.id}
+//                         />
+//                     ))}
+//                 </List>
+//             </CardContent>
+//         </Card>
+//     );
+// };
 
-const FilterSection: FC<{ label: string; icon: FC }> = ({
-    label,
-    icon: Icon,
-}) => {
-    const translate = useTranslate();
-    return (
-        <Box mt={2} display="flex" alignItems="center">
-            <Box mr={1}>
-                <Icon />
-            </Box>
-            <Typography variant="overline">{translate(label)}</Typography>
-        </Box>
-    );
-};
+// const FilterSection: FC<{ label: string; icon: FC }> = ({
+//     label,
+//     icon: Icon,
+// }) => {
+//     const translate = useTranslate();
+//     return (
+//         <Box mt={2} display="flex" alignItems="center">
+//             <Box mr={1}>
+//                 <Icon />
+//             </Box>
+//             <Typography variant="overline">{translate(label)}</Typography>
+//         </Box>
+//     );
+// };
 const RadioTitle: FC<{ label: string; icon: FC }> = ({
   label,
   icon: Icon,

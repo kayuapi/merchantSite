@@ -7,10 +7,9 @@ import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import { Storage } from 'aws-amplify';
 import Typography from '@material-ui/core/Typography';
-import { useFormContext } from 'react-hook-form';
-import { updateMenuItemImage } from '../../easyMenu/MenuItemsPanel/actions';
 import { makeSelectPrefixUploadedUrl } from '../../easyMenu/MenuItemsPanel/selectors';
 import { createStructuredSelector } from 'reselect';
+import { useMenuItemsWorkingArea  } from '../../easyMenu/Context/MenuItemsWorkingArea';
 import styles from './switchableImagePickerStyle.module.css';
 
 function LinearProgressWithLabel(props) {
@@ -35,13 +34,13 @@ LinearProgressWithLabel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloadedImage: image }) => {
+const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }) => {
   const [localState, setLocalState] = useState({
     uploadedPercentage: 0,
     uploaded: false
   });
   const [uploadedImageUrl, setUploadedImageUrl] = useState(prefixUploadedUrl);
-  const { register, setValue } = useFormContext();
+  const { updateMenuItem } = useMenuItemsWorkingArea();
   const inputOpenRef = React.createRef();
   // grab uploadedImageUrl on componentMount
 
@@ -78,14 +77,13 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloa
     })
     .then (result => {
         const uploadedImageUrl = encodeURI(uploadedImageUrlOnChange+'/'+result['key']);
-        setValue(`menuPage.items[${index}].image`, uploadedImageUrl, { shouldDirty: true });
         setTimeout(() => {
           setLocalState(state => ({
             uploaded: true,
             uploadedPercentage: 0
           }));
         }, 500);
-        dispatch(updateMenuItemImage(menuItemId, uploadedImageUrl));
+        updateMenuItem(menuItemId, 'image', uploadedImageUrl);
         setUploadedImageUrl(state => uploadedImageUrl);
         setLocalState(state => ({ 
           ...localState,
@@ -144,7 +142,6 @@ const S3ImageUpload = ({ menuItemId, index, dispatch, prefixUploadedUrl, downloa
           </div>
         </div>
         <input ref={inputOpenRef} type="file" accept='image/*' onChange={(evt) => onChange(evt, prefixUploadedUrl)} style={{display: 'none'}} />
-        <input ref={register} hidden name={`menuPage.items[${index}].image`} />
       </div>
       { localState.uploadedPercentage > 0 && <LinearProgressWithLabel value={localState.uploadedPercentage} /> }
     </>
@@ -156,14 +153,7 @@ const mapStateToProps = createStructuredSelector({
   prefixUploadedUrl: makeSelectPrefixUploadedUrl(),
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch
-  }
-}
-
 const withConnect = connect(
   mapStateToProps,
-  mapDispatchToProps,
 )
 export default compose(withConnect)(S3ImageUpload);
