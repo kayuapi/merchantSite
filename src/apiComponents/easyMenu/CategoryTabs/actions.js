@@ -15,6 +15,7 @@ import {
   UPDATE_CATEGORY_NAME,
   UPDATE_CATEGORIES,
   RESET_CURRENT_CATEGORY,
+  RESET_DELETED_SUCCESSFULLY,
 } from './constants';
 
 // Load categories
@@ -113,6 +114,12 @@ export function updateCategories(categories) {
   return {
     type: UPDATE_CATEGORIES,
     categories,
+  }
+}
+
+export function resetDeletedSuccessfully() {
+  return {
+    type: RESET_DELETED_SUCCESSFULLY,
   }
 }
 

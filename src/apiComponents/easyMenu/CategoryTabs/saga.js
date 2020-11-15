@@ -1,6 +1,7 @@
 import { call, select, put, takeLatest, all } from 'redux-saga/effects';
-import { LOAD_CATEGORIES, SWITCH_CATEGORY, DELETE_CATEGORY, DELETE_CATEGORY_SUCCESS } from './constants';
+import { LOAD_CATEGORIES, LOAD_CATEGORIES_SUCCESS, SWITCH_CATEGORY, DELETE_CATEGORY, DELETE_CATEGORY_SUCCESS } from './constants';
 import { categoriesLoaded, categoriesLoadingError, categoryDeleted, categoryDeletingError, switchCategory } from './actions';
+import { loadMenuItems} from '../MenuItemsPanel/actions';
 import { closeAlertToContinue } from '../AlertToContinue/actions';
 import { grabFromDb, deleteCategoriesAndMenuItemsFromDb } from '../utils/request';
 import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
@@ -23,12 +24,24 @@ export function* getCategories() {
   }
 }
 
-export function* closeAlertWindowAfterSwitchCategory() {
+// once categories loaded succesfully, switch category to the first one if it exists
+export function* getMenuItemsFromCategory(action) {
+  if (action.categories) {
+    const currentCategory = action.categories[0];
+    if (currentCategory) {
+      yield put(switchCategory(currentCategory));
+    }
+  }
+}
+
+// when category is switched, load the menu items
+export function* getMenuItemsWhenSwitchCategory(action) {
   // check if alert to continue on, if so, close it
   const isAlertToContinueOn = yield select(selectElegantMenuAlertToContinueIsAlertOn);
   if (isAlertToContinueOn) {
     yield put(closeAlertToContinue());
   }
+  yield put(loadMenuItems());
 }
 
 export function* deletingCategory(action) {
@@ -70,7 +83,8 @@ export function* deletedCategory(action) {
 export default function* categoriesData() {
   yield all([
     takeLatest(LOAD_CATEGORIES, getCategories),
-    takeLatest(SWITCH_CATEGORY, closeAlertWindowAfterSwitchCategory),
+    takeLatest(LOAD_CATEGORIES_SUCCESS, getMenuItemsFromCategory),
+    takeLatest(SWITCH_CATEGORY, getMenuItemsWhenSwitchCategory),
     takeLatest(DELETE_CATEGORY, deletingCategory),
     takeLatest(DELETE_CATEGORY_SUCCESS, deletedCategory),
   ]);
