@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FC, createElement } from 'react';
 import { Card, Box, Typography, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 interface Props {
     icon: FC<any>;
@@ -34,7 +34,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CardWithIcon: FC<Props> = props => {
-    const { icon, title, subtitle, to, children } = props;
+    // const { icon, title, subtitle, to, children } = props;
+    const { icon, title, subtitle, children } = props;
     const classes = useStyles(props);
     return (
         <Card className={classes.card}>

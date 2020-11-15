@@ -3,7 +3,7 @@ import polyglotI18nProvider from 'ra-i18n-polyglot';
 
 import { Admin, Resource } from 'react-admin';
 // import MyLoginPage from './MyLoginPage';
-import MyLogoutButton from './MyLogoutButton';
+// import MyLogoutButton from './MyLogoutButton';
 // import { UserList } from './users';
 // import jsonServerProvider from 'ra-data-json-server';
 import menuItems from './apiComponents/menu';
@@ -23,8 +23,8 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 // import 'firebase/functions' // <- needed if using httpsCallable
-import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
-import { createFirestoreInstance } from 'redux-firestore';
+// import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+// import { createFirestoreInstance } from 'redux-firestore';
 import { buildAuthProvider } from 'react-admin-amplify';
 import customRoutes from './customRoutes';
 // import Dashboard from './Dashboard';
@@ -45,7 +45,7 @@ const firebaseConfig = {
     measurementId: 'G-6QW6L1YPR5',
 };
   
-const rrfConfig = { userProfile: 'users', useFirestoreForProfile: true }; // optional redux-firestore Config Options
+// const rrfConfig = { userProfile: 'users', useFirestoreForProfile: true }; // optional redux-firestore Config Options
 
 firebase.initializeApp(firebaseConfig);
 firebase.firestore();
@@ -77,12 +77,12 @@ export const store = createAdminStore({
     history,
 });
 
-const rrfProps = {
-    firebase,
-    config: rrfConfig,
-    dispatch: store.dispatch,
-    createFirestoreInstance,
-};
+// const rrfProps = {
+//     firebase,
+//     config: rrfConfig,
+//     dispatch: store.dispatch,
+//     createFirestoreInstance,
+// };
   
 
 

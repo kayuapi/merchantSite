@@ -2,21 +2,18 @@ import React from 'react';
 import {
     Filter,
     List,
-    NumberInput,
     ReferenceInput,
-    SearchInput,
     SelectInput,
-    useTranslate,
 } from 'react-admin';
-import Chip from '@material-ui/core/Chip';
-import { makeStyles } from '@material-ui/core/styles';
+// import Chip from '@material-ui/core/Chip';
+// import { makeStyles } from '@material-ui/core/styles';
 import GridList from './GridList';
 
-const useQuickFilterStyles = makeStyles(theme => ({
-    root: {
-        marginBottom: theme.spacing(3),
-    },
-}));
+// const useQuickFilterStyles = makeStyles(theme => ({
+//     root: {
+//         marginBottom: theme.spacing(3),
+//     },
+// }));
 
 export const ChoiceFilter = props => (
     <Filter {...props}>

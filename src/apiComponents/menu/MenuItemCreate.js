@@ -13,7 +13,6 @@ import {
 } from 'react-admin';
 import { InputAdornment } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import RichTextInput from 'ra-input-rich-text';
 
 export const styles = {
     price: { width: '7em' },
