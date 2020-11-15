@@ -22,6 +22,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import CopyToClipboardIcon from '@material-ui/icons/Assignment';
 
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -173,17 +176,25 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
           {/* use index as key because assumption of static list here, might change in future */}
           {orderedItems && orderedItems.map((orderedItem, index) => {
             const labelId = `checkbox-list-label-${index}`;
+            const labelId2 = `checkbox2-list-label-${index}`;
             textArea.value += orderedItem.name + ', '; 
             textArea.value += orderedItem.quantity + ', '; 
             return (
             <ListItem key={index} role={undefined} dense>
               <ListItemIcon>
-              <Checkbox
+                <Checkbox
+                    edge="start"
+                    tabIndex={-1}
+                    disableRipple
+                    inputProps={{ 'aria-labelledby': labelId }}
+                />
+                <Checkbox
                   edge="start"
                   tabIndex={-1}
                   disableRipple
-                  inputProps={{ 'aria-labelledby': labelId }}
-              />
+                  icon={<StarBorderIcon />} checkedIcon={<StarIcon />}
+                  inputProps={{ 'aria-labelledby': labelId2 }}
+                />
               </ListItemIcon>
               <ListItemText id={labelId} primary={orderedItem.name} secondary={orderedItem.variant} />
               <ListItemText id={labelId} primary={orderedItem.quantity} />

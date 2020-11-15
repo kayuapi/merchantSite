@@ -21,6 +21,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import CopyToClipboardIcon from '@material-ui/icons/Assignment';
 
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -160,6 +163,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
           {/* use index as key because assumption of static list here, might change in future */}
           {orderedItems && orderedItems.map((orderedItem, index) => {
             const labelId = `checkbox-list-label-${index}`;
+            const labelId2 = `checkbox2-list-label-${index}`;
             return (
             <ListItem key={index} role={undefined} dense>
               <ListItemIcon>
@@ -168,6 +172,13 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
                     tabIndex={-1}
                     disableRipple
                     inputProps={{ 'aria-labelledby': labelId }}
+                />
+                <Checkbox
+                    edge="start"
+                    tabIndex={-1}
+                    disableRipple
+                    icon={<StarBorderIcon />} checkedIcon={<StarIcon />}
+                    inputProps={{ 'aria-labelledby': labelId2 }}
                 />
               </ListItemIcon>
               <ListItemText id={labelId} primary={orderedItem.name} secondary={orderedItem.variant} />
