@@ -22,7 +22,6 @@ import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidatio
 
 export function* saveTabAndPanelThenSwitchTab(action) {
   try {
-    console.log('action in saga', action);
     if (!action.categories) {
       action.categories = [];
     }
@@ -36,7 +35,6 @@ export function* saveTabAndPanelThenSwitchTab(action) {
       action.currentCategory.name, 
       action.menuItems ? action.menuItems : []
     );
-    console.log('succes', success);
     if (success) {
       yield put(tabAndPanelSaved());
       yield put(closeAlertToContinue());
@@ -62,8 +60,6 @@ export function* saveTabAndPanelThenSwitchTab(action) {
 
 export function* saveTabAndPanel(action) {
   try {
-    console.log('saving');
-    console.log('action', action);
     if (validateNoDuplicateCategoryName(action.categories)) {
     }
     else {
@@ -85,7 +81,6 @@ export function* saveTabAndPanel(action) {
     if (success) {
       yield put(tabAndPanelSaved());
       yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
-      console.log('selectElegantMenuAlertToContinueIsAlertOn(store.getState())', selectElegantMenuAlertToContinueIsAlertOn(store.getState()));
       if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {
         yield put(closeAlertToContinue());
       }
@@ -99,7 +94,6 @@ export function* saveTabAndPanel(action) {
 
 export function* toggleCategorySortModeController() {
   const categorySortModeOn = yield select(makeSelectCategorySortModeOn());
-  console.log('CATEGORY SORT MODE', categorySortModeOn);
   if (!categorySortModeOn) {
     yield put(toggleCategorySortMode());
     yield put(resetCurrentCategory());
