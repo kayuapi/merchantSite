@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles';
 import { createStructuredSelector } from 'reselect';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -11,28 +9,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { closeAlertToContinue } from './actions';
-import { makeSelectIsAlertToContinueOn, makeSelectActionToDispatch, makeSelectCategoryName } from './selectors';
-import { makeSelectCurrentCategoryFromId, selectCurrentCategory } from '../CategoryTabs/selectors';
+import { makeSelectIsAlertToContinueOn, makeSelectActionToDispatch } from './selectors';
 import { SWITCH_CATEGORY, DELETE_CATEGORY } from '../CategoryTabs/constants';
-import { store } from '../../../App';
 import DeleteTabDialogAction from './DeleteTabDialogAction';
 import SwitchTabDialogAction from './SwitchTabDialogAction';
 
-const getCategoryNameFromId = (categoryId) => {
-  return makeSelectCurrentCategoryFromId(categoryId)(store.getState());
-}
-
-const getCurrentCategory = () => {
-  return selectCurrentCategory(store.getState());
-}
-
 const AlertToContinue = ({
-  categoryName,
   isAlertToContinueOn,
   actionToDispatch,
-  dispatch,
   closeAlertToContinue,
-  categoryToDeleteFromId,
 }) => {  
   return (
     <Dialog
@@ -82,7 +67,6 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     closeAlertToContinue: () => dispatch(closeAlertToContinue()),
-    dispatch,
   };
 }
 
