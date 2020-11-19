@@ -76,7 +76,6 @@ export function ComboVariantPopUp({
           </Button>
           <Button
             onClick={() => {
-              console.log('**SUBMITTING VARIANT ITEM SECTIONS', variantItemSections);
               updateMenuItem(menuItemId, 'variants', variantItemSections);
               closeVariantsPopUp();
             }}
