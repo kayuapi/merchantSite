@@ -94,7 +94,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
   let myDeliveryDateAndTime = '';
   if (deliveryTime) {
     const newDeliveryDate = deliveryDate.replace(/T.*/, '');
-    const newDeliveryTime = deliveryTime.match(/\d\d:\d\d:\d\d.\d\d\dZ/)[0];
+    const newDeliveryTime = deliveryTime.match(/\d\d:\d\d:\d\d.\d\d\dZ/)![0];
     myDeliveryDateAndTime = `${newDeliveryDate}T${newDeliveryTime}`;
   } else {
     myDeliveryDateAndTime = new Date(deliveryDate).toLocaleDateString();
