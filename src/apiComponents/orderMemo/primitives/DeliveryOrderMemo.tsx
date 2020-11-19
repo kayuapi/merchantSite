@@ -93,9 +93,11 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
 
   let myDeliveryDateAndTime = '';
   if (deliveryTime) {
-    myDeliveryDateAndTime = `${deliveryDate}T${deliveryTime}`;
+    const newDeliveryDate = deliveryDate.replace(/T.*/, '');
+    const newDeliveryTime = deliveryTime.match(/\d\d:\d\d:\d\d.\d\d\dZ/)[0];
+    myDeliveryDateAndTime = `${newDeliveryDate}T${newDeliveryTime}`;
   } else {
-    myDeliveryDateAndTime = deliveryDate;
+    myDeliveryDateAndTime = new Date(deliveryDate).toLocaleDateString();
   }
 
   function copyOrderItemsClipBoard() {
@@ -175,7 +177,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
         <Typography variant="body2" component="p">
           <span>**{paymentMethod}**</span>
           <br />
-          {deliveryDate && <span>Delivery date and time: {new Date(`${myDeliveryDateAndTime}`).toLocaleDateString()}</span>}
+          {deliveryDate && <span>Delivery date and time: {myDeliveryDateAndTime}</span>}
           {deliveryTime && <span>, {new Date(`${myDeliveryDateAndTime}`).toLocaleTimeString()}</span>}
           <br />
         </Typography>
