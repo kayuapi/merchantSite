@@ -90,9 +90,11 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
 
   let myPickupDateAndTime = '';
   if (pickupTime) {
-    myPickupDateAndTime = `${pickupDate}T${pickupTime}`;
+    const newPickupDate = pickupDate.replace(/T.*/, '');
+    const newPickupTime = pickupTime.match(/\d\d:\d\d:\d\d.\d\d\dZ/)[0];
+    myPickupDateAndTime = `${newPickupDate}T${newPickupTime}`;
   } else {
-    myPickupDateAndTime = pickupDate;
+    myPickupDateAndTime = new Date(pickupDate).toLocaleDateString();
   }
 
   function copyOrderItemsClipBoard() {
@@ -160,7 +162,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
         <Typography variant="body2" component="p">
           <span>**{paymentMethod}**</span>
           <br />
-          {pickupDate && <span>Pickup date and time: {new Date(`${myPickupDateAndTime}`).toLocaleDateString()}</span>}          
+          {pickupDate && <span>Pickup date and time: {myPickupDateAndTime}</span>}          
           {pickupTime && <span>, {new Date(`${myPickupDateAndTime}`).toLocaleTimeString()}</span>}
           <br />
         </Typography>
