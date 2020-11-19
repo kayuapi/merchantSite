@@ -95,12 +95,6 @@ export function ALaCarteVariantPopUp({
               </TableBody>
             </Table>
           </TableContainer>
-
-          {/* <div style={{ overflow: "hidden", height: "100%", width: "100%" }}>
-            {variantItems.map((variantItem, ind) => 
-              <VariantItemSectionCard key={variantItem.id} variantItem={variantItemSection} />
-            )}
-          </div> */}
         </DialogContent>
 
         <DialogActions className={classes.dialogActions}>
@@ -115,7 +109,6 @@ export function ALaCarteVariantPopUp({
           </Button>
           <Button
             onClick={() => {
-              console.log('**SUBMITTING VARIANT ITEM SECTIONS', variantItems);
               updateMenuItem(menuItemId, 'variants', variantItems);
               closeVariantsPopUp();
             }}

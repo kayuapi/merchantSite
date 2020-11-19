@@ -88,6 +88,12 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
     phoneNumberTextArea.value = phoneNumber;
   }
 
+  let myPickupDateAndTime = '';
+  if (pickupTime) {
+    myPickupDateAndTime = `${pickupDate}T${pickupTime}`;
+  } else {
+    myPickupDateAndTime = pickupDate;
+  }
 
   function copyOrderItemsClipBoard() {
     // console.log(textArea.value);
@@ -154,8 +160,8 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
         <Typography variant="body2" component="p">
           <span>**{paymentMethod}**</span>
           <br />
-          <span>Pickup date and time: {pickupDate}</span>
-          {pickupTime && <span>, {new Date(`1994-03-21T${pickupTime}`).toLocaleTimeString()}</span>}
+          {pickupDate && <span>Pickup date and time: {new Date(`${myPickupDateAndTime}`).toLocaleDateString()}</span>}          
+          {pickupTime && <span>, {new Date(`${myPickupDateAndTime}`).toLocaleTimeString()}</span>}
           <br />
         </Typography>
 

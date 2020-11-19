@@ -91,6 +91,13 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
     phoneNumberTextArea.value = phoneNumber;
   }
 
+  let myDeliveryDateAndTime = '';
+  if (deliveryTime) {
+    myDeliveryDateAndTime = `${deliveryDate}T${deliveryTime}`;
+  } else {
+    myDeliveryDateAndTime = deliveryDate;
+  }
+
   function copyOrderItemsClipBoard() {
     // console.log(textArea.value);
     document.body.appendChild(textArea);
@@ -168,8 +175,8 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
         <Typography variant="body2" component="p">
           <span>**{paymentMethod}**</span>
           <br />
-          <span>Delivery date: {deliveryDate}</span>
-          {deliveryTime && <span>, {new Date(`1994-03-21T${deliveryTime}`).toLocaleTimeString()}</span>}
+          {deliveryDate && <span>Delivery date and time: {new Date(`${myDeliveryDateAndTime}`).toLocaleDateString()}</span>}
+          {deliveryTime && <span>, {new Date(`${myDeliveryDateAndTime}`).toLocaleTimeString()}</span>}
           <br />
         </Typography>
 
