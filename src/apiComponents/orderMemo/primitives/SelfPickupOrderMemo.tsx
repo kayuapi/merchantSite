@@ -91,7 +91,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
   let myPickupDateAndTime = '';
   if (pickupTime) {
     const newPickupDate = pickupDate.replace(/T.*/, '');
-    const newPickupTime = pickupTime.match(/\d\d:\d\d:\d\d.\d\d\dZ/)[0];
+    const newPickupTime = pickupTime.match(/\d\d:\d\d:\d\d.\d\d\dZ/)![0];
     myPickupDateAndTime = `${newPickupDate}T${newPickupTime}`;
   } else {
     myPickupDateAndTime = new Date(pickupDate).toLocaleDateString();
