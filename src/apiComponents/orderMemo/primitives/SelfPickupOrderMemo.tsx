@@ -163,7 +163,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
           <span>**{paymentMethod}**</span>
           <br />
           {pickupDate && <span>Pickup date and time: {myPickupDateAndTime}</span>}          
-          {pickupTime && <span>, {new Date(`${myPickupDateAndTime}`).toLocaleTimeString()}</span>}
+          {pickupTime && <span>, {new Date(`${pickupDate}T${pickupTime}`).toLocaleTimeString()}</span>}
           <br />
         </Typography>
 

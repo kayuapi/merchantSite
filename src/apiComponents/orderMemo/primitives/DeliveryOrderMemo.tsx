@@ -178,7 +178,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
           <span>**{paymentMethod}**</span>
           <br />
           {deliveryDate && <span>Delivery date and time: {myDeliveryDateAndTime}</span>}
-          {deliveryTime && <span>, {new Date(`${myDeliveryDateAndTime}`).toLocaleTimeString()}</span>}
+          {deliveryTime && <span>, {new Date(`${deliveryDate}T${deliveryTime}`).toLocaleTimeString()}</span>}
           <br />
         </Typography>
 
