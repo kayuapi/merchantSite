@@ -21,6 +21,7 @@ import {
     // endOfYesterday,
     startOfWeek,
     subWeeks,
+    addMonths,
     startOfMonth,
     endOfMonth,
     endOfWeek,
@@ -73,6 +74,27 @@ const Top2: FC = (props) => {
             />
           </FormLabel>
           <RadioGroup row aria-label="position" name="position" defaultValue="this_week">
+            <FormControlLabel
+              value="next_month"
+              control={
+                <Radio 
+                  color="primary" 
+                  onChange={(event) => {
+                    if (event.target.checked === true) {
+                      setFilters({
+                        ...filterValues,
+                        date_range: [
+                          `${addMonths(startOfMonth(new Date()),1).getTime()}00`,
+                          `${addMonths(endOfMonth(new Date()), 1).getTime()}zz`,
+                        ],
+                      })
+                    }
+                  }} 
+                />
+              }
+              label={translate("resources.orderMemo.filters.next_month")}
+              labelPlacement="top"
+            />
             <FormControlLabel
               value="this_month"
               control={
@@ -127,7 +149,7 @@ const Top2: FC = (props) => {
                         ...filterValues,
                         date_range: [
                           `${subWeeks(startOfWeek(new Date()),1).getTime()}00`,
-                          `${startOfWeek(new Date()).getTime()-1}zz`,
+                          `${subWeeks(endOfWeek(new Date()),1).getTime()}zz`,
                         ],
                       })
                     }
