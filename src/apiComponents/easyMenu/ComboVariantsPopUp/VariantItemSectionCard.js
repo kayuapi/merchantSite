@@ -122,8 +122,8 @@ export function VariantItemSectionCard({
               label="Required"
             />
             <div>
-              <TextField className={classes.selectionNumber} inputProps={{ type: 'number'}} onChange={(e)=>{updateVariantItemSection(id, 'minSelectionNumber', e.target.value)}} size="small" id="outlined-basic" label="Min" variant="outlined" />
-              <TextField className={classes.selectionNumber} inputProps={{ type: 'number'}} onChange={(e)=>{updateVariantItemSection(id, 'maxSelectionNumber', e.target.value)}} size="small" id="outlined-basic2" label="Max" variant="outlined" />
+              <TextField className={classes.selectionNumber} inputProps={{ type: 'number'}} onChange={(e)=>{updateVariantItemSection(id, 'minSelectionNumber', parseInt(e.target.value))}} size="small" id="outlined-basic" label="Min" variant="outlined" />
+              <TextField className={classes.selectionNumber} inputProps={{ type: 'number'}} onChange={(e)=>{updateVariantItemSection(id, 'maxSelectionNumber', parseInt(e.target.value))}} size="small" id="outlined-basic2" label="Max" variant="outlined" />
             </div>
           </Grid>
           <CheckboxList disabled={true} variantItemSectionId={id} updateVariantItemSectionDetail={updateVariantItemSectionDetails} items={details} editable={true} />

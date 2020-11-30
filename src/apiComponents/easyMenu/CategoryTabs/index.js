@@ -15,7 +15,7 @@ import {
 } from "./actions.js";
 import { makeSelectIsAlertToContinueOn } from '../AlertToContinue/selectors';
 import { openAlertToContinue } from '../AlertToContinue/actions';
-
+import { makeSelectTabAndPanelSaving } from '../Control/selectors';
 import { makeSelectMenuItems, makeSelectMenuItemsLoading, makeSelectMenuItemsError } from '../MenuItemsPanel/selectors';
 import { makeSelectIsTabAndPanelDirty } from '../Control/selectors';
 import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
@@ -100,6 +100,7 @@ const CategoryTabs = ({
   menuItems,
   menuItemsLoading,
   isDirty,
+  tabAndPanelSaving,
 }) => {
   const classes = useStyles();
   const tabsRef = React.useRef();
@@ -134,16 +135,22 @@ const CategoryTabs = ({
   const handleTabChange = (event, categoryId) => {
     // the line below is for resetting the open alert saved ui
     resetSavedSuccessfully();
-    event.stopPropagation();
-    event.preventDefault();
     const category = categories.filter(category => category.id === categoryId)[0];
-    if (category.id === currentCategory.id) {
-    } else if (category.id !== currentCategory.id && !isDirty) {
-      dispatchSwitchCategory(category);
+    if (!tabAndPanelSaving) {
+      // event.stopPropagation();
+      // event.preventDefault();
+      if (category.id === currentCategory.id) {
+      } else if (category.id !== currentCategory.id && !isDirty) {
+        dispatchSwitchCategory(category);
+      } else {
+        notify("pos.notification.saved_first", 'warning');
+        // const actionToDispatch = switchCategory(category);
+        // openAlertToContinue(actionToDispatch);      
+      }  
     } else {
-
-      const actionToDispatch = switchCategory(category);
-      openAlertToContinue(actionToDispatch);      
+      if (category.id !== currentCategory.id) {
+        notify('pos.notification.cannot_switch_tab_when_saving', 'warning');
+      }
     }
   };
 
@@ -299,6 +306,7 @@ CategoryTabs.propTypes = {
   updateCategoryName: PropTypes.func.isRequired,
   resetSavedSuccessfully: PropTypes.func.isRequired,
   isDirty: PropTypes.bool,
+  tabAndPanelSaving: PropTypes.bool,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -307,7 +315,7 @@ const mapStateToProps = createStructuredSelector({
   categoriesError: makeSelectCategoriesError(),
   categoriesSaving: makeSelectCategoriesSaving(),
   currentCategory: makeSelectCurrentCategory(),
-
+  tabAndPanelSaving: makeSelectTabAndPanelSaving(),
 
   menuItems: makeSelectMenuItems(),
   menuItemsLoading: makeSelectMenuItemsLoading(),

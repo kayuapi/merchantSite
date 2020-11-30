@@ -50,7 +50,6 @@ export default function CheckboxList({ variantItemSectionId, items, disabled = f
         return (
           // <ListItem key={id} role={undefined} dense button={!editable} onClick={handleToggle(id)}>
           <ListItem key={id} role={undefined} dense>
-            <div style={{display: 'flex'}}>
             <ListItemIcon>
               <Checkbox
                 edge="start"
@@ -64,7 +63,7 @@ export default function CheckboxList({ variantItemSectionId, items, disabled = f
             </ListItemIcon>
             {!editable && 
               <>
-                <ListItemText id={labelId} primary={name} />
+                <ListItemText style={{ maxWidth: '80%' }} id={labelId} primary={name} />
                 <ListItemSecondaryAction>
                   <ListItemText id={labelId} primary={`+${price}`} />
                 </ListItemSecondaryAction>
@@ -127,7 +126,6 @@ export default function CheckboxList({ variantItemSectionId, items, disabled = f
                   </ListItemText>
               </>
             }
-            </div>
           </ListItem>
         );
       })}

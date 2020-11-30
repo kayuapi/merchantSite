@@ -62,13 +62,14 @@ function usePrevious(value) {
 
 function AddCard2() {
   const { menuItems, createMenuItem } = useMenuItemsWorkingArea();
-  const menuItemsCount2 = menuItems.length;
+
   return (
     <div key={uuidv4()} data-grid={{x: 0, y:0, w: 1, h:PRODUCT_DISPLAY_HEIGHT}}>
       <AddCard onClick={()=> {
+        const menuItemsCount2 = menuItems.length;
         createMenuItem({
           x: menuItemsCount2 % 2,
-          y: Math.floor(menuItemsCount2 / 2)*PRODUCT_DISPLAY_HEIGHT + menuItemsCount2*PRODUCT_DISPLAY_VERTICAL_GAP,
+          y: Math.floor(menuItemsCount2 / 2)*PRODUCT_DISPLAY_HEIGHT + Math.floor(menuItemsCount2 /2)*PRODUCT_DISPLAY_VERTICAL_GAP,
           w: 1,
           h: PRODUCT_DISPLAY_HEIGHT,
           minH: PRODUCT_DISPLAY_MIN_HEIGHT,
@@ -152,7 +153,7 @@ export const AddRemoveLayout = ({
 
   const loadMenuItemsEfficientyly = React.useCallback((item) => {
     newLoadMenuItems(item);
-  }, []);
+  }, [newLoadMenuItems]);
 
   const prevCategoryId = usePrevious(currentCategoryId);
 
@@ -164,7 +165,7 @@ export const AddRemoveLayout = ({
         loadMenuItemsEfficientyly([]);
       }
     }
-  }, [prevCategoryId, menuItemsFromCloud, currentCategoryId]);
+  }, [prevCategoryId, menuItemsFromCloud, currentCategoryId, loadMenuItemsEfficientyly]);
 
   const onLayoutChange = (layout) => {
     updateMenuItemLayout(layout);

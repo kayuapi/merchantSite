@@ -20,13 +20,10 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Top from './top';
 import { TopFulfillmentMethod } from './top';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {
-  // endOfYesterday,
   startOfWeek,
-  // subWeeks,
-  addWeeks,
-  // startOfMonth,
-  // subMonths,
+  endOfWeek,
 } from 'date-fns';
 
 const useStyles = makeStyles(theme => ({
@@ -134,7 +131,7 @@ const OrderBoard = SortableContainer(({orders, state, setState}) => {
 });
 
 // eslint-disable-next-line no-sequences
-const sortObject = o => Object.keys(o).sort((a,b) => {return new Date(a) - new Date(b)}).reduce((r, k) => (r[k] = o[k], r), {});
+const sortObject = o => Object.keys(o).sort((a,b) => {return new Date(b) - new Date(a)}).reduce((r, k) => (r[k] = o[k], r), {});
 
 // propertyList can only take in 2 properties of the objects, 
 // each object can only have either 1 of the property
@@ -162,12 +159,13 @@ const OrderPageShow = props => {
   useAuthenticated();
     const classes = useStyles();
     const [state, setState] = useState({orders: [], ordersByDate: {}});
+    const [loading, setLoading] = useState(false);
     // set default filter to this week and all fulfillmentMethods
     // use 00 to zz range as suffix to orderId
     const [filterValues, setFilters] =  useState({
       date_range: [
         `${startOfWeek(new Date()).getTime()}00`,
-        `${addWeeks(startOfWeek(new Date()), 1).getTime()}zz`
+        `${endOfWeek(new Date()).getTime()}zz`
       ],
       fulfillmentMethod: 'ALL',
     });
@@ -178,6 +176,7 @@ const OrderPageShow = props => {
     }
 
     useEffect(() => {
+      setLoading(true);
       let subscription;
       const run = (shopId, fulfillmentMethod, startingOrderId, endingOrderId) => {
         subscription = API.graphql(
@@ -316,6 +315,7 @@ const OrderPageShow = props => {
           callFunc = () => Promise.all([listReceivedOrders(shopId, fulfillmentMethod, startingDate, endingDate)]);
         }
         callFunc().then((results) => {
+          setLoading(false);
           let combinedOrderList = [];
           // for one result only
           if (results.length === 1) {
@@ -389,46 +389,48 @@ const OrderPageShow = props => {
           state={state}
           setState={setState}
         /> */}
-        <Container className={classes.cardGrid} maxWidth="lg">
-            {Object.keys(state.ordersByDate).length === 0 && 
-              state.ordersByDate.constructor === Object && 
-              <span>No orders received.</span>}          
-            {Object.keys(state.ordersByDate).length !== 0 &&
-              state.ordersByDate.constructor === Object && 
-                Object.keys(state.ordersByDate).map((el, id) => {
-                  // prevent table number from appearing in next week, note diff of customer put ordering date and customer expect receiving date
-                  // customer can put ordering for next month
-                  return (
-                    <Accordion key={id}>
-                      <AccordionSummary
-                        key={id}
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                      >
-                        <Typography className={classes.heading}>
-                          {el}
-                        </Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <OrderBoard 
-                          useDragHandle 
-                          orders={state.ordersByDate[el]} 
-                          axis={'xy'} 
-                          helperClass={classes.sorting} 
-                          onSortEnd={onSortEnd}
-                          state={state}
-                          setState={setState}
-                        />
-                      </AccordionDetails>
-                    </Accordion>  
-                  )
-                }
-              )
-            }
-            
-        </Container>
-
+        {loading && <CircularProgress />}
+        {!loading && 
+          <Container className={classes.cardGrid} maxWidth="lg">
+              {Object.keys(state.ordersByDate).length === 0 && 
+                state.ordersByDate.constructor === Object && 
+                <span>No orders received.</span>}          
+              {Object.keys(state.ordersByDate).length !== 0 &&
+                state.ordersByDate.constructor === Object && 
+                  Object.keys(state.ordersByDate).map((el, id) => {
+                    // prevent table number from appearing in next week, note diff of customer put ordering date and customer expect receiving date
+                    // customer can put ordering for next month
+                    return (
+                      <Accordion key={id}>
+                        <AccordionSummary
+                          key={id}
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header"
+                        >
+                          <Typography className={classes.heading}>
+                            {el}
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <OrderBoard 
+                            useDragHandle 
+                            orders={state.ordersByDate[el]} 
+                            axis={'xy'} 
+                            helperClass={classes.sorting} 
+                            onSortEnd={onSortEnd}
+                            state={state}
+                            setState={setState}
+                          />
+                        </AccordionDetails>
+                      </Accordion>  
+                    )
+                  }
+                )
+              }
+              
+          </Container>
+        }
       </div>
     )
 };
