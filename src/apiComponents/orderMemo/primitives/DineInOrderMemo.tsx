@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 
 
 import { DineInOrder } from '../types';
@@ -117,6 +117,12 @@ const OrderMemo: FC<DineInOrder> = ({
           {orderedItems &&  orderedItems.map((orderedItem,index) => {
             const labelId = `checkbox-list-label-${index}`;
             const labelId2 = `checkbox2-list-label-${index}`;
+            let variantName = '';
+            if (orderedItem.variant) {
+              variantName = JSON.stringify(orderedItem.variant)
+                .replace(/["']/g, '')
+                .replace(/[,]/g, '\n');
+            }
             textArea.value += orderedItem.name + ', '; 
             textArea.value += orderedItem.quantity + ', '; 
             return (
@@ -136,7 +142,24 @@ const OrderMemo: FC<DineInOrder> = ({
                   inputProps={{ 'aria-labelledby': labelId2 }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={orderedItem.name} secondary={orderedItem.variant} />
+              <ListItemText 
+                id={labelId} 
+                disableTypography 
+                primary={orderedItem.name} 
+                secondary={variantName &&
+                  <Typography variant="subtitle2" color="textSecondary">
+                    <span>
+                      {variantName.split('\n').map((el, key) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Fragment key={key}>
+                          {el}
+                          <br />
+                        </Fragment>
+                      ))}
+                    </span>
+                  </Typography>
+                } 
+              />
               <ListItemText id={labelId} primary={orderedItem.quantity} />
             </ListItem>
             );
