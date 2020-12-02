@@ -7,7 +7,7 @@ import { compose } from 'redux';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
+import { validateNoDuplicateCategoryName, validateNoEmptyCategoryName } from '../utils/businessLogicValidation';
 import { makeStyles } from '@material-ui/core/styles';
 import { 
   makeSelectTabAndPanelSaving,
@@ -20,7 +20,7 @@ import {
 import {
   makeSelectDeletedSuccessfully,
 } from '../CategoryTabs/selectors';
-import _ from 'lodash';
+import isEqual from 'lodash/isEqual';
 import {
   makeSelectCurrentCategory,
   makeSelectCategories,
@@ -91,14 +91,14 @@ const Control = ({
 
   // false menuItems indicate an empty menuItems (menuItems has initial state as bolean false, while nextMenuItems has that as [])
   if (menuItems) {
-    isMenuItemsDirty = !(_.isEqual(menuItems, nextMenuItems));
+    isMenuItemsDirty = !(isEqual(menuItems, nextMenuItems));
   } else {
-    isMenuItemsDirty = !(_.isEqual([], nextMenuItems));
+    isMenuItemsDirty = !(isEqual([], nextMenuItems));
   }
   
   if (!(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object)) {
-    if (dirtyFields.menuPage && dirtyFields.menuPage.categories) {
-      if (dirtyFields.menuPage.categories.length !== 0) {
+    if (dirtyFields.menuPage && dirtyFields.menuPage.currentCategory) {
+      if (dirtyFields.menuPage.currentCategory.length !== 0) {
         isCategoryDirty = true;
       }
     }
@@ -111,11 +111,16 @@ const Control = ({
   }, [isDirty, modifyTabAndPanelDirtiness]);
 
   // the effect reset the dirtiness of category upon saving successfully
+  
   useEffect(() => {
     if (savedSuccessfully) {
-      reset({}, {isDirty: false, dirtyFields: false});
+      reset({
+        menuPage: {
+          currentCategory: currentCategory.name
+        }
+      }, {isDirty: false, dirtyFields: false});
     }
-  }, [reset, savedSuccessfully]);
+  }, [currentCategory.name, reset, savedSuccessfully]);
 
   // the effect reset the dirtiness of category upon deleting any of the other one category successfully
   useEffect(() => {
@@ -134,7 +139,6 @@ const Control = ({
       updateUserId(userId);
     });
   }, [updateUserId]);
-
   return (
     <div className={classes.buttonContainer}>
       <Button
@@ -146,11 +150,12 @@ const Control = ({
         className={classes.button}
         startIcon={<SaveIcon />}
         onClick={() => {
-          if (validateNoDuplicateCategoryName(categories)) {
-            // saveTabAndPanel(categories, currentCategory, menuItems);
-            saveTabAndPanel(categories, currentCategory, nextMenuItems);
+          if (!validateNoDuplicateCategoryName(categories)) {
+            notify("pos.notification.issue_saving_new_category_duplicate_category_name", 'warning');            
+          } else if (!validateNoEmptyCategoryName(categories)) {
+            notify("pos.notification.cannot_save_empty_category_name", 'warning');            
           } else {
-            notify("pos.notification.issue_saving_new_category_duplicate_category_name", 'warning');
+            saveTabAndPanel(categories, currentCategory, nextMenuItems);
           }
         }}
       >

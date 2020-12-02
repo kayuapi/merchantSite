@@ -13,6 +13,7 @@ const customEnglishMessages: TranslationMessages = {
           saved_before_deleting_another_category: 'Please save this category before deleting another category',
           saved_first: 'Please save first',
           cannot_switch_tab_when_saving: 'Cannot switch tab when saving',
+          cannot_save_empty_category_name: 'Cannot save empty category name',
         },
         search: 'Search',
         configuration: 'Configuration',

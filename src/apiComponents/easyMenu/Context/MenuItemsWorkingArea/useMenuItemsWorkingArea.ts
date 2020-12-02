@@ -8,7 +8,8 @@ import { useMenuItemsWorkingAreaInterface } from "./types";
  *
  * @return {array} menuItems contains all menu items in the working area
  * @return {function} loadMenuItems loads the menu item received
- * @return {function} updateMenuItems takes in menu item's id and its attribute key and value to update accordingly
+ * @return {function} updateMenuItem takes in menu item's id and its attribute key and value to update accordingly
+ * @return {function} updateMenuItemLayout takes in menu item's layout to update accordingly
  * @return {function} createMenuItem creates a new menu item and enlist it
  * @return {function} deleteMenuItems takes in menu item's id to delete it
  */

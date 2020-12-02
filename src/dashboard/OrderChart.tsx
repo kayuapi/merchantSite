@@ -18,7 +18,7 @@ import { Order } from '../types';
 const oneDay = 24 * 60 * 60 * 1000;
 const date = new Date();
 const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getTime();
-const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1;
+// const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1;
 const daysInCurrentMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
 const thisMonthDays = Array.from(
   { length: daysInCurrentMonth },
