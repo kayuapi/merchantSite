@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CheckboxList({ variantItemSectionId, items, disabled = false, editable= false, updateVariantItemSectionDetail }) {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState([0]);
+  const [checked] = React.useState([0]);
 
   // const handleToggle = (value) => () => {
   //   const currentIndex = checked.indexOf(value);
