@@ -9,3 +9,8 @@ export const validateNoDuplicateCategoryName = (categories) => {
   }
   return false;
 }
+
+export const validateNoEmptyCategoryName = (categories) => {
+  const categoryNames = categories.map(category => category.name);
+  return !categoryNames.some(categoryName => categoryName === '');
+}

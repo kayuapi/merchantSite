@@ -111,7 +111,12 @@ const categoriesReducer = (state = initialState, action) =>
         break;
       }
       case SAVE_CATEGORY_SUCCESS: {
-        draft.categories = action.categories;
+        const newCategories = action.categories.map(category => ({
+          id: category.id,
+          name: category.name,
+          _name: category.name,
+        }))
+        draft.categories = newCategories;
         draft.categoriesSaving = false;
         draft.canAddCategory = true;
         break;

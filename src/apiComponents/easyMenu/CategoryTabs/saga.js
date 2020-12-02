@@ -1,5 +1,5 @@
 import { call, select, put, takeLatest, all } from 'redux-saga/effects';
-import { LOAD_CATEGORIES, LOAD_CATEGORIES_SUCCESS, SWITCH_CATEGORY, DELETE_CATEGORY, DELETE_CATEGORY_SUCCESS } from './constants';
+import { LOAD_CATEGORIES, LOAD_CATEGORIES_SUCCESS, SWITCH_CATEGORY, DELETE_CATEGORY } from './constants';
 import { categoriesLoaded, categoriesLoadingError, categoryDeleted, categoryDeletingError, switchCategory } from './actions';
 import { loadMenuItems} from '../MenuItemsPanel/actions';
 import { closeAlertToContinue } from '../AlertToContinue/actions';
@@ -56,8 +56,15 @@ export function* deletingCategory(action) {
 
     }
     if (success) {
+      const remainingCategories = action.categories.filter(category => category.id !== action.deletingCategory.id);
+      const isThereRemainingCategories = remainingCategories.length !== 0;
+      // if there are remaining categories, and deleting category is the same as current category, then switch category to the first one 
+      if (action.deletingCategory.id === action.currentCategory.id) {
+        if (isThereRemainingCategories) {
+          yield put(switchCategory(remainingCategories[0]));
+        }
+      }
       yield put(categoryDeleted(action.categories, action.deletingCategory, action.currentCategory));
-
       // // alert to continue will always pop up when delete category, so it needs to be closed 
       yield put(closeAlertToContinue());
     } else {
@@ -69,16 +76,16 @@ export function* deletingCategory(action) {
 }
 
 // takes care of switching category after delete a category
-export function* deletedCategory(action) {
-  const remainingCategories = action.categoriesBeforeDeleting.filter(category => category.id !== action.deletedCategory.id);
-  const isThereRemainingCategories = remainingCategories.length !== 0;
-  // if there are remaining categories, and deleting category is the same as current category, then switch category to the first one 
-  if (action.deletedCategory.id === action.currentCategoryBeforeDeleting.id) {
-    if (isThereRemainingCategories) {
-      yield put(switchCategory(remainingCategories[0]));
-    }
-  }
-}
+// export function* deletedCategory(action) {
+//   const remainingCategories = action.categoriesBeforeDeleting.filter(category => category.id !== action.deletedCategory.id);
+//   const isThereRemainingCategories = remainingCategories.length !== 0;
+//   // if there are remaining categories, and deleting category is the same as current category, then switch category to the first one 
+//   if (action.deletedCategory.id === action.currentCategoryBeforeDeleting.id) {
+//     if (isThereRemainingCategories) {
+//       yield put(switchCategory(remainingCategories[0]));
+//     }
+//   }
+// }
 
 export default function* categoriesData() {
   yield all([
@@ -86,7 +93,7 @@ export default function* categoriesData() {
     takeLatest(LOAD_CATEGORIES_SUCCESS, getMenuItemsFromCategory),
     takeLatest(SWITCH_CATEGORY, getMenuItemsWhenSwitchCategory),
     takeLatest(DELETE_CATEGORY, deletingCategory),
-    takeLatest(DELETE_CATEGORY_SUCCESS, deletedCategory),
+    // takeLatest(DELETE_CATEGORY_SUCCESS, deletedCategory),
   ]);
 
 }

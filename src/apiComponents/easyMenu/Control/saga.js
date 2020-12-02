@@ -9,7 +9,7 @@ import {
   tabSavingError, 
   toggleCategorySortMode,
 } from './actions';
-import { resetCurrentCategory, switchCategory, updateCategories } from '../CategoryTabs/actions';
+import { resetCurrentCategory, switchCategory, updateCategories, categorySaved } from '../CategoryTabs/actions';
 import { saveCategoriesToDb, saveCategoriesAndMenuItemsToDb } from '../utils/request';
 
 import { makeSelectSMOCategoryTabs } from '../CategoryTabsSortModeOn/selectors';
@@ -17,8 +17,6 @@ import { closeAlertToContinue } from '../AlertToContinue/actions';
 import { syncPrvMenuItemsInCloudAfterSavingSuccessfully, updateMenuItems } from '../MenuItemsPanel/actions';
 import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
 import { store } from '../../../App';
-// saveCategorySortModeOn
-import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
 
 export function* saveTabAndPanelThenSwitchTab(action) {
   try {
@@ -60,11 +58,6 @@ export function* saveTabAndPanelThenSwitchTab(action) {
 
 export function* saveTabAndPanel(action) {
   try {
-    if (validateNoDuplicateCategoryName(action.categories)) {
-    }
-    else {
-      throw new Error({message: 'failed validation: duplicated category names'});
-    }
     if (!action.categories) {
       action.categories = [];
     }
@@ -81,6 +74,7 @@ export function* saveTabAndPanel(action) {
     if (success) {
       yield put(tabAndPanelSaved());
       yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
+      yield put(categorySaved(action.categories));
       if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {
         yield put(closeAlertToContinue());
       }

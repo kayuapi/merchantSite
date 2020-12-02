@@ -28,7 +28,7 @@ import {
   makeSelectCurrentCategory,
 } from './selectors';
 import { v4 as uuidv4 } from 'uuid';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@material-ui/core";
 import { useNotify } from 'react-admin';
 
@@ -47,8 +47,9 @@ import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidatio
 const useStyles = makeStyles(theme => ({
   appBar: {
     color: "inherit",
+    borderRadius: '0.5rem',
     backgroundColor: "a09b87",
-    height: '64px',
+    height: '74px',
     top: '40px', // hard coded need to be changed
     "& .myTab": {
       backgroundColor: "yellow",
@@ -63,6 +64,7 @@ const useStyles = makeStyles(theme => ({
   },
   tabRoot: {
     minWidth: 50,
+    textTransform: 'none',
     // width: 120,
   },
   myTab2: {
@@ -120,7 +122,7 @@ const CategoryTabs = ({
       setScrollBtn(newScrollButtons);
     }
   }
-
+  const { reset } = useFormContext();
   useEffect(() => {
     updateScrollButton();
   });
@@ -142,6 +144,12 @@ const CategoryTabs = ({
       if (category.id === currentCategory.id) {
       } else if (category.id !== currentCategory.id && !isDirty) {
         dispatchSwitchCategory(category);
+        reset({
+          menuPage:
+            {
+              currentCategory: category.name
+            }
+        });
       } else {
         notify("pos.notification.saved_first", 'warning');
         // const actionToDispatch = switchCategory(category);
@@ -240,6 +248,7 @@ const CategoryTabs = ({
               <Grid item xl={11} lg={11} md={11} sm={11} xs={11}>
                 <div ref={tabsRef} className={classes.tabsContainer}>
                   <TabList
+                    TabIndicatorProps={{ style: { background: "#ffffff" } }}
                     onChange={handleTabChange}
                     variant="scrollable"
                     aria-label="simple tabs example"
@@ -252,8 +261,9 @@ const CategoryTabs = ({
                           key={category.id}
                           value={category.id}
                           label={
+                            category.id === currentCategory.id ? 
                             <Controller 
-                              name={`menuPage.categories[${index}]`} 
+                              name={`menuPage.currentCategory`} 
                               defaultValue={category.name ? category.name : ''} 
                               render={({onChange, onBlur, value}) => (
                                 <InputBase 
@@ -271,9 +281,10 @@ const CategoryTabs = ({
                                   classes={{root: classes.tabInput}}
                                 />
                               )}
-                            />
+                            />:
+                            <span>{category.name}</span>
                          }
-                          icon={<MyCloseIcon categoryId={category.id} />}
+                          icon={category.id === currentCategory.id ? <MyCloseIcon categoryId={category.id} /> : null}
                           classes={{ root: classes.tabRoot, wrapper: classes.myTab2 }}
                         />
                       )}
