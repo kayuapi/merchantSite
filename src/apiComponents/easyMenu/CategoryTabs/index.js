@@ -176,6 +176,12 @@ const CategoryTabs = ({
             openAlertToContinue(switchCategory(newCategory));
           } else {
             dispatchSwitchCategory(newCategory);
+            reset({
+              menuPage:
+                {
+                  currentCategory: newCategory.name
+                }
+            });    
           }  
         } else {
           notify("pos.notification.fill_in_category_name", 'warning');
@@ -183,6 +189,13 @@ const CategoryTabs = ({
       } else {
         addCategory(newCategory);
         dispatchSwitchCategory(newCategory);
+        // not needed because it's the new category starting
+        // reset({
+        //   menuPage:
+        //     {
+        //       currentCategory: newCategory.name
+        //     }
+        // });    
       }
     } else {
       notify("pos.notification.saved_before_adding_new_category", 'warning');
