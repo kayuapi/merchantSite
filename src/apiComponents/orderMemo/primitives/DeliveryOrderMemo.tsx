@@ -69,6 +69,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
   firstName,
   lastName,
   phoneNumber,
+  customAttributeField1,
   deliveryDate,
   deliveryTime,
   deliveryAddress,
@@ -141,6 +142,12 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
           {orderId} : {fulfillmentMethod}
           <br />
           Order received time: {new Date(createdAt).toLocaleString()}
+          {customAttributeField1 && 
+            <>
+              <br />
+              {customAttributeField1}
+            </>
+          }
         </Typography>
         <Typography variant="h5" component="h2">
           {firstName} {lastName} 

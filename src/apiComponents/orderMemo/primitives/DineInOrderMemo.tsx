@@ -63,6 +63,7 @@ const OrderMemo: FC<DineInOrder> = ({
   fulfillmentMethod,
   status,
   paymentMethod,
+  customAttributeField1,
   postscript,
   orderedItems,
   tableNumber,
@@ -99,6 +100,12 @@ const OrderMemo: FC<DineInOrder> = ({
           {orderId} : {fulfillmentMethod}
           <br />
           Order received time: {new Date(createdAt).toLocaleString()}
+          {customAttributeField1 && 
+            <>
+              <br />
+              {customAttributeField1}
+            </>
+          }
         </Typography>
         <Typography variant="h5" component="h2">
           {<span>Table {tableNumber}</span>}

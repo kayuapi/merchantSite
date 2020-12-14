@@ -13,6 +13,7 @@ export const updateOrder = /* GraphQL */ `
       status
       paymentMethod
       postscript
+      customAttributeField1
       tableNumber
       firstName
       lastName
@@ -45,6 +46,7 @@ export const deleteOrder = /* GraphQL */ `
       status
       paymentMethod
       postscript
+      customAttributeField1
       tableNumber
       firstName
       lastName
@@ -77,6 +79,7 @@ export const createOrder = /* GraphQL */ `
       status
       paymentMethod
       postscript
+      customAttributeField1
       tableNumber
       firstName
       lastName
