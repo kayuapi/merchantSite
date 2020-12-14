@@ -16,7 +16,7 @@ type Order
   status: OrderStatus!
   paymentMethod: PaymentMethod
   postscript: String
-
+  customAttributeField1: String
 
   tableNumber: String
   

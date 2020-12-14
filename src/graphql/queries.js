@@ -18,6 +18,7 @@ export const getOrder = /* GraphQL */ `
       status
       paymentMethod
       postscript
+      customAttributeField1
       tableNumber
       firstName
       lastName
@@ -62,6 +63,7 @@ export const listOrders = /* GraphQL */ `
         status
         paymentMethod
         postscript
+        customAttributeField1
         tableNumber
         firstName
         lastName

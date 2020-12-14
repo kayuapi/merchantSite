@@ -62,6 +62,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
   orderId,
   fulfillmentMethod,
   status,
+  customAttributeField1,
   paymentMethod,
   postscript,
   orderedItems,
@@ -131,6 +132,12 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
           {orderId} : {fulfillmentMethod}
           <br />
           Order received time: {new Date(createdAt).toLocaleString()}
+          {customAttributeField1 && 
+            <>
+              <br />
+              {customAttributeField1}
+            </>
+          }
         </Typography>
         <Typography variant="h5" component="h2">
           {firstName} {lastName}
