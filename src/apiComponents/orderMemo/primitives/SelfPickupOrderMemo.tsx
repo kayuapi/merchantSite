@@ -64,6 +64,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
   status,
   customAttributeField1,
   customAttributeField2,
+  storeFrontSideTotalPrice,
   paymentMethod,
   postscript,
   orderedItems,
@@ -238,6 +239,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
             <CopyToClipboardIcon fontSize='small' />
           </IconButton>
         </Tooltip>)}
+        {storeFrontSideTotalPrice && <Typography style={{color: 'red'}}>Price shown on customers' side: RM {storeFrontSideTotalPrice.replace(/[^0-9.-]+/g,'')}</Typography>}
       </CardContent>
       </Card>
       <Button variant="contained" className={classes.button} onClick={deleteOrder}>Fulfill</Button>

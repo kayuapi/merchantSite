@@ -33,6 +33,7 @@ export interface DeliveryOrder extends Order {
   deliveryDate: string;
   deliveryTime?: string;
   deliveryAddress: string;
+  storeFrontSideTotalPrice: string;
 }
 export interface SelfPickupOrder extends Order {
   firstName: string;
@@ -41,6 +42,7 @@ export interface SelfPickupOrder extends Order {
   pickupDate: string;
   pickupTime?: string;
   vehiclePlateNumber?: string;
+  storeFrontSideTotalPrice: string;
 }
 
 export interface MenuItem{
