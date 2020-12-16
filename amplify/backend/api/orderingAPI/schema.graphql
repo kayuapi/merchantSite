@@ -32,6 +32,7 @@ type Order
   deliveryTime: AWSTime
   deliveryAddress: String
 
+  storeFrontSideTotalPrice: String
   orderedItems:[MenuItem]
 }
 

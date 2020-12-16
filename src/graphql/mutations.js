@@ -24,6 +24,7 @@ export const updateOrder = /* GraphQL */ `
       deliveryDate
       deliveryTime
       deliveryAddress
+      storeFrontSideTotalPrice
       orderedItems {
         name
         variant
@@ -57,6 +58,7 @@ export const deleteOrder = /* GraphQL */ `
       deliveryDate
       deliveryTime
       deliveryAddress
+      storeFrontSideTotalPrice
       orderedItems {
         name
         variant
@@ -90,6 +92,7 @@ export const createOrder = /* GraphQL */ `
       deliveryDate
       deliveryTime
       deliveryAddress
+      storeFrontSideTotalPrice
       orderedItems {
         name
         variant

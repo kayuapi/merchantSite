@@ -29,6 +29,7 @@ export const getOrder = /* GraphQL */ `
       deliveryDate
       deliveryTime
       deliveryAddress
+      storeFrontSideTotalPrice
       orderedItems {
         name
         variant
@@ -74,6 +75,7 @@ export const listOrders = /* GraphQL */ `
         deliveryDate
         deliveryTime
         deliveryAddress
+        storeFrontSideTotalPrice
         orderedItems {
           name
           variant
