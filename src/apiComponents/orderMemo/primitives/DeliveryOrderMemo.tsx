@@ -70,6 +70,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
   lastName,
   phoneNumber,
   customAttributeField1,
+  customAttributeField2,
   deliveryDate,
   deliveryTime,
   deliveryAddress,
@@ -77,7 +78,6 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
 }) => {
   const classes = useStyles();
   const notify = useNotify();
-
   let whatsappLink;
   if (phoneNumber) {
     whatsappLink = 'https://wa.me/' + phoneNumber;
@@ -142,10 +142,17 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
           {orderId} : {fulfillmentMethod}
           <br />
           Order received time: {new Date(createdAt).toLocaleString()}
+          fff
           {customAttributeField1 && 
             <>
               <br />
               {customAttributeField1}
+            </>
+          }
+          {customAttributeField2 && 
+            <>
+              <br />
+              {customAttributeField2}
             </>
           }
         </Typography>

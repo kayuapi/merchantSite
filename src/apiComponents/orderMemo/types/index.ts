@@ -6,6 +6,7 @@ interface Order {
   shopId: string;
   orderId: string;
   customAttributeField1: string;
+  customAttributeField2: string;
   fulfillmentMethod: FulfillmentMethod;
   status: OrderStatus;
   paymentMethod: PaymentMethod;

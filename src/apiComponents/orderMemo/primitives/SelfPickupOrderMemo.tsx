@@ -63,6 +63,7 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
   fulfillmentMethod,
   status,
   customAttributeField1,
+  customAttributeField2,
   paymentMethod,
   postscript,
   orderedItems,
@@ -136,6 +137,12 @@ const SelfPickupOrderMemo: FC<SelfPickupOrder> = ({
             <>
               <br />
               {customAttributeField1}
+            </>
+          }
+          {customAttributeField2 && 
+            <>
+              <br />
+              {customAttributeField2}
             </>
           }
         </Typography>

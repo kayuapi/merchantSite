@@ -201,6 +201,7 @@ const OrderPageShow = props => {
               pickupTime
               vehiclePlateNumber
               customAttributeField1
+              customAttributeField2
               storeFrontSideTotalPrice
               deliveryDate
               deliveryTime
@@ -281,6 +282,7 @@ const OrderPageShow = props => {
               pickupTime
               vehiclePlateNumber
               customAttributeField1
+              customAttributeField2
               storeFrontSideTotalPrice
               deliveryDate
               deliveryTime

@@ -64,6 +64,7 @@ const OrderMemo: FC<DineInOrder> = ({
   status,
   paymentMethod,
   customAttributeField1,
+  customAttributeField2,
   storeFrontSideTotalPrice,
   postscript,
   orderedItems,
@@ -105,6 +106,12 @@ const OrderMemo: FC<DineInOrder> = ({
             <>
               <br />
               {customAttributeField1}
+            </>
+          }
+          {customAttributeField2 && 
+            <>
+              <br />
+              {customAttributeField2}
             </>
           }
         </Typography>
