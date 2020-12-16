@@ -11,6 +11,7 @@ export const onCreateOrder = /* GraphQL */ `
       paymentMethod
       postscript
       customAttributeField1
+      customAttributeField2
       tableNumber
       firstName
       lastName
@@ -21,6 +22,7 @@ export const onCreateOrder = /* GraphQL */ `
       deliveryDate
       deliveryTime
       deliveryAddress
+      storeFrontSideTotalPrice
       orderedItems {
         name
         variant
@@ -41,6 +43,7 @@ export const onUpdateOrder = /* GraphQL */ `
       paymentMethod
       postscript
       customAttributeField1
+      customAttributeField2
       tableNumber
       firstName
       lastName
@@ -51,6 +54,7 @@ export const onUpdateOrder = /* GraphQL */ `
       deliveryDate
       deliveryTime
       deliveryAddress
+      storeFrontSideTotalPrice
       orderedItems {
         name
         variant
@@ -71,6 +75,7 @@ export const onDeleteOrder = /* GraphQL */ `
       paymentMethod
       postscript
       customAttributeField1
+      customAttributeField2
       tableNumber
       firstName
       lastName
@@ -81,6 +86,7 @@ export const onDeleteOrder = /* GraphQL */ `
       deliveryDate
       deliveryTime
       deliveryAddress
+      storeFrontSideTotalPrice
       orderedItems {
         name
         variant

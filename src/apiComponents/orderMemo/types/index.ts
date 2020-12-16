@@ -6,6 +6,7 @@ interface Order {
   shopId: string;
   orderId: string;
   customAttributeField1: string;
+  customAttributeField2: string;
   fulfillmentMethod: FulfillmentMethod;
   status: OrderStatus;
   paymentMethod: PaymentMethod;
@@ -23,6 +24,7 @@ export interface IOrderItem {
 
 export interface DineInOrder extends Order {
   tableNumber: string;
+  storeFrontSideTotalPrice: string;
 }
 export interface DeliveryOrder extends Order {
   firstName: string;

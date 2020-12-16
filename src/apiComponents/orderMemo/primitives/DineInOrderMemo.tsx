@@ -64,6 +64,8 @@ const OrderMemo: FC<DineInOrder> = ({
   status,
   paymentMethod,
   customAttributeField1,
+  customAttributeField2,
+  storeFrontSideTotalPrice,
   postscript,
   orderedItems,
   tableNumber,
@@ -104,6 +106,12 @@ const OrderMemo: FC<DineInOrder> = ({
             <>
               <br />
               {customAttributeField1}
+            </>
+          }
+          {customAttributeField2 && 
+            <>
+              <br />
+              {customAttributeField2}
             </>
           }
         </Typography>
@@ -178,6 +186,7 @@ const OrderMemo: FC<DineInOrder> = ({
             <CopyToClipboardIcon fontSize='small' />
           </IconButton>
         </Tooltip>)}
+        {storeFrontSideTotalPrice && <Typography style={{color: 'red'}}>Price shown on customers' side: RM {storeFrontSideTotalPrice.replace(/[^0-9.-]+/g,'')}</Typography>}
       </CardContent>
       </Card>
       <Button variant="contained" className={classes.button} onClick={deleteOrder}>Fulfill</Button>

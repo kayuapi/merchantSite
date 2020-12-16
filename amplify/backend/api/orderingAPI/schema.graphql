@@ -17,6 +17,7 @@ type Order
   paymentMethod: PaymentMethod
   postscript: String
   customAttributeField1: String
+  customAttributeField2: String
 
   tableNumber: String
   
@@ -32,6 +33,7 @@ type Order
   deliveryTime: AWSTime
   deliveryAddress: String
 
+  storeFrontSideTotalPrice: String
   orderedItems:[MenuItem]
 }
 
