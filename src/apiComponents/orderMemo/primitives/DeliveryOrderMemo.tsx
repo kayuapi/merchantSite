@@ -71,6 +71,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
   phoneNumber,
   customAttributeField1,
   customAttributeField2,
+  storeFrontSideTotalPrice,
   deliveryDate,
   deliveryTime,
   deliveryAddress,
@@ -255,6 +256,7 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
             <CopyToClipboardIcon fontSize='small' />
           </IconButton>
         </Tooltip>)}
+        {storeFrontSideTotalPrice && <Typography style={{color: 'red'}}>Price shown on customers' side: RM {storeFrontSideTotalPrice.replace(/[^0-9.-]+/g,'')}</Typography>}
       </CardContent>
       </Card>
       <Button variant="contained" className={classes.button} onClick={deleteOrder}>Fulfill</Button>
