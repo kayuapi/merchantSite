@@ -7,6 +7,7 @@ const customEnglishMessages: TranslationMessages = {
         notification: {
           saved_successfully: 'Saved successfully!',
           issue_addding_new_category_duplicate_category_name: 'Issue adding new category: duplicated category name',
+          issue_saving_new_category_duplicate_category_name: 'Issue saving category: duplicated category name',
           fill_in_category_name: 'Please fill in the category name before creating another category',
           order_memo_copied: 'Copied',
           saved_before_adding_new_category: 'Please save this category before adding a new category.',
