@@ -56,8 +56,11 @@ export async function savePanelToDb(items, category) {
 }
 
 export async function saveCategoriesToDb(categories) {
-  // const processedPageNames = pageNames.map(item=>item.value);
-  const processedPageNames = categories.map(item=>item);
+  const toSubmitCategories = categories.map(category => ({
+    id: category.id,
+    name: category.name,
+    pageId: category.pageId,
+  }));
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin';
   try {
@@ -67,23 +70,23 @@ export async function saveCategoriesToDb(categories) {
       },
       body: {
         SK: 'PluginMenuPages', 
-        categories: processedPageNames
+        categories: toSubmitCategories,
       },
       response: false
-    };  
+    };
     const path = `${basePath}`;
-    const response = await API.post(apiName, path,  myInit);
-    return response;
+    return await API.post(apiName, path,  myInit);
   }
   catch(err) {
     console.log('api response error', err.response);
   }
 }
 
-export async function saveCategoriesAndMenuItemsToDb(categories, currentCategoryName, menuItems) {
+export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory, menuItems) {
   const toSubmitCategories = categories.map(category => ({
     id: category.id,
-    name: category.name
+    name: category.name,
+    pageId: category.pageId,
   }));
   const apiName = 'amplifyChmboxOrderingApi';
   const path = '/uiplugin/save';
@@ -97,8 +100,9 @@ export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory
         categories: toSubmitCategories,
       },
       menuItems: {
-        SK: `PluginMenu#${currentCategoryName}`, 
+        SK: `PluginMenu#${currentCategory.pageId}`, 
         menuItems,
+        categoryName: currentCategory.name,
       }
     },    
     response: false
@@ -107,12 +111,13 @@ export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory
 }
 
 export async function deleteCategoriesAndMenuItemsFromDb(categories, deletingCategory) {
-  const deletingCategoryName = deletingCategory.name;
+  const deletingCategoryPageId = deletingCategory.pageId;
   const updatedCategories = categories
     .filter(category => category.id !== deletingCategory.id)
     .map(category => ({
       id: category.id,
-      name: category.name
+      name: category.name,
+      pageId: category.pageId,
     }));
   const apiName = 'amplifyChmboxOrderingApi';
   const path = '/uiplugin/delete';
@@ -126,7 +131,7 @@ export async function deleteCategoriesAndMenuItemsFromDb(categories, deletingCat
         categories: updatedCategories,
       },
       deletedCategoryName: {
-        SK: `PluginMenu#${deletingCategoryName}`,
+        SK: `PluginMenu#${deletingCategoryPageId}`,
       }
     },    
     response: false
