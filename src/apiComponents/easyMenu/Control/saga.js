@@ -68,7 +68,7 @@ export function* saveTabAndPanel(action) {
     const { success } = yield call(
       saveCategoriesAndMenuItemsToDb, 
       action.categories ? action.categories : [], 
-      action.currentCategory.name, 
+      action.currentCategory,
       action.menuItems ? action.menuItems : []
     );
     if (success) {
