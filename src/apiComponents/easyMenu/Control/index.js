@@ -98,7 +98,7 @@ const Control = ({
   
   if (!(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object)) {
     if (dirtyFields.menuPage && dirtyFields.menuPage.currentCategory) {
-      if (dirtyFields.menuPage.currentCategory.length !== 0) {
+      if (!isCategorySortModeOn && dirtyFields.menuPage.currentCategory.length !== 0) {
         isCategoryDirty = true;
       }
     }
@@ -142,7 +142,7 @@ const Control = ({
   return (
     <div className={classes.buttonContainer}>
       <Button
-        disabled={ !isDirty || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
+        disabled={ isCategorySortModeOn || !isDirty || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
         type="submit"
         variant="contained"
         color="primary"
@@ -165,7 +165,7 @@ const Control = ({
       </Button>
       <ToggleButton
         value="check"
-        disabled={ isDirty || tabAndPanelSaving }
+        disabled={ isDirty || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
         selected={isCategorySortModeOn}
         onChange={() => {
           if (isDirty) {
