@@ -50,6 +50,7 @@ const categoriesReducer = (state = initialState, action) =>
             id: category.id,
             _name: category.name,
             name: category.name,
+            pageId: category.pageId,
           }))
           draft.categories = categories;
           draft.currentCategory = categories[0];
@@ -115,6 +116,7 @@ const categoriesReducer = (state = initialState, action) =>
           id: category.id,
           name: category.name,
           _name: category.name,
+          pageId: category.pageId,
         }))
         draft.categories = newCategories;
         draft.categoriesSaving = false;
