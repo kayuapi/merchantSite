@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-
+import { nanoid } from 'nanoid';
 import { 
   loadCategories,
   switchCategory,
@@ -18,13 +18,12 @@ import { openAlertToContinue } from '../AlertToContinue/actions';
 import { makeSelectTabAndPanelSaving } from '../Control/selectors';
 import { makeSelectMenuItems, makeSelectMenuItemsLoading, makeSelectMenuItemsError } from '../MenuItemsPanel/selectors';
 import { makeSelectIsTabAndPanelDirty } from '../Control/selectors';
-import { deleteMenuItems } from "../MenuItemsPanel/actions.js";
+import { validateNoEmptyCategoryName } from '../utils/businessLogicValidation';
 import { createStructuredSelector } from 'reselect';
 import { 
   makeSelectCategories, 
   makeSelectCategoriesLoading, 
   makeSelectCategoriesError,
-  makeSelectCategoriesSaving,
   makeSelectCurrentCategory,
 } from './selectors';
 import { v4 as uuidv4 } from 'uuid';
@@ -89,7 +88,6 @@ const CategoryTabs = ({
   categories,
   categoriesLoading,
   categoriesError,
-  categoriesSaving,
   currentCategory,
   loadCategories,
   dispatchSwitchCategory,
@@ -137,28 +135,32 @@ const CategoryTabs = ({
   const handleTabChange = (event, categoryId) => {
     // the line below is for resetting the open alert saved ui
     resetSavedSuccessfully();
-    const category = categories.filter(category => category.id === categoryId)[0];
-    if (!tabAndPanelSaving) {
-      // event.stopPropagation();
-      // event.preventDefault();
-      if (category.id === currentCategory.id) {
-      } else if (category.id !== currentCategory.id && !isDirty) {
-        dispatchSwitchCategory(category);
-        reset({
-          menuPage:
-            {
-              currentCategory: category.name
-            }
-        });
+    if (validateNoEmptyCategoryName(categories)) {
+      const category = categories.filter(category => category.id === categoryId)[0];
+      if (!tabAndPanelSaving) {
+        // event.stopPropagation();
+        // event.preventDefault();
+        if (category.id === currentCategory.id) {
+        } else if (category.id !== currentCategory.id && !isDirty) {
+          dispatchSwitchCategory(category);
+          reset({
+            menuPage:
+              {
+                currentCategory: category.name
+              }
+          });
+        } else {
+          notify("pos.notification.saved_first", 'warning');
+          // const actionToDispatch = switchCategory(category);
+          // openAlertToContinue(actionToDispatch);      
+        }  
       } else {
-        notify("pos.notification.saved_first", 'warning');
-        // const actionToDispatch = switchCategory(category);
-        // openAlertToContinue(actionToDispatch);      
-      }  
-    } else {
-      if (category.id !== currentCategory.id) {
-        notify('pos.notification.cannot_switch_tab_when_saving', 'warning');
+        if (category.id !== currentCategory.id) {
+          notify('pos.notification.cannot_switch_tab_when_saving', 'warning');
+        }
       }
+    } else {
+      notify('pos.notification.cannot_switch_tab_current_tab_empty', 'warning');
     }
   };
 
@@ -168,6 +170,7 @@ const CategoryTabs = ({
         id: uuidv4(),
         _name: "",
         name: "",
+        pageId: nanoid(10),
       };
       if (categories) {
         if (validateNoDuplicateCategoryName([...categories, newCategory])) {
@@ -212,13 +215,17 @@ const CategoryTabs = ({
     return (
       <Close id={props.categoryId} onClick={(e) => {
           e.stopPropagation();
-          if (!isDirty || props.categoryId === currentCategory.id) {
-            const deletingCategoryIndex = categories.findIndex(category => category.id === props.categoryId);
-            // const deletingCategory = categories.filter(category=>category.id === props.categoryId)[0];
-            const actionToDispatch = deleteCategory(categories, categories[deletingCategoryIndex], currentCategory);
-            openAlertToContinue(actionToDispatch);  
+          if (!tabAndPanelSaving) {
+            if (!isDirty || props.categoryId === currentCategory.id) {
+              const deletingCategoryIndex = categories.findIndex(category => category.id === props.categoryId);
+              // const deletingCategory = categories.filter(category=>category.id === props.categoryId)[0];
+              const actionToDispatch = deleteCategory(categories, categories[deletingCategoryIndex], currentCategory);
+              openAlertToContinue(actionToDispatch);  
+            } else {
+              notify("pos.notification.saved_before_deleting_another_category", 'warning');
+            }
           } else {
-            notify("pos.notification.saved_before_deleting_another_category", 'warning');
+            notify("pos.notification.cannot_delete_while_saving", 'warning');
           }
         }} 
       />
@@ -237,6 +244,7 @@ const CategoryTabs = ({
                 className={classes.addPageButton} 
                 onClick={() => addNewCategoryTo(categories)} 
                 aria-label="add page"
+                disabled={tabAndPanelSaving}
               >
                 <Add />
               </IconButton>
@@ -254,6 +262,7 @@ const CategoryTabs = ({
                   className={classes.addPageButton} 
                   onClick={() => addNewCategoryTo(categories)} 
                   aria-label="add page"
+                  disabled={tabAndPanelSaving}
                 >
                   <Add />
                 </IconButton>
@@ -320,7 +329,7 @@ CategoryTabs.propTypes = {
   categories: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   categoriesLoading: PropTypes.bool,
   categoriesError: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  categoriesSaving: PropTypes.bool,
+
   currentCategory: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   
   loadCategories: PropTypes.func.isRequired,
@@ -337,7 +346,7 @@ const mapStateToProps = createStructuredSelector({
   categories: makeSelectCategories(),
   categoriesLoading: makeSelectCategoriesLoading(),
   categoriesError: makeSelectCategoriesError(),
-  categoriesSaving: makeSelectCategoriesSaving(),
+
   currentCategory: makeSelectCurrentCategory(),
   tabAndPanelSaving: makeSelectTabAndPanelSaving(),
 
@@ -356,7 +365,6 @@ function mapDispatchToProps(dispatch) {
     loadCategories: () => dispatch(loadCategories()),
     dispatchSwitchCategory: category => dispatch(switchCategory(category)),
     addCategory: (category) => dispatch(addCategory(category)),
-    dispatchDeleteMenuItems: menuItems => dispatch(deleteMenuItems(menuItems)),
     openAlertToContinue: (actionCreator, actionCreatorArgument) => dispatch(openAlertToContinue(actionCreator, actionCreatorArgument)),
     resetSavedSuccessfully: () => dispatch(resetSavedSuccessfully()),
   };
