@@ -15,6 +15,8 @@ const customChineseMessages: TranslationMessages = {
           saved_first: 'Please save first',
           cannot_switch_tab_when_saving: 'Cannot switch tab when saving',
           cannot_save_empty_category_name: 'Cannot save empty category name',
+          cannot_switch_tab_current_tab_empty: 'Current tab has empty name, please fill in a category name and save or press "x" to delete the category',
+          cannot_delete_while_saving: 'Cannot delete category while saving',
         },
         search: 'Search',
         configuration: 'Configuration',
