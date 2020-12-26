@@ -379,7 +379,7 @@ app.post(`${path}/publish`, verifyToken, function(req, res) {
         Update: {
           TableName: tableName,
           Key: {
-            PK: { 'S': req.body.categories['shopId']},
+            PK: { 'S': claim.userName },
             SK: { 'S': 'PluginMenuPages'},
           },
           UpdateExpression: 'SET #c = list_append(if_not_exists(#c, :empty_list), :vals)',
