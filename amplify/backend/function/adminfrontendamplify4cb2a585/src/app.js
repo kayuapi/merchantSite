@@ -332,8 +332,8 @@ app.post(`${path}/unpublish`, verifyToken, function(req, res) {
         Update: {
           TableName: tableName,
           Key: {
-            shopId: { 'S': claim.userName},
-            SK: { 'S': 'PluginUnpublishedMenuPages'},
+            shopId: claim.userName,
+            SK: 'PluginUnpublishedMenuPages',
           },
           UpdateExpression: 'SET #c = list_append(if_not_exists(#c, :empty_list), :vals)',
           ExpressionAttributeNames: {'#c': 'categories'},
@@ -379,8 +379,8 @@ app.post(`${path}/publish`, verifyToken, function(req, res) {
         Update: {
           TableName: tableName,
           Key: {
-            shopId: { 'S': claim.userName },
-            SK: { 'S': 'PluginMenuPages'},
+            shopId: claim.userName,
+            SK: 'PluginMenuPages',
           },
           UpdateExpression: 'SET #c = list_append(if_not_exists(#c, :empty_list), :vals)',
           ExpressionAttributeNames: {'#c': 'categories'},
