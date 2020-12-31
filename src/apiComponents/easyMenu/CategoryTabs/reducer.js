@@ -8,14 +8,18 @@ import {
   DELETE_CATEGORY,
   DELETE_CATEGORY_SUCCESS,
   DELETE_CATEGORY_ERROR,
+  UNPUBLISH_CATEGORY,
+  UNPUBLISH_CATEGORY_SUCCESS,
+  UNPUBLISH_CATEGORY_ERROR,
   SAVE_CATEGORY,
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
   UPDATE_CATEGORIES,
-  UPDATE_CATEGORY_NAME,
+  UPDATE_CURRENT_CATEGORY,
   RESET_CURRENT_CATEGORY,
   RESET_DELETED_SUCCESSFULLY,
+  RESET_UNPUBLISHED_SUCCESSFULLY,
 } from './constants';
 
 export const initialState = {
@@ -25,8 +29,13 @@ export const initialState = {
 
   categoriesLoading: false,
   categoriesError: false,
-  canAddCategory: true,
   categoriesSaving: false,
+  categoryUnpublishing: false,
+  categoryUnpublished: false,
+  categoryUnpublishedError: false,
+  categoryPublishing: false,
+  categoryPublished: false,
+  categoryPublishedError: false,
   categoryDeleting: false,
   deletedSuccessfully: false,
 };
@@ -40,20 +49,18 @@ const categoriesReducer = (state = initialState, action) =>
         draft.categories = false;
         draft.categoriesLoading = true;
         draft.categoriesError = false;
+        draft.currentCategory = false;
         break;
       }
       case LOAD_CATEGORIES_SUCCESS: {
         draft.categoriesLoading = false;
         if (action.categories) {
           // create new categories array which has _name to store cloud value for dirtiness check and other UI usage
-          const categories = action.categories.map(category => ({
-            id: category.id,
-            _name: category.name,
-            name: category.name,
-            pageId: category.pageId,
+          const categories = action.categories.map(({...category}) => ({
+            ...category,
+            _newlyAdded: false,
           }))
           draft.categories = categories;
-          draft.currentCategory = categories[0];
         }
         break;
       }
@@ -73,8 +80,6 @@ const categoriesReducer = (state = initialState, action) =>
           draft.categories = [];
         }
         draft.categories.push(action.category);
-        
-        draft.canAddCategory = false;
         draft.categoriesError = false;
         break;
       }
@@ -105,6 +110,28 @@ const categoriesReducer = (state = initialState, action) =>
         draft.categoriesError = action.error;
         break;
       }
+      case UNPUBLISH_CATEGORY: {
+        draft.categoryUnpublishing = true;
+        draft.categoryUnpublishedError = false;
+        break;
+      }
+      case UNPUBLISH_CATEGORY_SUCCESS: {
+        const filteredCategories = draft.categories.filter(category => category.id !== action.unpublishedCategory.id);
+        if (filteredCategories.length === 0) {
+          draft.categories = false;
+          draft.currentCategory = false;
+        } else {
+          draft.categories = filteredCategories;
+        }
+        draft.categoryUnpublishing = false;
+        draft.categoryUnpublished = true;
+        break;
+      }
+      case UNPUBLISH_CATEGORY_ERROR: {
+        draft.categoryUnpublishing = false;
+        draft.categoryUnpublishedError = action.error;
+        break;
+      }
       
       case SAVE_CATEGORY: {
         draft.categoriesSaving = true;
@@ -112,15 +139,12 @@ const categoriesReducer = (state = initialState, action) =>
         break;
       }
       case SAVE_CATEGORY_SUCCESS: {
-        const newCategories = action.categories.map(category => ({
-          id: category.id,
-          name: category.name,
-          _name: category.name,
-          pageId: category.pageId,
+        const newCategories = action.categories.map(({...category}) => ({
+          ...category,
+          _newlyAdded: false,
         }))
         draft.categories = newCategories;
         draft.categoriesSaving = false;
-        draft.canAddCategory = true;
         break;
       }
       case SAVE_CATEGORY_ERROR: {
@@ -139,16 +163,18 @@ const categoriesReducer = (state = initialState, action) =>
         break;
       }
 
-      case UPDATE_CATEGORY_NAME: {
-        // only categoryName can be updated, update it in both currentCategory and categories
-        const selectedCategoryIndex = draft.categories.findIndex(category => category.id === action.categoryId);
-        draft.categories[selectedCategoryIndex].name = action.categoryName;
-        draft.currentCategory.name = action.categoryName;
+      case RESET_UNPUBLISHED_SUCCESSFULLY: {
+        draft.categoryUnpublished = false;
+        break;
+      }
+      
+      case UPDATE_CATEGORIES: {
+        draft.categories = action.categories;
         break;
       }
 
-      case UPDATE_CATEGORIES: {
-        draft.categories = action.categories;
+      case UPDATE_CURRENT_CATEGORY: {
+        draft.currentCategory = action.currentCategory;
         break;
       }
     }

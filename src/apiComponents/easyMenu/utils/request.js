@@ -56,11 +56,7 @@ export async function savePanelToDb(items, category) {
 }
 
 export async function saveCategoriesToDb(categories) {
-  const toSubmitCategories = categories.map(category => ({
-    id: category.id,
-    name: category.name,
-    pageId: category.pageId,
-  }));
+  const toSubmitCategories = categories.map(({_newlyAdded, ...categoryAttribute}) => categoryAttribute);
   const apiName = 'amplifyChmboxOrderingApi';
   const basePath = '/uiplugin';
   try {
@@ -83,11 +79,15 @@ export async function saveCategoriesToDb(categories) {
 }
 
 export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory, menuItems) {
-  const toSubmitCategories = categories.map(category => ({
-    id: category.id,
-    name: category.name,
-    pageId: category.pageId,
-  }));
+  const toSubmitCategories = categories.map(({_newlyAdded, ...categoryAttribute}) => categoryAttribute);
+  const {_newlyAdded, ...toSubmitCurrentCategory } = currentCategory;
+
+  const foundIndex = toSubmitCategories.findIndex(({ id }) => id === toSubmitCurrentCategory.id);
+  if (foundIndex !== -1) {
+    toSubmitCategories[foundIndex] = toSubmitCurrentCategory;
+  } else {
+    toSubmitCategories.push(toSubmitCurrentCategory);
+  }
   const apiName = 'amplifyChmboxOrderingApi';
   const path = '/uiplugin/save';
   const myInit = {
@@ -100,10 +100,34 @@ export async function saveCategoriesAndMenuItemsToDb(categories, currentCategory
         categories: toSubmitCategories,
       },
       menuItems: {
-        SK: `PluginMenu#${currentCategory.pageId}`, 
+        SK: `PluginMenu#${toSubmitCurrentCategory.pageId}`, 
         menuItems,
-        categoryName: currentCategory.name,
+        categoryName: toSubmitCurrentCategory.name,
       }
+    },    
+    response: false
+  };  
+  return await API.post(apiName, path,  myInit);
+}
+
+export async function unpublishCategoriesToDb(categories, toUnpublishCategory) {
+  const updatedCategories = categories
+    .filter(category => category.id !== toUnpublishCategory.id)
+    .map(({_newlyAdded, ...categoryAttribute}) => categoryAttribute);
+  const toSubmitUnpublishedCategory = {
+    id: toUnpublishCategory.id,
+    name: toUnpublishCategory.name,
+    pageId: toUnpublishCategory.pageId,
+  }
+  const apiName = 'amplifyChmboxOrderingApi';
+  const path = '/uiplugin/unpublish';
+  const myInit = {
+    headers: {
+      'X-Chm-Authorization': `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`, 
+    },
+    body: {
+      categories: updatedCategories,
+      unpublishedCategory: toSubmitUnpublishedCategory,
     },    
     response: false
   };  
@@ -114,11 +138,7 @@ export async function deleteCategoriesAndMenuItemsFromDb(categories, deletingCat
   const deletingCategoryPageId = deletingCategory.pageId;
   const updatedCategories = categories
     .filter(category => category.id !== deletingCategory.id)
-    .map(category => ({
-      id: category.id,
-      name: category.name,
-      pageId: category.pageId,
-    }));
+    .map(({_newlyAdded, ...categoryAttribute}) => categoryAttribute);
   const apiName = 'amplifyChmboxOrderingApi';
   const path = '/uiplugin/delete';
   const myInit = {

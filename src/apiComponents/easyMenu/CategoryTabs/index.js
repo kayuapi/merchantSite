@@ -11,14 +11,14 @@ import {
   switchCategory,
   addCategory,
   deleteCategory,
-  updateCategoryName,
 } from "./actions.js";
 import { makeSelectIsAlertToContinueOn } from '../AlertToContinue/selectors';
 import { openAlertToContinue } from '../AlertToContinue/actions';
 import { makeSelectTabAndPanelSaving } from '../Control/selectors';
 import { makeSelectMenuItems, makeSelectMenuItemsLoading, makeSelectMenuItemsError } from '../MenuItemsPanel/selectors';
 import { makeSelectIsTabAndPanelDirty } from '../Control/selectors';
-import { validateNoEmptyCategoryName } from '../utils/businessLogicValidation';
+import { validateNoNewlyAddedCategory } from '../utils/businessLogicValidation';
+// import { validateNoEmptyCategoryName } from '../utils/businessLogicValidation';
 import { createStructuredSelector } from 'reselect';
 import { 
   makeSelectCategories, 
@@ -27,17 +27,20 @@ import {
   makeSelectCurrentCategory,
 } from './selectors';
 import { v4 as uuidv4 } from 'uuid';
-import { Controller, useFormContext } from 'react-hook-form';
 import { AppBar, Tab, Grid, InputBase, IconButton, CircularProgress } from "@material-ui/core";
 import { useNotify } from 'react-admin';
 
+import { useCurrentCategoryWorkingArea } from '../Context/CurrentCategoryWorkingArea';
+
 import Add from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
+import MobileFriendlyIcon from '@material-ui/icons/MobileFriendly';
+import MobileOffIcon from '@material-ui/icons/MobileOff';
 import { makeStyles } from "@material-ui/styles";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
 import { resetSavedSuccessfully } from "../Control/actions.js";
-import { validateNoDuplicateCategoryName } from '../utils/businessLogicValidation';
+
 // I was stuck at deleting Tab, however, I found this thread from Rahul-RB on git
 // https://gist.github.com/Rahul-RB/273dbb24faf411fa6cc37488e1af2415
 // Since I am building an app with react hook only,
@@ -83,6 +86,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+function usePrevious(value) {
+  // The ref object is a generic container whose current property is mutable ...
+  // ... and can hold any value, similar to an instance property on a class
+  const ref = React.useRef();
+  
+  // Store current value in ref
+  useEffect(() => {
+    ref.current = value;
+  }, [value]); // Only re-run if value changes
+  
+  // Return previous value (happens before update in useEffect above)
+  return ref.current;
+}
+
 
 const CategoryTabs = ({
   categories,
@@ -94,7 +111,6 @@ const CategoryTabs = ({
   openAlertToContinue,
   addCategory,
   children,
-  updateCategoryName,
   resetSavedSuccessfully,
   isAlertToContinueOn,
   menuItems,
@@ -120,7 +136,6 @@ const CategoryTabs = ({
       setScrollBtn(newScrollButtons);
     }
   }
-  const { reset } = useFormContext();
   useEffect(() => {
     updateScrollButton();
   });
@@ -133,72 +148,42 @@ const CategoryTabs = ({
   });
 
   const handleTabChange = (event, categoryId) => {
-    // the line below is for resetting the open alert saved ui
-    resetSavedSuccessfully();
-    if (validateNoEmptyCategoryName(categories)) {
-      const category = categories.filter(category => category.id === categoryId)[0];
-      if (!tabAndPanelSaving) {
-        // event.stopPropagation();
-        // event.preventDefault();
-        if (category.id === currentCategory.id) {
-        } else if (category.id !== currentCategory.id && !isDirty) {
-          dispatchSwitchCategory(category);
-          reset({
-            menuPage:
-              {
-                currentCategory: category.name
-              }
-          });
+    // event.stopPropagation();
+    // event.preventDefault();
+    if (categories) {
+      if (categoryId !== currentCategory.id) {
+        if (validateNoNewlyAddedCategory(categories)) {
+          if (!isDirty) {
+            if (!tabAndPanelSaving) {
+              const toCategory = categories.filter(category => category.id === categoryId)[0];            
+              dispatchSwitchCategory(toCategory);
+            } else {
+              notify('pos.notification.cannot_switch_tab_when_saving', 'warning');              
+            }
+          } else {
+            notify("pos.notification.saved_first", 'warning');
+          }
         } else {
-          notify("pos.notification.saved_first", 'warning');
-          // const actionToDispatch = switchCategory(category);
-          // openAlertToContinue(actionToDispatch);      
-        }  
-      } else {
-        if (category.id !== currentCategory.id) {
-          notify('pos.notification.cannot_switch_tab_when_saving', 'warning');
+          notify('pos.notification.cannot_switch_tab_current_tab_empty', 'warning');          
         }
       }
-    } else {
-      notify('pos.notification.cannot_switch_tab_current_tab_empty', 'warning');
     }
   };
 
   const addNewCategoryTo = (categories) => {
     if (!isDirty) {
-      const newCategory = {
-        id: uuidv4(),
-        _name: "",
-        name: "",
-        pageId: nanoid(10),
-      };
-      if (categories) {
-        if (validateNoDuplicateCategoryName([...categories, newCategory])) {
-          addCategory(newCategory);
-          if (isDirty) {
-            openAlertToContinue(switchCategory(newCategory));
-          } else {
-            dispatchSwitchCategory(newCategory);
-            reset({
-              menuPage:
-                {
-                  currentCategory: newCategory.name
-                }
-            });    
-          }  
-        } else {
-          notify("pos.notification.fill_in_category_name", 'warning');
-        }  
-      } else {
+      if (validateNoNewlyAddedCategory(categories)) {
+        const newCategory = {
+          id: uuidv4(),
+          _newlyAdded: true,
+          name: "",
+          pageId: nanoid(10),
+        };
         addCategory(newCategory);
         dispatchSwitchCategory(newCategory);
-        // not needed because it's the new category starting
-        // reset({
-        //   menuPage:
-        //     {
-        //       currentCategory: newCategory.name
-        //     }
-        // });    
+      }
+      else {
+        notify("pos.notification.fill_in_name_and_save", 'warning');
       }
     } else {
       notify("pos.notification.saved_before_adding_new_category", 'warning');
@@ -210,10 +195,25 @@ const CategoryTabs = ({
     loadCategories();
   }, [loadCategories]);
 
+  const { currentCategory: nextCurrentCategory, loadCurrentCategory, updateCurrentCategory } = useCurrentCategoryWorkingArea(currentCategory);
+  const prevCurrentCategoryId = usePrevious(currentCategory?.id);
+  useEffect(() => {
+    if (currentCategory) {
+      if (prevCurrentCategoryId !== currentCategory.id) {
+        console.log('loaded');
+        loadCurrentCategory(currentCategory);
+      }
+    } else {
+      if (nextCurrentCategory) {
+        loadCurrentCategory(false)
+      }
+    }
+  }, [currentCategory, loadCurrentCategory, nextCurrentCategory, prevCurrentCategoryId]);
+
 
   const MyCloseIcon = React.forwardRef((props, ref) => {
     return (
-      <Close id={props.categoryId} onClick={(e) => {
+      <Close style={props.style} id={props.categoryId} onClick={(e) => {
           e.stopPropagation();
           if (!tabAndPanelSaving) {
             if (!isDirty || props.categoryId === currentCategory.id) {
@@ -284,29 +284,57 @@ const CategoryTabs = ({
                           value={category.id}
                           label={
                             category.id === currentCategory.id ? 
-                            <Controller 
-                              name={`menuPage.currentCategory`} 
-                              defaultValue={category.name ? category.name : ''} 
-                              render={({onChange, onBlur, value}) => (
-                                <InputBase 
-                                  onBlur={(e) => {
-                                    if (!isAlertToContinueOn) {
-                                      updateCategoryName(category.id, e.target.value); 
-                                    }
-                                    onBlur();
-                                  }}
-                                  onChange={onChange}
-                                  value={value}
-                                  multiline
-                                  rowsMax={2}
-                                  placeholder="New category"
-                                  classes={{root: classes.tabInput}}
-                                />
-                              )}
+                            // <Controller 
+                            //   name={`menuPage.currentCategory`} 
+                            //   defaultValue={category.name ? category.name : ''} 
+                            //   render={({onChange, onBlur, value}) => (
+                            //     <InputBase 
+                            //       onBlur={(e) => {
+                            //         if (!isAlertToContinueOn) {
+                            //           updateCurrentCategory('name', e.target.value);
+                            //         }
+                            //         onBlur();
+                            //       }}
+                            //       onChange={onChange}
+                            //       value={value}
+                            //       multiline
+                            //       rowsMax={2}
+                            //       placeholder="New category"
+                            //       classes={{root: classes.tabInput}}
+                            //     />
+                            //   )}
+                            // />
+                            <InputBase 
+                              onChange={(e) => {
+                                if (!isAlertToContinueOn) {
+                                  updateCurrentCategory('name', e.target.value);
+                                }
+                              }}
+                              // value={category.name ? category.name : ''}
+                              defaultValue={category.name}
+                              multiline
+                              rowsMax={2}
+                              placeholder="New category"
+                              classes={{root: classes.tabInput}}
                             />:
                             <span>{category.name}</span>
                          }
-                          icon={category.id === currentCategory.id ? <MyCloseIcon categoryId={category.id} /> : null}
+                          icon={category.id === currentCategory.id ? 
+                            <>
+                              <MyCloseIcon style={{margin: 0}} categoryId={category.id} />
+                              { (!nextCurrentCategory.status || nextCurrentCategory.status === 'ENABLED') && 
+                                <MobileFriendlyIcon onClick={() => {
+                                  updateCurrentCategory('status', 'DISABLED');
+                                }} />
+                              }
+                              { nextCurrentCategory.status === 'DISABLED' && 
+                                <MobileOffIcon onClick={() => {
+                                  updateCurrentCategory('status', 'ENABLED');
+                                }} /> 
+                              }
+                            </> : 
+                            null
+                          }
                           classes={{ root: classes.tabRoot, wrapper: classes.myTab2 }}
                         />
                       )}
@@ -317,8 +345,7 @@ const CategoryTabs = ({
             </Grid>
           </AppBar>
           { categories && currentCategory && menuItemsLoading && <CircularProgress /> }
-          { categories && currentCategory && !menuItemsLoading && children(currentCategory.id, menuItems) }
-
+          { categories && currentCategory && !menuItemsLoading && children(currentCategory.id, menuItems, nextCurrentCategory.status) }
         </TabContext>
       )}
     </>
@@ -336,7 +363,6 @@ CategoryTabs.propTypes = {
   dispatchSwitchCategory: PropTypes.func.isRequired,
   addCategory: PropTypes.func.isRequired,
   openAlertToContinue: PropTypes.func.isRequired,
-  updateCategoryName: PropTypes.func.isRequired,
   resetSavedSuccessfully: PropTypes.func.isRequired,
   isDirty: PropTypes.bool,
   tabAndPanelSaving: PropTypes.bool,
@@ -361,7 +387,6 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateCategoryName: (categoryId, categoryName) => dispatch(updateCategoryName(categoryId, categoryName)),
     loadCategories: () => dispatch(loadCategories()),
     dispatchSwitchCategory: category => dispatch(switchCategory(category)),
     addCategory: (category) => dispatch(addCategory(category)),

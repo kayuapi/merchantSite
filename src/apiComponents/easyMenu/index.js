@@ -10,6 +10,7 @@ import DraggableTabs from './CategoryTabsSortModeOn';
 import Control from './Control';
 import MenuItemsPanel from './MenuItemsPanel';
 
+import { CurrentCategoryWorkingAreaProvider } from './Context/CurrentCategoryWorkingArea/CurrentCategoryWorkingAreaProvider';
 import { MenuItemsWorkingAreaProvider } from './Context/MenuItemsWorkingArea/MenuItemsWorkingAreaProvider';
 
 import Container from '@material-ui/core/Container';
@@ -55,20 +56,22 @@ const EasyMenuPageShow = ({
       <Container className={classes.cardGrid} maxWidth="md">
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <MenuItemsWorkingAreaProvider>
-              <Control />
-              { isCategorySortModeOn && 
-                <DraggableTabs />
-              }
-              { !isCategorySortModeOn && 
-                <CategoryTabs>
-                  {(currentCategoryId, menuItems) => (
-                    <MenuItemsPanel currentCategoryId={currentCategoryId} menuItemsFromCloud={menuItems} />
-                  )}
-                </CategoryTabs>
-              }
-              <AlertToContinue />
-            </MenuItemsWorkingAreaProvider>
+            <CurrentCategoryWorkingAreaProvider>
+              <MenuItemsWorkingAreaProvider>
+                <Control />
+                { isCategorySortModeOn && 
+                  <DraggableTabs />
+                }
+                { !isCategorySortModeOn && 
+                  <CategoryTabs>
+                    {(currentCategoryId, menuItems, categoryStatus) => (
+                      <MenuItemsPanel currentCategoryId={currentCategoryId} menuItemsFromCloud={menuItems} categoryStatus={categoryStatus} />
+                    )}
+                  </CategoryTabs>
+                }
+                <AlertToContinue />
+              </MenuItemsWorkingAreaProvider>
+            </CurrentCategoryWorkingAreaProvider>
           </form>
         </FormProvider>
       </Container>

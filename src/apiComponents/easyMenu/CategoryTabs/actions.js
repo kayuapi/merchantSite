@@ -8,14 +8,18 @@ import {
   DELETE_CATEGORY,
   DELETE_CATEGORY_SUCCESS,
   DELETE_CATEGORY_ERROR,
+  UNPUBLISH_CATEGORY,
+  UNPUBLISH_CATEGORY_SUCCESS,
+  UNPUBLISH_CATEGORY_ERROR,
   SAVE_CATEGORY,
   SAVE_CATEGORY_SUCCESS,
   SAVE_CATEGORY_ERROR,
   SWITCH_CATEGORY,
-  UPDATE_CATEGORY_NAME,
+  UPDATE_CURRENT_CATEGORY,  
   UPDATE_CATEGORIES,
   RESET_CURRENT_CATEGORY,
   RESET_DELETED_SUCCESSFULLY,
+  RESET_UNPUBLISHED_SUCCESSFULLY,
 } from './constants';
 
 // Load categories
@@ -74,7 +78,28 @@ export function categoryDeletingError(error) {
     error,
   }
 }
-
+export function unpublishCategory(categories, unpublishingCategory, currentCategory) {
+  return {
+    type: UNPUBLISH_CATEGORY,
+    categories,
+    unpublishingCategory,
+    currentCategory,
+  }
+}
+export function categoryUnpublished(categoriesBeforeUnpublishing, unpublishedCategory, currentCategoryBeforeUnpublishing) {
+  return {
+    type: UNPUBLISH_CATEGORY_SUCCESS,
+    categoriesBeforeUnpublishing,
+    unpublishedCategory,
+    currentCategoryBeforeUnpublishing,
+  }
+}
+export function categoryUnpublishingError(error) {
+  return {
+    type: UNPUBLISH_CATEGORY_ERROR,
+    error,
+  }
+}
 // Reset category
 export function resetCurrentCategory() {
   return {
@@ -117,16 +142,31 @@ export function updateCategories(categories) {
   }
 }
 
+export function updateCurrentCategory(currentCategory) {
+  return {
+    type: UPDATE_CURRENT_CATEGORY,
+    currentCategory,
+  }
+}
+
+// for refresh react-hook-form ui upon successful delete
 export function resetDeletedSuccessfully() {
   return {
     type: RESET_DELETED_SUCCESSFULLY,
   }
 }
 
-export function updateCategoryName(categoryId, categoryName) {
+// for refresh react-hook-form ui upon successful unpublish
+export function resetUnpublishedSuccessfully() {
   return {
-    type: UPDATE_CATEGORY_NAME,
-    categoryId,
-    categoryName,
+    type: RESET_UNPUBLISHED_SUCCESSFULLY,
   }
 }
+
+// export function updateCategoryName(categoryId, categoryName) {
+//   return {
+//     type: UPDATE_CATEGORY_NAME,
+//     categoryId,
+//     categoryName,
+//   }
+// }

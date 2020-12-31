@@ -23,12 +23,6 @@ const makeSelectCategoriesError = () =>
     substate => substate.categoriesError,
   );
 
-const makeSelectCanAddCategory = () =>
-  createSelector(
-    selectElegantMenuDomain,
-    substate => substate.canAddCategory,
-  );
-
 const makeSelectCategoriesSaving = () =>
   createSelector(
     selectElegantMenuDomain,
@@ -53,6 +47,12 @@ const makeSelectDeletedSuccessfully = () =>
     substate => substate.deletedSuccessfully,
   );
 
+const makeSelectUnpublishedSuccessfully = () =>
+  createSelector(
+    selectElegantMenuDomain,
+    substate => substate.categoryUnpublished,
+  );
+
 
 const makeSelectCurrentCategoryFromId = (id) =>
   createSelector(
@@ -72,17 +72,24 @@ const makeSelectCategoryDeleting = () =>
     substate => substate.categoryDeleting,
   );
 
+const makeSelectCategoryUnpublishing = () =>
+  createSelector(
+    selectElegantMenuDomain,
+    substate => substate.categoryUnpublishing,
+  );
+
 export { 
   selectCategories,
   selectCurrentCategory,
   makeSelectCategories, 
   makeSelectCategoriesLoading,
   makeSelectCategoriesError,
-  makeSelectCanAddCategory,
   makeSelectCategoriesSaving,
   makeSelectCurrentCategoryId,
   makeSelectCurrentCategoryFromId,
   makeSelectCategoryDeleting,
+  makeSelectCategoryUnpublishing,
   makeSelectCurrentCategory,
   makeSelectDeletedSuccessfully,
+  makeSelectUnpublishedSuccessfully,
 };

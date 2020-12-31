@@ -8,8 +8,7 @@ export function* getMenuItems() {
   try {
     const currentCategory = yield select(selectCurrentCategory);
     if (currentCategory) {
-      // avoid network call if currentCategory name is empty (assumption of empty currentCategory name = newly Added is made)
-      if (currentCategory.pageId && currentCategory.name) {
+      if (currentCategory.pageId && !currentCategory._newlyAdded) {
         const itemsToBeGrabbedFromDb = `PluginMenu%23${currentCategory.pageId}`;
         const { menuItems } = yield call(grabFromDb, itemsToBeGrabbedFromDb);
         if (menuItems) {

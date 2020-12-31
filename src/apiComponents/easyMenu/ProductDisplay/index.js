@@ -105,6 +105,7 @@ const useStyles = makeStyles(theme => ({
 export const ProductDisplay = ({
   item: { id, name, price, image },
   openVariantsPopUp,
+  categoryStatus,
 })  => {
   const classes = useStyles();
   const { updateMenuItem } = useMenuItemsWorkingArea();
@@ -124,6 +125,20 @@ export const ProductDisplay = ({
           title={name}
         />
         <div>
+          {categoryStatus === 'DISABLED' && 
+            <span style=
+              {{background: '#ff0000', 
+                color: '#fff', 
+                fontSize: '14px', 
+                fontWeight: 600, 
+                padding: '5px 10px', 
+                position: 'absolute', 
+                right: '30px', 
+                top: '10px' 
+              }}>
+                Unavailable
+            </span>
+          }
           <CardContent className={classes.content}>
             <Controller
               name={`productDisplay-name-${id}`}
