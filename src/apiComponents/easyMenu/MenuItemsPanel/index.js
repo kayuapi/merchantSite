@@ -80,7 +80,7 @@ function AddCard2() {
 }
 
 
-const createElement = (el, handleSetAnchorEl, deleteMenuItem) => {
+const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus) => {
   const removeStyle = {
     position: "absolute",
     right: "0px",
@@ -103,6 +103,7 @@ const createElement = (el, handleSetAnchorEl, deleteMenuItem) => {
         key={el.id} 
         id={el.id} 
         item={el}
+        categoryStatus={categoryStatus}
       />
       <span
         className="remove"
@@ -127,6 +128,7 @@ const createElement = (el, handleSetAnchorEl, deleteMenuItem) => {
 export const AddRemoveLayout = ({
   menuItemsFromCloud,
   currentCategoryId,
+  categoryStatus,
 }) => {
   const { menuItems: newMenuItems, loadMenuItems: newLoadMenuItems, updateMenuItem, deleteMenuItem, updateMenuItemLayout } = useMenuItemsWorkingArea();
   const classes = useStyles();
@@ -156,7 +158,6 @@ export const AddRemoveLayout = ({
   }, [newLoadMenuItems]);
 
   const prevCategoryId = usePrevious(currentCategoryId);
-
   useEffect(() => {
     if (prevCategoryId !== currentCategoryId) {
       if (menuItemsFromCloud) {
@@ -196,7 +197,7 @@ export const AddRemoveLayout = ({
                 element.children[4].style.display="none";
               }}
             >
-              {_.map(newMenuItems, (el,ind) => createElement(el, handleSetAnchorEl, deleteMenuItem))}
+              {_.map(newMenuItems, (el,ind) => createElement(el, handleSetAnchorEl, deleteMenuItem, categoryStatus))}
             </ResponsiveReactGridLayout> 
           </div>
         }

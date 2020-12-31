@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useFormContext } from "react-hook-form";
 import { createStructuredSelector } from 'reselect';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,7 +6,6 @@ import { compose } from 'redux';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { validateNoDuplicateCategoryName, validateNoEmptyCategoryName } from '../utils/businessLogicValidation';
 import { makeStyles } from '@material-ui/core/styles';
 import { 
   makeSelectTabAndPanelSaving,
@@ -17,14 +15,13 @@ import {
   makeSelectTabSavingError,
   makeSelectSavedSuccessfully,
 } from './selectors';
-import {
-  makeSelectDeletedSuccessfully,
-} from '../CategoryTabs/selectors';
 import isEqual from 'lodash/isEqual';
 import {
   makeSelectCurrentCategory,
   makeSelectCategories,
   makeSelectCategoriesLoading,
+  makeSelectDeletedSuccessfully,
+  makeSelectUnpublishedSuccessfully
 } from '../CategoryTabs/selectors';
 
 import {
@@ -38,10 +35,10 @@ import {
   toggleCategorySortModeController,
   modifyTabAndPanelDirtiness,
 } from './actions';
-import { resetDeletedSuccessfully } from '../CategoryTabs/actions';
+import { resetDeletedSuccessfully, resetUnpublishedSuccessfully } from '../CategoryTabs/actions';
 import { openAlertToContinue } from '../AlertToContinue/actions';
 import { updateUserId } from '../MenuItemsPanel/actions';
-import { useNotify } from 'react-admin';
+import { useCurrentCategoryWorkingArea } from '../Context/CurrentCategoryWorkingArea/useCurrentCategoryWorkingArea';
 import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 import { Auth } from 'aws-amplify';
 
@@ -67,9 +64,11 @@ const Control = ({
   isCategoryTabSaving,
   isCategoryTabSavingFailure,
   isCategoryDeletedSuccessfully,
+  isCategoryUnpublishedSuccessfully,
   isCategoriesLoading,
   isMenuItemsLoading,
   resetDeletedSuccessfully,
+  resetUnpublishedSuccessfully,
   savedSuccessfully,
 
   saveTabAndPanel,
@@ -80,55 +79,43 @@ const Control = ({
   modifyTabAndPanelDirtiness,
 }) => {    
   const classes = useStyles();
-  const notify = useNotify();
-  const { formState: { dirtyFields}, reset } = useFormContext();
+  // const { formState: { dirtyFields}, reset } = useFormContext();
   // console.log('dirtyFields', dirtyFields);
+  const { isCurrentCategoryDirty, currentCategory: nextCurrentCategory } = useCurrentCategoryWorkingArea(currentCategory);
   const { menuItems: nextMenuItems } = useMenuItemsWorkingArea();
 
   // logic to check dirtiness
   let isCategoryDirty = false;
   let isMenuItemsDirty = false;
+  console.log('isCurrentCategoryDirty', isCurrentCategoryDirty);
+  isCategoryDirty = isCurrentCategoryDirty;
+
+
+  // let isCategoryDirty2 = React.useRef();
+  // useEffect(() => {
+  //   isCategoryDirty2.current = !(isEqual(currentCategory, nextCurrentCategory));
+  //   console.log('currentCategory', currentCategory);
+  //   console.log('nextCurrentCategory', nextCurrentCategory);
+  // }, [currentCategory, nextCurrentCategory]);
 
   // false menuItems indicate an empty menuItems (menuItems has initial state as bolean false, while nextMenuItems has that as [])
-  if (menuItems) {
-    isMenuItemsDirty = !(isEqual(menuItems, nextMenuItems));
-  } else {
-    isMenuItemsDirty = !(isEqual([], nextMenuItems));
-  }
-  
-  if (!(Object.keys(dirtyFields).length === 0 && dirtyFields.constructor === Object)) {
-    if (dirtyFields.menuPage && dirtyFields.menuPage.currentCategory) {
-      if (dirtyFields.menuPage.currentCategory.length !== 0) {
-        isCategoryDirty = true;
-      }
+  if (currentCategory) {
+    if (menuItems) {
+      isMenuItemsDirty = !(isEqual(menuItems, nextMenuItems));
+    } else {
+      isMenuItemsDirty = !(isEqual([], nextMenuItems));
     }
+  } else {
+    isMenuItemsDirty = false;
   }
+
+  
   const isDirty = isCategoryDirty || isMenuItemsDirty;
 
   // the effect makes the dirtiness of the tab and panel available to other componets through redux
   useEffect(()=> {
     modifyTabAndPanelDirtiness(isDirty);
   }, [isDirty, modifyTabAndPanelDirtiness]);
-
-  // the effect reset the dirtiness of category upon saving successfully
-  
-  useEffect(() => {
-    if (savedSuccessfully) {
-      reset({
-        menuPage: {
-          currentCategory: currentCategory.name
-        }
-      }, {isDirty: false, dirtyFields: false});
-    }
-  }, [currentCategory.name, reset, savedSuccessfully]);
-
-  // the effect reset the dirtiness of category upon deleting any of the other one category successfully
-  useEffect(() => {
-    if (isCategoryDeletedSuccessfully) {
-      reset({}, {isDirty: false, dirtyFields: false});
-      resetDeletedSuccessfully();
-    }
-  }, [reset, isCategoryDeletedSuccessfully, resetDeletedSuccessfully]);
 
   useEffect(() => {
     async function getUserId() {
@@ -142,7 +129,7 @@ const Control = ({
   return (
     <div className={classes.buttonContainer}>
       <Button
-        disabled={ !isDirty || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
+        disabled={ isCategorySortModeOn || !isDirty || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
         type="submit"
         variant="contained"
         color="primary"
@@ -150,13 +137,7 @@ const Control = ({
         className={classes.button}
         startIcon={<SaveIcon />}
         onClick={() => {
-          if (!validateNoDuplicateCategoryName(categories)) {
-            notify("pos.notification.issue_saving_new_category_duplicate_category_name", 'warning');            
-          } else if (!validateNoEmptyCategoryName(categories)) {
-            notify("pos.notification.cannot_save_empty_category_name", 'warning');            
-          } else {
-            saveTabAndPanel(categories, currentCategory, nextMenuItems);
-          }
+          saveTabAndPanel(categories, nextCurrentCategory, nextMenuItems);
         }}
       >
         {!isDirty && <span>Saved</span>}
@@ -165,7 +146,7 @@ const Control = ({
       </Button>
       <ToggleButton
         value="check"
-        disabled={ isDirty || tabAndPanelSaving }
+        disabled={ isDirty || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
         selected={isCategorySortModeOn}
         onChange={() => {
           if (isDirty) {
@@ -198,6 +179,7 @@ Control.propTypes = {
   isCategoryTabSaving: PropTypes.bool,
   isCategoryTabSavingFailure: PropTypes.bool,
   isCategoryDeletedSuccessfully: PropTypes.bool,
+  isCategoryUnpublishedSuccessfully: PropTypes.bool,
   saveTabAndPanel: PropTypes.func.isRequired,
   saveTab: PropTypes.func.isRequired,
   toggleCategorySortModeController: PropTypes.func.isRequired,
@@ -206,6 +188,7 @@ Control.propTypes = {
   updateUserId: PropTypes.func,
   modifyTabAndPanelDirtiness: PropTypes.func,
   resetDeletedSuccessfully: PropTypes.func,
+  resetUnpublishedSuccessfully: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -221,6 +204,7 @@ const mapStateToProps = createStructuredSelector({
   isCategoryTabSaving: makeSelectTabSaving(),
   isCategoryTabSavingFailure: makeSelectTabSavingError(),
   isCategoryDeletedSuccessfully: makeSelectDeletedSuccessfully(),
+  isCategoryUnpublishedSuccessfully: makeSelectUnpublishedSuccessfully(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -232,6 +216,7 @@ function mapDispatchToProps(dispatch) {
     updateUserId: (userId) => dispatch(updateUserId(userId)),
     modifyTabAndPanelDirtiness: (status) => dispatch(modifyTabAndPanelDirtiness(status)),
     resetDeletedSuccessfully: () => dispatch(resetDeletedSuccessfully()),
+    resetUnpublishedSuccessfully: () => dispatch(resetUnpublishedSuccessfully()),
   };
 }
 

@@ -10,9 +10,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { closeAlertToContinue } from './actions';
 import { makeSelectIsAlertToContinueOn, makeSelectActionToDispatch } from './selectors';
-import { SWITCH_CATEGORY, DELETE_CATEGORY } from '../CategoryTabs/constants';
+import { UNPUBLISH_CATEGORY, DELETE_CATEGORY } from '../CategoryTabs/constants';
 import DeleteTabDialogAction from './DeleteTabDialogAction';
-import SwitchTabDialogAction from './SwitchTabDialogAction';
+import UnpublishTabDialogAction from './UnpublishTabDialogAction';
 
 const AlertToContinue = ({
   isAlertToContinueOn,
@@ -29,26 +29,25 @@ const AlertToContinue = ({
       disableEscapeKeyDown
     >
       <DialogTitle id="alert-dialog-title">
-        {actionToDispatch.type === SWITCH_CATEGORY && 
-          <span>Are you sure to proceed?</span>}
+        {actionToDispatch.type === UNPUBLISH_CATEGORY && 
+          <span>Are you sure you want to unpublish this category?</span>}
+          {/* <span>Are you sure you want to unpublish "{actionToDispatch.unpublishingCategory.name}"?</span>} */}
         {actionToDispatch.type === DELETE_CATEGORY && 
-          <span>Are you sure you want to delete "{actionToDispatch.deletingCategory.name}"?</span>}
+          <span>Are you sure you want to delete this category?</span>}  
+          {/* <span>Are you sure you want to delete "{actionToDispatch.deletingCategory.name}"?</span>}   */}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-        {actionToDispatch.type === SWITCH_CATEGORY && 
-          <span>Changes that you made may not be saved, please press 'SAVE PAGE' first.</span>}
+        {actionToDispatch.type === UNPUBLISH_CATEGORY && 
+          <span>The tab and all menu items in the tabs will be unpublished, please press 'Continue' to confirm.</span>}  
         {actionToDispatch.type === DELETE_CATEGORY && 
           <span>The tab and all menu items in the tabs will be deleted, please press 'Continue' to confirm.</span>}
         </DialogContentText>
       </DialogContent>
       {actionToDispatch.type === DELETE_CATEGORY && 
         <DeleteTabDialogAction />}
-        
-      {actionToDispatch.type === SWITCH_CATEGORY &&
-        <SwitchTabDialogAction />
-      }
-      
+      {actionToDispatch.type === UNPUBLISH_CATEGORY && 
+        <UnpublishTabDialogAction />}              
     </Dialog>    
   )
 };

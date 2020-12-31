@@ -14,6 +14,10 @@ export const DELETE_CATEGORY = 'app/ElegantMenu/DELETE_CATEGORY';
 export const DELETE_CATEGORY_SUCCESS = 'app/ElegantMenu/DELETE_CATEGORY_SUCCESS';
 export const DELETE_CATEGORY_ERROR = 'app/ElegantMenu/DELETE_CATEGORY_ERROR';
 
+export const UNPUBLISH_CATEGORY = 'app/ElegantMenu/UNPUBLISH_CATEGORY';
+export const UNPUBLISH_CATEGORY_SUCCESS = 'app/ElegantMenu/UNPUBLISH_CATEGORY_SUCCESS';
+export const UNPUBLISH_CATEGORY_ERROR = 'app/ElegantMenu/UNPUBLISH_CATEGORY_ERROR';
+
 export const SAVE_CATEGORY = 'app/ElegantMenu/SAVE_CATEGORY';
 export const SAVE_CATEGORY_SUCCESS = 'app/ElegantMenu/SAVE_CATEGORY_SUCCESS';
 export const SAVE_CATEGORY_ERROR = 'app/ElegantMenu/SAVE_CATEGORY_ERROR';
@@ -22,5 +26,7 @@ export const SWITCH_CATEGORY = 'app/ElegantMenu/SWITCH_CATEGORY';
 
 export const UPDATE_CATEGORIES = 'app/ElegantMenu/UPDATE_CATEGORIES';
 
-export const UPDATE_CATEGORY_NAME = 'app/ElegantMenu/UPDATE_CATEGORY_NAME';
+// used to synchronize local state with working area
+export const UPDATE_CURRENT_CATEGORY = 'app/ElegantMenu/UPDATE_CURRENT_CATEGORY';
 export const RESET_DELETED_SUCCESSFULLY = 'app/ElegantMenu/RESET_DELETED_SUCCESSFULLY';
+export const RESET_UNPUBLISHED_SUCCESSFULLY = 'app/ElegantMenu/RESET_UNPUBLISHED_SUCCESSFULLY';

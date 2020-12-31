@@ -7,13 +7,19 @@ const customEnglishMessages: TranslationMessages = {
         notification: {
           saved_successfully: 'Saved successfully!',
           issue_addding_new_category_duplicate_category_name: 'Issue adding new category: duplicated category name',
+          issue_saving_new_category_duplicate_category_name: 'Issue saving category: duplicated category name',
           fill_in_category_name: 'Please fill in the category name before creating another category',
           order_memo_copied: 'Copied',
           saved_before_adding_new_category: 'Please save this category before adding a new category.',
           saved_before_deleting_another_category: 'Please save this category before deleting another category',
+          saved_before_unpublishing_another_category: 'Please save this category before unpublishing another category',
           saved_first: 'Please save first',
           cannot_switch_tab_when_saving: 'Cannot switch tab when saving',
           cannot_save_empty_category_name: 'Cannot save empty category name',
+          cannot_switch_tab_current_tab_empty: 'Fill in a category name and save first or press "x" to delete the category',
+          cannot_delete_while_saving: 'Cannot delete category while saving',
+          cannot_unpublish_while_saving: 'Cannot unpublish category while saving',
+          fill_in_name_and_save: 'Fill in category name and save first'
         },
         search: 'Search',
         configuration: 'Configuration',
@@ -47,6 +53,7 @@ const customEnglishMessages: TranslationMessages = {
             },
         },
         menu: {
+            menu: 'Menu',
             sales: 'Sales',
             catalog: 'Catalog',
             customers: 'Customers',
@@ -67,6 +74,12 @@ const customEnglishMessages: TranslationMessages = {
             earlier: 'Earlier',
             fulfillmentMethods: 'Fulfillment methods',
           }
+        },
+        menus: {
+          name: 'Published Menu',
+        },
+        unpublishedCategories: {
+          name: 'Unpublished Menu',
         },
         fulfillmentMethods: {
           name: 'Fulfillment Method |||| Fulfillment Methods',

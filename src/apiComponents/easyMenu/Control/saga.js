@@ -9,7 +9,7 @@ import {
   tabSavingError, 
   toggleCategorySortMode,
 } from './actions';
-import { resetCurrentCategory, switchCategory, updateCategories, categorySaved } from '../CategoryTabs/actions';
+import { resetCurrentCategory, switchCategory, updateCategories, categorySaved, updateCurrentCategory } from '../CategoryTabs/actions';
 import { saveCategoriesToDb, saveCategoriesAndMenuItemsToDb } from '../utils/request';
 
 import { makeSelectSMOCategoryTabs } from '../CategoryTabsSortModeOn/selectors';
@@ -68,13 +68,22 @@ export function* saveTabAndPanel(action) {
     const { success } = yield call(
       saveCategoriesAndMenuItemsToDb, 
       action.categories ? action.categories : [], 
-      action.currentCategory.name, 
+      action.currentCategory,
       action.menuItems ? action.menuItems : []
     );
     if (success) {
+      action.currentCategory._newlyAdded = false;
+      const toSubmitCategories = action.categories.map(({_newlyAdded, ...categoryAttribute}) => categoryAttribute);
+      const foundIndex = toSubmitCategories.findIndex(({id}) => id === action.currentCategory.id);
+      if (foundIndex !== -1) {
+        toSubmitCategories[foundIndex] = action.currentCategory;
+      } else {
+        toSubmitCategories.push(action.currentCategory);
+      }
       yield put(tabAndPanelSaved());
+      yield put(categorySaved(toSubmitCategories));
+      yield put(updateCurrentCategory(action.currentCategory));
       yield put(syncPrvMenuItemsInCloudAfterSavingSuccessfully(action.menuItems));
-      yield put(categorySaved(action.categories));
       if (selectElegantMenuAlertToContinueIsAlertOn(store.getState())) {
         yield put(closeAlertToContinue());
       }
@@ -96,8 +105,15 @@ export function* toggleCategorySortModeController() {
     yield put(saveTab());
     try {
       const categoriesToBeSavedToDb = yield select(makeSelectSMOCategoryTabs());
-      const { success: categoriesSubmittedSuccess } = yield call(saveCategoriesToDb, categoriesToBeSavedToDb);
-      if (categoriesSubmittedSuccess) {
+      if (categoriesToBeSavedToDb) {
+        const { success: categoriesSubmittedSuccess } = yield call(saveCategoriesToDb, categoriesToBeSavedToDb);
+        if (categoriesSubmittedSuccess) {
+          yield all([
+            put(tabSaved()),
+            put(toggleCategorySortMode()),
+          ]);
+        }
+      } else {
         yield all([
           put(tabSaved()),
           put(toggleCategorySortMode()),

@@ -16,7 +16,7 @@ export class CategoryTabsSortModeOn extends Component {
     super(props);
     this.handleTabChange = this.handleTabChange.bind(this);
     this.handleTabSequenceChange = this.handleTabSequenceChange.bind(this);
-    const tabs = this.props.categories;
+    const tabs = this.props.categories ? this.props.categories : [];
     this.state = {
       activeIndex: 0,
       tabs

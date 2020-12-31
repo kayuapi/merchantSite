@@ -4,9 +4,6 @@ import {
   LOAD_MENU_ITEMS,
   LOAD_MENU_ITEMS_SUCCESS,
   LOAD_MENU_ITEMS_ERROR,
-  DELETE_MENU_ITEMS,
-  DELETE_MENU_ITEMS_SUCCESS,
-  DELETE_MENU_ITEMS_ERROR,
   UPDATE_MENU_ITEMS,
   SYNC_PRV_MENU_ITEMS_IN_CLOUD_AFTER_SAVING_SUCCESSFULLY,
 } from './constants';
@@ -49,23 +46,6 @@ const elegantMenuItemsPanelReducer = (state = initialState, action) =>
       case LOAD_MENU_ITEMS_ERROR: {
         draft.menuItemsLoading = false;
         draft.menuItemsLoadingError = action.error;
-        break;
-      }
-      case DELETE_MENU_ITEMS: {
-        draft.menuItemsDeleting = true;
-        draft.menuItemsDeletingError = false;
-        draft.deletingMenuItems = action.deletingMenuItems;
-        break;
-      }
-      case DELETE_MENU_ITEMS_SUCCESS: {
-        draft.menuItemsDeleting = false;
-        draft.deletingMenuItems = [];
-        break;
-      }
-      case DELETE_MENU_ITEMS_ERROR: {
-        draft.menuItemsDeletingError = action.error;
-        draft.menuItems = draft.deletingMenuItems;
-        draft.deletingMenuItems = [];
         break;
       }
       case UPDATE_MENU_ITEMS: {

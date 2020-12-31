@@ -308,6 +308,100 @@ app.post(`${path}/save`, verifyToken, function(req, res) {
   });
 });
 
+/************************************
+* HTTP post method for unpublish category transactionally *
+*************************************/
+app.post(`${path}/unpublish`, verifyToken, function(req, res) {
+  let dataFromJwt;
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    dataFromJwt = getUserNameFromJwt(req.token);
+  }
+  dataFromJwt.then((claim) => {
+    let params = {
+      TransactItems: [{
+        Put: {
+          TableName : tableName,
+          Item: {
+            "shopId": claim.userName,
+            "SK": "PluginMenuPages",
+            "categories": req.body.categories,
+          },
+        }
+      }, {
+        Update: {
+          TableName: tableName,
+          Key: {
+            shopId: claim.userName,
+            SK: 'PluginUnpublishedMenuPages',
+          },
+          UpdateExpression: 'SET #c = list_append(if_not_exists(#c, :empty_list), :vals)',
+          ExpressionAttributeNames: {'#c': 'categories'},
+          ExpressionAttributeValues: {
+            ':empty_list': [],
+            ':vals': [req.body.unpublishedCategory],
+          }
+        }
+      }
+    ]};
+    dynamodb.transactWrite(params, (err, data) => {
+      if(err) {
+        res.statusCode = 500;
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'post call succeed!', url: req.url, data: data})
+      }
+    });
+  });
+});
+
+/************************************
+* HTTP post method for publish category transactionally *
+*************************************/
+app.post(`${path}/publish`, verifyToken, function(req, res) {
+  let dataFromJwt;
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    dataFromJwt = getUserNameFromJwt(req.token);
+  }
+  dataFromJwt.then((claim) => {
+    let params = {
+      TransactItems: [{
+        Put: {
+          TableName : tableName,
+          Item: {
+            "shopId": claim.userName,
+            "SK": "PluginUnpublishedMenuPages",
+            "categories": req.body.categories,
+          },
+        }
+      }, {
+        Update: {
+          TableName: tableName,
+          Key: {
+            shopId: claim.userName,
+            SK: 'PluginMenuPages',
+          },
+          UpdateExpression: 'SET #c = list_append(if_not_exists(#c, :empty_list), :vals)',
+          ExpressionAttributeNames: {'#c': 'categories'},
+          ExpressionAttributeValues: {
+            ':empty_list': [],
+            ':vals': [req.body.publishedCategory],
+          }
+        }
+      }
+    ]};
+    dynamodb.transactWrite(params, (err, data) => {
+      if(err) {
+        res.statusCode = 500;
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'post call succeed!', url: req.url, data: data})
+      }
+    });
+  });
+});
+
 /**************************************
 * HTTP remove method to delete object *
 ***************************************/

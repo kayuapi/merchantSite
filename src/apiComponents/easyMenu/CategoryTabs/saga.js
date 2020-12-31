@@ -1,9 +1,9 @@
 import { call, select, put, takeLatest, all } from 'redux-saga/effects';
-import { LOAD_CATEGORIES, LOAD_CATEGORIES_SUCCESS, SWITCH_CATEGORY, DELETE_CATEGORY } from './constants';
-import { categoriesLoaded, categoriesLoadingError, categoryDeleted, categoryDeletingError, switchCategory } from './actions';
-import { loadMenuItems} from '../MenuItemsPanel/actions';
+import { LOAD_CATEGORIES, LOAD_CATEGORIES_SUCCESS, SWITCH_CATEGORY, DELETE_CATEGORY, UNPUBLISH_CATEGORY } from './constants';
+import { categoriesLoaded, categoriesLoadingError, categoryDeleted, categoryDeletingError, switchCategory, categoryUnpublished } from './actions';
+import { loadMenuItems, updateMenuItems } from '../MenuItemsPanel/actions';
 import { closeAlertToContinue } from '../AlertToContinue/actions';
-import { grabFromDb, deleteCategoriesAndMenuItemsFromDb } from '../utils/request';
+import { grabFromDb, deleteCategoriesAndMenuItemsFromDb, unpublishCategoriesToDb } from '../utils/request';
 import { selectElegantMenuAlertToContinueIsAlertOn } from '../AlertToContinue/selectors';
 
 export function* getCategories() {
@@ -44,11 +44,34 @@ export function* getMenuItemsWhenSwitchCategory(action) {
   yield put(loadMenuItems());
 }
 
+export function* unpublishingCategory(action) {
+  try {
+    const { success } = yield call(unpublishCategoriesToDb, action.categories, action.unpublishingCategory);
+    if (success) {
+      const remainingCategories = action.categories.filter(category => category.id !== action.unpublishingCategory.id);
+      const isThereRemainingCategories = remainingCategories.length !== 0;
+      // if there are remaining categories, and unpublishing category is the same as current category, then switch category to the first one 
+      if (action.unpublishingCategory.id === action.currentCategory.id) {
+        if (isThereRemainingCategories) {
+          yield put(switchCategory(remainingCategories[0]));
+        }
+      }
+      yield put(categoryUnpublished(action.categories, action.unpublishingCategory, action.currentCategory));
+      // // alert to continue will always pop up when delete category, so it needs to be closed 
+      yield put(closeAlertToContinue());
+    } else {
+      throw new Error({message: "error"});
+    }
+  } catch (err) {
+    // yield put(categoryUnpublishingError(err));
+  }
+}
+
 export function* deletingCategory(action) {
   try {
     let success = false;
     // if the category to be deleted has _name == false, it is a newly created category. Newly created category does not need network call to delete
-    if (!action.deletingCategory._name) {
+    if (action.deletingCategory._newlyAdded) {
       success = true;
     } else {
       const { success: successResponse } = yield call(deleteCategoriesAndMenuItemsFromDb, action.categories, action.deletingCategory);
@@ -62,6 +85,9 @@ export function* deletingCategory(action) {
       if (action.deletingCategory.id === action.currentCategory.id) {
         if (isThereRemainingCategories) {
           yield put(switchCategory(remainingCategories[0]));
+        // for ensuring when switch from unpublished menu to published menu, the menu items is false to ensure dirtiness update
+        } else {
+          yield put(updateMenuItems(false));
         }
       }
       yield put(categoryDeleted(action.categories, action.deletingCategory, action.currentCategory));
@@ -93,6 +119,7 @@ export default function* categoriesData() {
     takeLatest(LOAD_CATEGORIES_SUCCESS, getMenuItemsFromCategory),
     takeLatest(SWITCH_CATEGORY, getMenuItemsWhenSwitchCategory),
     takeLatest(DELETE_CATEGORY, deletingCategory),
+    takeLatest(UNPUBLISH_CATEGORY, unpublishingCategory),
     // takeLatest(DELETE_CATEGORY_SUCCESS, deletedCategory),
   ]);
 

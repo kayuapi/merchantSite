@@ -55,11 +55,13 @@ const controlReducer = (state = initialState, action) =>
       case SAVE_TAB: {
         draft.tabSaving = true;
         draft.tabSavingError = false;
+        draft._savedSuccessfully = false;
         break;
       }
       case SAVE_TAB_SUCCESS: {
         draft.tabSaving = false;
         draft.tabSavingError = false;
+        draft._savedSuccessfully = true;
         break;
       }
       case RESET_SAVED_SUCCESSFULLY: {
