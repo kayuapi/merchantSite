@@ -86,7 +86,7 @@ const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus) =>
     right: "0px",
     top: 0,
     cursor: "pointer",
-    fontSize: "large",
+    fontSize: "small",
   };
   const optionStyle = {
     position: "absolute",
@@ -106,18 +106,20 @@ const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus) =>
         categoryStatus={categoryStatus}
       />
       <span
+        role="img"
+        aria-label="remove"
         className="remove"
         style={removeStyle}
         onClick={() => {
           deleteMenuItem(el.id);
         }}
-      >🗙
+      >❌
       </span>
       <span
         className="options"
         style={optionStyle}
         onClick={e => handleSetAnchorEl(e, el.id)}
-      >🞃
+      >▼
       </span>
       <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
     </div>
