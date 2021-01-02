@@ -149,8 +149,8 @@ export const AddRemoveLayout = ({
   };
 
   const handleClose = (event) => {
-    setAnchorEl(prev => null);
     setOpen(false);
+    setAnchorEl(prev => null);
   };
 
   const loadMenuItemsEfficientyly = React.useCallback((item) => {
