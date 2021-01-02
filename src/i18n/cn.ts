@@ -77,6 +77,14 @@ const customChineseMessages: TranslationMessages = {
         },
         menus: {
           name: 'Published Menu',
+          addImage: 'Add image',
+          changeImage: 'Change image',
+          modifyDescriptionAndMore: 'Modify description and more',
+          descriptionPopUp: {
+            deleteImage: 'Delete image',
+            cancel: 'Cancel',
+            ok: 'Ok',
+          }
         },
         unpublishedCategories: {
           name: 'Unpublished Menu',

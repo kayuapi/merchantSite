@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -28,6 +28,7 @@ import { Controller } from "react-hook-form";
 import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 // import StorageInput from '../../playground/RHFStorageInput';
 import StorageInput from '../../playground/SwitchableImagePicker';
+import DescriptionPopUp from '../DescriptionPopUp';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -109,6 +110,7 @@ export const ProductDisplay = ({
 })  => {
   const classes = useStyles();
   const { updateMenuItem } = useMenuItemsWorkingArea();
+  const [isDescriptionPopUpOpen, setIsDescriptionPopUpOpen] = useState(false);
   return (
     <>
       <Card className={classes.root}>
@@ -121,6 +123,7 @@ export const ProductDisplay = ({
           // width="100"
           // className={classes.cardMedia}
           downloadedImage={image}
+          openDescriptionPopUp={() => {setIsDescriptionPopUpOpen(true)}}
           image={image}
           title={name}
         />
@@ -212,6 +215,7 @@ export const ProductDisplay = ({
           </CardActions>
         </div>
       </Card>
+      <DescriptionPopUp menuItemId={id} isDescriptionPopUpOpen={isDescriptionPopUpOpen} closeDescriptionPopUp={() => setIsDescriptionPopUpOpen(false)} />
     </>
   );
 }

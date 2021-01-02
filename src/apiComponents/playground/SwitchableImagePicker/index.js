@@ -11,6 +11,7 @@ import { makeSelectPrefixUploadedUrl } from '../../easyMenu/MenuItemsPanel/selec
 import { createStructuredSelector } from 'reselect';
 import { useMenuItemsWorkingArea  } from '../../easyMenu/Context/MenuItemsWorkingArea';
 import styles from './switchableImagePickerStyle.module.css';
+import { useTranslate } from 'react-admin';
 
 function LinearProgressWithLabel(props) {
     return (
@@ -34,7 +35,7 @@ LinearProgressWithLabel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }) => {
+const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image, openDescriptionPopUp }) => {
   const [localState, setLocalState] = useState({
     uploadedPercentage: 0,
     uploaded: false
@@ -42,6 +43,7 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }
   const [uploadedImageUrl, setUploadedImageUrl] = useState(prefixUploadedUrl);
   const { updateMenuItem } = useMenuItemsWorkingArea();
   const inputOpenRef = React.createRef();
+  const translate = useTranslate();
   // grab uploadedImageUrl on componentMount
 
 
@@ -135,11 +137,14 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }
           style={{objectFit: 'contain', background: 'white'}} 
           alt='' 
         />
-        <div className={styles.middle} onClick={()=>{inputOpenRef.current.click()}}>
-          <div className={styles.text}>
-            {!image && <span>Add image</span>}
-            {image && <span>Change image</span>}
-          </div>
+        <div className={styles.middle}>
+            <div className={styles.text} onClick={()=>{inputOpenRef.current.click()}}>
+              {!image && <span>{translate(`resources.menus.addImage`)}</span>}
+              {image && <span>{translate(`resources.menus.changeImage`)}</span>}
+            </div>
+            <div className={styles.text} onClick={()=>{openDescriptionPopUp();}}>
+              {<span>{translate(`resources.menus.modifyDescriptionAndMore`)}</span>}
+            </div>
         </div>
         <input ref={inputOpenRef} type="file" accept='image/*' onChange={(evt) => onChange(evt, prefixUploadedUrl)} style={{display: 'none'}} />
       </div>
