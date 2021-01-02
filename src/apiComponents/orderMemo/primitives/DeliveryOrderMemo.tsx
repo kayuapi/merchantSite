@@ -143,7 +143,6 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
           {orderId} : {fulfillmentMethod}
           <br />
           Order received time: {new Date(createdAt).toLocaleString()}
-          fff
           {customAttributeField1 && 
             <>
               <br />
