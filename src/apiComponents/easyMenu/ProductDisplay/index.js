@@ -104,7 +104,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ProductDisplay = ({
-  item: { id, name, price, image },
+  item: { id, name, price, image, status },
   openVariantsPopUp,
   categoryStatus,
 })  => {
@@ -128,7 +128,7 @@ export const ProductDisplay = ({
           title={name}
         />
         <div>
-          {categoryStatus === 'DISABLED' && 
+          {(categoryStatus === 'DISABLED' || status === 'UNAVAILABLE') && 
             <span style=
               {{background: '#ff0000', 
                 color: '#fff', 

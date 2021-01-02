@@ -80,7 +80,7 @@ function AddCard2() {
 }
 
 
-const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus) => {
+const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus, updateMenuItem) => {
   const removeStyle = {
     position: "absolute",
     right: "0px",
@@ -95,6 +95,13 @@ const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus) =>
     cursor: "pointer",
     fontSize: "large",
   };
+  const availabilityStyle = {
+    position: "absolute",
+    right: "0px",
+    top: 50,
+    cursor: "pointer",
+    fontSize: "small",
+  }
 
   return (
     <div key={el.id} data-grid={el.uiLocation}>
@@ -121,6 +128,28 @@ const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus) =>
         onClick={e => handleSetAnchorEl(e, el.id)}
       >▼
       </span>
+      {(!el.status || el.status === 'AVAILABLE') && (
+        <span
+          role="img"
+          aria-label="statusAvailable"
+          className="availability"
+          style={availabilityStyle}
+          onClick={e => updateMenuItem(el.id, "status", "UNAVAILABLE")}
+        >
+          🛒
+        </span>      
+      )}
+      {el.status === 'UNAVAILABLE' && (
+        <span
+          role="img"
+          aria-label="statusUnavailable"
+          className="availability"
+          style={availabilityStyle}
+          onClick={e => updateMenuItem(el.id, "status", "AVAILABLE")}
+        >
+          🛒⃠
+        </span>      
+      )}
       <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
     </div>
   );        
@@ -192,14 +221,14 @@ export const AddRemoveLayout = ({
               compactType={null}
               onDragStart={(layout, oldItem, newItem, placeholder, e, element) => {
                 element.children[0].style.display="block";
-                element.children[4].style.display="block";
+                element.children[5].style.display="block";
               }}
               onDragStop={(layout, oldItem, newItem, placeholder, e, element) => {
                 element.children[0].style.display="none";
-                element.children[4].style.display="none";
+                element.children[5].style.display="none";
               }}
             >
-              {_.map(newMenuItems, (el,ind) => createElement(el, handleSetAnchorEl, deleteMenuItem, categoryStatus))}
+              {_.map(newMenuItems, (el,ind) => createElement(el, handleSetAnchorEl, deleteMenuItem, categoryStatus, updateMenuItem))}
             </ResponsiveReactGridLayout> 
           </div>
         }

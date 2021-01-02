@@ -36,6 +36,11 @@ export const menuItemsWorkingAreaReducer = (
               }
             }
 
+            if (attributeKey === 'status' && attributeValue === 'AVAILABLE') {
+              delete el['status'];
+              return el;
+            }
+
             return {
               ...el, 
               [attributeKey]: attributeValue
