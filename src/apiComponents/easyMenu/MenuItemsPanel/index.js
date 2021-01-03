@@ -14,20 +14,13 @@ import _ from "lodash";
 // import AdminProductDisplay from './AdminProductDisplay';
 import Container from '@material-ui/core/Container';
 // import { withHookHoc } from './withHookHoc';
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Popper from "@material-ui/core/Popper";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuList from "@material-ui/core/MenuList";
 import AddCard from '../AddCard';
-import ProductDisplay from '../ProductDisplay';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 
 import { makeStyles } from '@material-ui/core/styles';
-
+import MenuItemDisplay from '../MenuItemDisplay';
 import TabPanel from "@material-ui/lab/TabPanel";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -40,9 +33,6 @@ const useStyles = makeStyles(theme => ({
   tabPanel: {
     paddingLeft: theme.spacing(0),
     paddingRight: theme.spacing(0),
-  },
-  menuItem: {
-    justifyContent: 'flex-end',
   }
 }));
 
@@ -80,77 +70,10 @@ function AddCard2() {
 }
 
 
-const createElement = (el, handleSetAnchorEl, deleteMenuItem, categoryStatus, updateMenuItem) => {
-  const removeStyle = {
-    position: "absolute",
-    right: "0px",
-    top: 0,
-    cursor: "pointer",
-    fontSize: "small",
-  };
-  const optionStyle = {
-    position: "absolute",
-    right: "0px",
-    top: 25,
-    cursor: "pointer",
-    fontSize: "large",
-  };
-  const availabilityStyle = {
-    position: "absolute",
-    right: "0px",
-    top: 50,
-    cursor: "pointer",
-    fontSize: "small",
-  }
-
+const createElement = (el, categoryStatus) => {
   return (
     <div key={el.id} data-grid={el.uiLocation}>
-      <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
-      <ProductDisplay 
-        key={el.id} 
-        id={el.id} 
-        item={el}
-        categoryStatus={categoryStatus}
-      />
-      <span
-        role="img"
-        aria-label="remove"
-        className="remove"
-        style={removeStyle}
-        onClick={() => {
-          deleteMenuItem(el.id);
-        }}
-      >❌
-      </span>
-      <span
-        className="options"
-        style={optionStyle}
-        onClick={e => handleSetAnchorEl(e, el.id)}
-      >▼
-      </span>
-      {(!el.status || el.status === 'AVAILABLE') && (
-        <span
-          role="img"
-          aria-label="statusAvailable"
-          className="availability"
-          style={availabilityStyle}
-          onClick={e => updateMenuItem(el.id, "status", "UNAVAILABLE")}
-        >
-          🛒
-        </span>      
-      )}
-      {el.status === 'UNAVAILABLE' && (
-        <span
-          role="img"
-          aria-label="statusUnavailable"
-          className="availability"
-          style={availabilityStyle}
-          onClick={e => updateMenuItem(el.id, "status", "AVAILABLE")}
-        >
-          🛒⃠
-        </span>      
-      )}
-      <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
+      <MenuItemDisplay el={el} categoryStatus={categoryStatus} />
     </div>
   );        
 }
@@ -161,28 +84,8 @@ export const AddRemoveLayout = ({
   currentCategoryId,
   categoryStatus,
 }) => {
-  const { menuItems: newMenuItems, loadMenuItems: newLoadMenuItems, updateMenuItem, deleteMenuItem, updateMenuItemLayout } = useMenuItemsWorkingArea();
+  const { menuItems: newMenuItems, loadMenuItems: newLoadMenuItems, updateMenuItemLayout } = useMenuItemsWorkingArea();
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [selectedMenuId, setSelectedMenuId] = React.useState(false);
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleSetAnchorEl = (event, menuItemId) => {
-    setAnchorEl(prev => event.currentTarget);
-    setOpen(prev => !prev);
-    setSelectedMenuId(menuItemId);
-  };
-
-  const handleMenuItemTypeChosen = (event, menuItemId, type) => {
-    updateMenuItem(menuItemId, 'type', type);
-    setAnchorEl(prev => null);
-    setOpen(false);
-  };
-
-  const handleClose = (event) => {
-    setOpen(false);
-    setAnchorEl(prev => null);
-  };
 
   const loadMenuItemsEfficientyly = React.useCallback((item) => {
     newLoadMenuItems(item);
@@ -228,7 +131,7 @@ export const AddRemoveLayout = ({
                 element.children[5].style.display="none";
               }}
             >
-              {_.map(newMenuItems, (el,ind) => createElement(el, handleSetAnchorEl, deleteMenuItem, categoryStatus, updateMenuItem))}
+              {_.map(newMenuItems, (el,ind) => createElement(el, categoryStatus))}
             </ResponsiveReactGridLayout> 
           </div>
         }
@@ -248,42 +151,6 @@ export const AddRemoveLayout = ({
           </ResponsiveReactGridLayout>
         </div>
 
-        <Popper
-          open={open}
-          anchorEl={anchorEl}
-          role={undefined}
-          transition
-          disablePortal
-          placement="bottom-end"
-        >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "bottom" ? "center top" : "center bottom"
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList
-                  
-                  autoFocusItem={open}
-                  id="menu-list-grow"
-                  // onKeyDown={handleListKeyDown}
-                >
-                  <MenuItem onClick={e => handleMenuItemTypeChosen(e, selectedMenuId, 'A_LA_CARTE')} classes={{root: classes.menuItem}}>
-                    {newMenuItems.filter(el => el.id === selectedMenuId)[0].type !== 'COMBO' &&<span>✔</span>}A la carte
-                  </MenuItem>
-                  <MenuItem onClick={e => handleMenuItemTypeChosen(e, selectedMenuId, 'COMBO')} classes={{root: classes.menuItem}}>
-                  {newMenuItems.filter(el => el.id === selectedMenuId)[0].type === 'COMBO' &&<span>✔</span>}Combo
-                  </MenuItem>
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-        </Popper>
       </Container>
     </TabPanel>
   )
