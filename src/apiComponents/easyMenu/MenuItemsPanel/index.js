@@ -29,7 +29,7 @@ import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenu
 import { makeStyles } from '@material-ui/core/styles';
 
 import TabPanel from "@material-ui/lab/TabPanel";
-import VariantsPopUp from "../VariantsPopUp";
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const useStyles = makeStyles(theme => ({
@@ -284,9 +284,7 @@ export const AddRemoveLayout = ({
           </Grow>
         )}
         </Popper>
-        
       </Container>
-      <VariantsPopUp />
     </TabPanel>
   )
 }

@@ -29,6 +29,7 @@ import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenu
 // import StorageInput from '../../playground/RHFStorageInput';
 import StorageInput from '../../playground/SwitchableImagePicker';
 import DescriptionPopUp from '../DescriptionPopUp';
+import VariantPopUp from '../VariantsPopUp';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -111,6 +112,7 @@ export const ProductDisplay = ({
   const classes = useStyles();
   const { updateMenuItem } = useMenuItemsWorkingArea();
   const [isDescriptionPopUpOpen, setIsDescriptionPopUpOpen] = useState(false);
+  const [isVariantPopUpOpen, setIsVariantPopUpOpen] = useState(false);
   return (
     <>
       <Card className={classes.root}>
@@ -192,7 +194,7 @@ export const ProductDisplay = ({
               <Grid item xs={6} className={classes.gridItem}>
                 <IconButton
                   className={classes.gridItem2}
-                  onClick={() => {openVariantsPopUp(id)}}
+                  onClick={() => {setIsVariantPopUpOpen(true)}}
                   edge="start"
                 >
                   <AddIcon />
@@ -216,6 +218,7 @@ export const ProductDisplay = ({
         </div>
       </Card>
       <DescriptionPopUp menuItemId={id} isDescriptionPopUpOpen={isDescriptionPopUpOpen} closeDescriptionPopUp={() => setIsDescriptionPopUpOpen(false)} />
+      <VariantPopUp menuItemId={id} isVariantPopUpOpen={isVariantPopUpOpen} closeVariantsPopUp={() => setIsVariantPopUpOpen(false)} />
     </>
   );
 }
