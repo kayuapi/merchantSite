@@ -83,15 +83,21 @@ const Control = ({
   const classes = useStyles();
   // const { formState: { dirtyFields}, reset } = useFormContext();
   // console.log('dirtyFields', dirtyFields);
-  const { isCurrentCategoryDirty, currentCategory: nextCurrentCategory } = useCurrentCategoryWorkingArea(currentCategory);
+  const { isCurrentCategoryDirty, currentCategory: nextCurrentCategory, loadCurrentCategory } = useCurrentCategoryWorkingArea(currentCategory);
   const { menuItems: nextMenuItems } = useMenuItemsWorkingArea();
 
   // logic to check dirtiness
   let isCategoryDirty = false;
   let isMenuItemsDirty = false;
-  console.log('isCurrentCategoryDirty', isCurrentCategoryDirty);
+  // console.log('isCurrentCategoryDirty', isCurrentCategoryDirty);
   isCategoryDirty = isCurrentCategoryDirty;
 
+
+  useEffect(() => {
+    if (isCategorySortModeOn && nextCurrentCategory) {
+      loadCurrentCategory(false);
+    }
+  }, [isCategorySortModeOn, loadCurrentCategory, nextCurrentCategory]);
 
   // let isCategoryDirty2 = React.useRef();
   // useEffect(() => {
