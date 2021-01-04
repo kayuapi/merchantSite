@@ -139,11 +139,11 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image, 
         />
         <div className={styles.middle}>
             <div className={styles.text} onClick={()=>{inputOpenRef.current.click()}}>
-              {!image && <span>{translate(`resources.menus.addImage`)}</span>}
-              {image && <span>{translate(`resources.menus.changeImage`)}</span>}
+              {!image && <span>{translate(`pos.menu.addImage`)}</span>}
+              {image && <span>{translate(`pos.menu.changeImage`)}</span>}
             </div>
             <div className={styles.text} onClick={()=>{openDescriptionPopUp();}}>
-              {<span>{translate(`resources.menus.modifyDescriptionAndMore`)}</span>}
+              {<span>{translate(`pos.menu.modifyDescriptionAndMore`)}</span>}
             </div>
         </div>
         <input ref={inputOpenRef} type="file" accept='image/*' onChange={(evt) => onChange(evt, prefixUploadedUrl)} style={{display: 'none'}} />

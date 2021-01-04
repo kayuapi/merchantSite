@@ -7,6 +7,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { makeStyles } from '@material-ui/core/styles';
+import { useTranslate } from 'react-admin';
 import { 
   makeSelectTabAndPanelSaving,
   makeSelectTabAndPanelError,
@@ -78,6 +79,7 @@ const Control = ({
   updateUserId,
   modifyTabAndPanelDirtiness,
 }) => {    
+  const translate = useTranslate();
   const classes = useStyles();
   // const { formState: { dirtyFields}, reset } = useFormContext();
   // console.log('dirtyFields', dirtyFields);
@@ -140,9 +142,9 @@ const Control = ({
           saveTabAndPanel(categories, nextCurrentCategory, nextMenuItems);
         }}
       >
-        {!isDirty && <span>Saved</span>}
-        {isDirty && tabAndPanelSaving && <span>Saving...</span>}
-        {isDirty && !tabAndPanelSaving && <span>Save page</span>}
+        {!isDirty && <span>{translate('pos.action.saved')}</span>}
+        {isDirty && tabAndPanelSaving && <span>{translate('pos.action.saving')}</span>}
+        {isDirty && !tabAndPanelSaving && <span>{translate('pos.action.savePage')}</span>}
       </Button>
       <ToggleButton
         value="check"
@@ -156,9 +158,9 @@ const Control = ({
           }
         }}
       >
-        {isCategorySortModeOn && <span>Sort Category Mode: On</span>}
-        {isCategorySortModeOn && isCategoryTabSaving && <span>Sort Category Mode: On - Submitting...</span>}
-        {!isCategorySortModeOn && <span>Sort Category Mode: Off</span>}
+        {isCategorySortModeOn && <span>{translate('pos.menu.categoryModeOn')}</span>}
+        {isCategorySortModeOn && isCategoryTabSaving && <span>{translate('pos.menu.categoryModeSaving')}</span>}
+        {!isCategorySortModeOn && <span>{translate('pos.menu.categoryModeOff')}</span>}
       </ToggleButton>
     </div>
   )

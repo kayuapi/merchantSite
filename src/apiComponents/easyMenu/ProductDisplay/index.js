@@ -30,6 +30,7 @@ import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenu
 import StorageInput from '../../playground/SwitchableImagePicker';
 import DescriptionPopUp from '../DescriptionPopUp';
 import VariantPopUp from '../VariantsPopUp';
+import { useTranslate } from 'react-admin';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -109,6 +110,7 @@ export const ProductDisplay = ({
   openVariantsPopUp,
   categoryStatus,
 })  => {
+  const translate = useTranslate();
   const classes = useStyles();
   const { updateMenuItem } = useMenuItemsWorkingArea();
   const [isDescriptionPopUpOpen, setIsDescriptionPopUpOpen] = useState(false);
@@ -141,7 +143,7 @@ export const ProductDisplay = ({
                 right: '30px', 
                 top: '10px' 
               }}>
-                Unavailable
+                {translate('pos.menu.unavailable')}
             </span>
           }
           <CardContent className={classes.content}>
@@ -209,7 +211,7 @@ export const ProductDisplay = ({
                     edge="end"
                   >
                     <MoveIcon />
-                    <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
+                    <div style={{fontSize: 'small', paddingLeft: '5px'}}>{translate('pos.menu.dragMe')}</div>
                   </IconButton>
                 </div>
               </Grid>

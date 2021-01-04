@@ -65,14 +65,14 @@ export function DescriptionPopUp({
                   cursor: 'pointer'
                 }}
               >
-                {translate(`resources.menus.descriptionPopUp.deleteImage`)}
+                {translate(`pos.menu.descriptionPopUp.deleteImage`)}
             </span>
             <CardMedia component="img" image={selectedMenuItem.image} title={selectedMenuItem.name} />
           </>
         }
         {!selectedMenuItem.image && <FastfoodIcon />}
         <br />
-        <TextField style={{width: '100%'}} multiline inputRef={inputRef} id={selectedMenuItem.id} label="Description" defaultValue={selectedMenuItem.description} />
+        <TextField style={{width: '100%'}} multiline inputRef={inputRef} id={selectedMenuItem.id} label={translate('pos.menu.descriptionPopUp.description')} defaultValue={selectedMenuItem.description} />
       </DialogContent>
 
       <DialogActions className={classes.dialogActions}>
@@ -83,7 +83,7 @@ export function DescriptionPopUp({
           }}
           color="primary"
         >
-          {translate(`resources.menus.descriptionPopUp.cancel`)}
+          {translate(`ra.action.cancel`)}
         </Button>
         <Button
           onClick={() => {
@@ -94,7 +94,7 @@ export function DescriptionPopUp({
           color="primary"
           autoFocus
         >
-          {translate(`resources.menus.descriptionPopUp.ok`)}
+          {translate(`pos.action.ok`)}
         </Button>
       </DialogActions>
     </Dialog>

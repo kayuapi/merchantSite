@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import { makeStyles } from '@material-ui/core/styles';
+import { useTranslate } from 'react-admin';
 
 const useStyles = makeStyles(theme => ({
   menuItem: {
@@ -41,7 +42,7 @@ export const MenuItemDisplay = ({el, categoryStatus}) => {
     fontSize: "small",
   }
   const [open, setOpen] = React.useState(false);
-
+  const translate = useTranslate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleSetAnchorEl = (event) => {
     setAnchorEl(prev => event.currentTarget);
@@ -131,10 +132,10 @@ export const MenuItemDisplay = ({el, categoryStatus}) => {
                 // onKeyDown={handleListKeyDown}
               >
                 <MenuItem onClick={e => handleMenuItemTypeChosen(e, el.id, 'A_LA_CARTE')} classes={{root: classes.menuItem}}>
-                  {el.type !== 'COMBO' &&<span>✔</span>}A la carte
+                  {el.type !== 'COMBO' &&<span>✔</span>}{translate('pos.menu.aLaCarte')}
                 </MenuItem>
                 <MenuItem onClick={e => handleMenuItemTypeChosen(e, el.id, 'COMBO')} classes={{root: classes.menuItem}}>
-                  {el.type === 'COMBO' &&<span>✔</span>}Combo
+                  {el.type === 'COMBO' &&<span>✔</span>}{translate('pos.menu.combo')}
                 </MenuItem>
               </MenuList>
             </ClickAwayListener>

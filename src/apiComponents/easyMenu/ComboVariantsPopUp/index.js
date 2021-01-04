@@ -17,6 +17,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import { useVariantItemSectionsWorkingArea } from '../Context/VariantItemsWorkingArea/useVariantItemSectionsWorkingArea';
+import { useTranslate } from 'react-admin';
 
 const useStyles = makeStyles(theme => ({
   dialog: {
@@ -33,7 +34,7 @@ export function ComboVariantPopUp({
     isVariantPopUpOpen,
     closeVariantsPopUp,
   }) {
-
+  const translate = useTranslate();
   const classes = useStyles();
 
   // const { menuItems, updateMenuItem } = useMenuItemsWorkingArea();
@@ -53,7 +54,7 @@ export function ComboVariantPopUp({
         PaperProps={{classes: {root: classes.dialog}}}
       >
         <DialogTitle id="alert-dialog-title">
-          Combo Variant Selection
+          {translate('pos.menu.comboVariantSelection')}
         </DialogTitle>
 
         <DialogContent>
@@ -72,7 +73,7 @@ export function ComboVariantPopUp({
             }}
             color="primary"
           >
-            Add Section
+            {translate('pos.menu.addSection')}
           </Button>
           <Button
             onClick={() => {
@@ -83,7 +84,7 @@ export function ComboVariantPopUp({
             color="primary"
             autoFocus
           >
-            OK
+            {translate('pos.action.ok')}
           </Button>
         </DialogActions>
       </Dialog>

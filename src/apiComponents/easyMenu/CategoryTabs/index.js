@@ -200,7 +200,6 @@ const CategoryTabs = ({
   useEffect(() => {
     if (currentCategory) {
       if (prevCurrentCategoryId !== currentCategory.id) {
-        console.log('loaded');
         loadCurrentCategory(currentCategory);
       }
     } else {

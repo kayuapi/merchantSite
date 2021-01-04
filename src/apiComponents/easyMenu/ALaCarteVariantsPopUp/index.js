@@ -25,6 +25,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import { useVariantItemsALaCarteWorkingArea } from '../Context/VariantItemsALaCarteWorkingArea/useVariantItemsALaCarteWorkingArea';
+import { useTranslate } from 'react-admin';
 
 const useStyles = makeStyles(theme => ({
   dialog: {
@@ -44,7 +45,7 @@ export function ALaCarteVariantPopUp({
     isVariantPopUpOpen,
     closeVariantsPopUp,
   }) {
-
+  const translate = useTranslate();
   const classes = useStyles();
 
   // const { menuItems, updateMenuItem } = useMenuItemsWorkingArea();
@@ -64,7 +65,7 @@ export function ALaCarteVariantPopUp({
         PaperProps={{classes: {root: classes.dialog}}}
       >
         <DialogTitle id="alert-dialog-title">
-          A La Carte Variant Selection
+          {translate('pos.menu.aLaCarteVariantSelection')}
         </DialogTitle>
 
         <DialogContent>
@@ -77,13 +78,13 @@ export function ALaCarteVariantPopUp({
               <TableHead>
                 <TableRow>
                   <TableCell>
-                    Product Variant Name
+                    {translate('pos.menu.productVariantName')}
                   </TableCell>
                   <TableCell align="center">
-                    Unit Price
+                    {translate('pos.menu.unitPrice')}
                   </TableCell>
                   <TableCell align="center" colSpan={3}>
-                    Quantity
+                    {translate('pos.menu.quantity')}
                   </TableCell>
                   <TableCell align="center" />
                 </TableRow>
@@ -105,7 +106,7 @@ export function ALaCarteVariantPopUp({
             }}
             color="primary"
           >
-            Add Variant
+            {translate('pos.menu.addVariant')}
           </Button>
           <Button
             onClick={() => {
@@ -116,7 +117,7 @@ export function ALaCarteVariantPopUp({
             color="primary"
             autoFocus
           >
-            OK
+            {translate('pos.action.ok')}
           </Button>
         </DialogActions>
       </Dialog>

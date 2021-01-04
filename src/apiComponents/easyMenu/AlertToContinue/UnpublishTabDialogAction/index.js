@@ -8,7 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { closeAlertToContinue } from '../actions';
 import { makeSelectActionToDispatch } from '../selectors';
 import { makeSelectCategoryUnpublishing } from '../../CategoryTabs/selectors';
-
+import { useTranslate } from 'react-admin';
 
 const UnpublishTabDialogAction = ({
   actionToDispatch,
@@ -16,10 +16,11 @@ const UnpublishTabDialogAction = ({
   closeAlertToContinue,
   dispatch,
 }) => {
+  const translate = useTranslate();
   return (
     <DialogActions>
       <Button onClick={closeAlertToContinue} color="primary">
-        Cancel
+        {translate('ra.action.cancel')}
       </Button>
       <Button
         disabled={isTabUnpublishing}
@@ -28,8 +29,8 @@ const UnpublishTabDialogAction = ({
         }} 
         color="primary" 
         autoFocus>
-        {isTabUnpublishing && <span>Unpublishing ...</span>}
-        {!isTabUnpublishing && <span>Continue to unpublish</span>}
+        {isTabUnpublishing && <span>{translate('pos.menu.alertToContinue.unpublishInProgressAction')}</span>}
+        {!isTabUnpublishing && <span>{translate('pos.menu.alertToContinue.unpublishContinueAction')}</span>}
       </Button>
     </DialogActions>
   )

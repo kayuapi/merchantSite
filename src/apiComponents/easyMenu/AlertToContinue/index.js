@@ -13,12 +13,14 @@ import { makeSelectIsAlertToContinueOn, makeSelectActionToDispatch } from './sel
 import { UNPUBLISH_CATEGORY, DELETE_CATEGORY } from '../CategoryTabs/constants';
 import DeleteTabDialogAction from './DeleteTabDialogAction';
 import UnpublishTabDialogAction from './UnpublishTabDialogAction';
+import { useTranslate } from 'react-admin';
 
 const AlertToContinue = ({
   isAlertToContinueOn,
   actionToDispatch,
   closeAlertToContinue,
 }) => {  
+  const translate = useTranslate();
   return (
     <Dialog
       open={isAlertToContinueOn}
@@ -30,18 +32,18 @@ const AlertToContinue = ({
     >
       <DialogTitle id="alert-dialog-title">
         {actionToDispatch.type === UNPUBLISH_CATEGORY && 
-          <span>Are you sure you want to unpublish this category?</span>}
+          <span>{translate('pos.menu.alertToContinue.unpublishTitle')}</span>}
           {/* <span>Are you sure you want to unpublish "{actionToDispatch.unpublishingCategory.name}"?</span>} */}
         {actionToDispatch.type === DELETE_CATEGORY && 
-          <span>Are you sure you want to delete this category?</span>}  
+          <span>{translate('pos.menu.alertToContinue.deleteTitle')}</span>}  
           {/* <span>Are you sure you want to delete "{actionToDispatch.deletingCategory.name}"?</span>}   */}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
         {actionToDispatch.type === UNPUBLISH_CATEGORY && 
-          <span>The tab and all menu items in the tabs will be unpublished, please press 'Continue' to confirm.</span>}  
+          <span>{translate('pos.menu.alertToContinue.unpublishContent')}</span>}  
         {actionToDispatch.type === DELETE_CATEGORY && 
-          <span>The tab and all menu items in the tabs will be deleted, please press 'Continue' to confirm.</span>}
+          <span>{translate('pos.menu.alertToContinue.deleteContent')}</span>}
         </DialogContentText>
       </DialogContent>
       {actionToDispatch.type === DELETE_CATEGORY && 

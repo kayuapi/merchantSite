@@ -26,7 +26,7 @@ import { Controller } from "react-hook-form";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { useVariantItemSectionsWorkingArea } from '../Context/VariantItemsWorkingArea/useVariantItemSectionsWorkingArea';
-
+import { useTranslate } from 'react-admin';
 import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles(theme => ({
@@ -60,6 +60,7 @@ export function VariantItemSectionCard({
     }
   }) {
   const classes = useStyles();
+  const translate = useTranslate();
 
   const [isFlipped, setIsFlipped] = useState(false);
   const { updateVariantItemSection, deleteVariantItemSection, updateVariantItemSectionDetails } = useVariantItemSectionsWorkingArea();
@@ -72,8 +73,8 @@ export function VariantItemSectionCard({
             <Typography variant="h6">
               {title}
             </Typography>
-            {required && <Chip color="primary" size="small" label="Required" />}
-            {!required && <Chip color="primary" size="small" label="Optional" />}
+            {required && <Chip color="primary" size="small" label={translate('pos.menu.required')} />}
+            {!required && <Chip color="primary" size="small" label={translate('pos.menu.optional')} />}
           </Grid>
           {minSelectionNumber !== maxSelectionNumber && 
             <>
@@ -87,8 +88,8 @@ export function VariantItemSectionCard({
           <CheckboxList variantItemSectionId={id} items={details}  />
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={() => setIsFlipped(prev => !prev)}>Edit</Button>
-          <Button size="small" onClick={() => deleteVariantItemSection(id)}>Delete</Button>
+          <Button size="small" onClick={() => setIsFlipped(prev => !prev)}>{translate('ra.action.edit')}</Button>
+          <Button size="small" onClick={() => deleteVariantItemSection(id)}>{translate('ra.action.delete')}</Button>
         </CardActions>
       </Card>
 
@@ -102,7 +103,7 @@ export function VariantItemSectionCard({
                 onBlur={(e)=>{updateVariantItemSection(id, 'title', e.target.value); onBlur();}}
                 onChange={onChange}
                 value={value}
-                placeholder="Choice of Beverage"
+                placeholder={translate('pos.menu.comboTitleExample')}
                 classes={{input: classes.productTitleInput}}
                 style={{width: '100%'}}
                 inputProps={{'aria-label': 'put product title' }} 
@@ -119,7 +120,7 @@ export function VariantItemSectionCard({
                   color="primary"
                 />
               }
-              label="Required"
+              label={translate('pos.menu.required')}
             />
             <div>
               <TextField className={classes.selectionNumber} inputProps={{ type: 'number'}} onChange={(e)=>{updateVariantItemSection(id, 'minSelectionNumber', parseInt(e.target.value))}} size="small" id="outlined-basic" label="Min" variant="outlined" />
@@ -137,7 +138,7 @@ export function VariantItemSectionCard({
           >
             Ok
           </Button>
-          <Button size="small" onClick={() => {updateVariantItemSection(id, 'details', [...details, {id: uuidv4(), name: 'tes1', price: 'RM5'}])}}>Add item</Button>
+          <Button size="small" onClick={() => {updateVariantItemSection(id, 'details', [...details, {id: uuidv4(), name: 'tes1', price: 'RM5'}])}}>{translate('pos.menu.addItem')}</Button>
         </CardActions>
       </Card>
 

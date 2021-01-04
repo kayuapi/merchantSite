@@ -40,7 +40,7 @@ const Menu: FC<MenuProps> = ({ onMenuClick, dense=false, logout }) => {
               <DashboardMenuItem onClick={onMenuClick} sidebarIsOpen={open} />
               <MenuItemLink
                 to={`/banner`}
-                primaryText={"Banner"}
+                primaryText={translate(`pos.banner.name`)}
                 leftIcon={createElement(BannerIcon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
@@ -66,7 +66,7 @@ const Menu: FC<MenuProps> = ({ onMenuClick, dense=false, logout }) => {
               </SubMenu>
               <MenuItemLink
                 to={`/orderMemo`}
-                primaryText={"OrderMemo"}
+                primaryText={translate(`pos.orderMemo.name`)}
                 leftIcon={createElement(OrderMemoIcon)}
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
