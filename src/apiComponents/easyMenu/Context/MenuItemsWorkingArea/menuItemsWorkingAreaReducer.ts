@@ -18,12 +18,23 @@ export const menuItemsWorkingAreaReducer = (
         const { id, attributeKey, attributeValue } = action;
         const newStateMenuItems = state.menuItems.map(el => {
           if (el.id === id) {
-            if (el.type === 'COMBO') {
+            if (el.type === 'A_LA_CARTE') {
               if (attributeKey === 'variants') {
-                return {
+                const newItem = {
+                  ...el,
+                  variants: attributeValue
+                }
+                delete newItem.comboVariants;
+                return newItem as MenuItem;
+              }
+            } else if (el.type === 'COMBO') {
+              if (attributeKey === 'variants') {
+                const newItem = {
                   ...el,
                   comboVariants: attributeValue
-                } as MenuItem;
+                }
+                delete newItem.variants;
+                return newItem as MenuItem;
               }
             }
 

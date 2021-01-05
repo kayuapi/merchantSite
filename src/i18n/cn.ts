@@ -31,6 +31,7 @@ const customChineseMessages: TranslationMessages = {
           aLaCarte: '单点',
           combo: '套餐',
           dragMe: '拖我',
+          choose: '选择',
           addDishes: '点我添加菜单物件',
           unavailable: '无库存',
           aLaCarteVariantSelection: '单点物品选择',

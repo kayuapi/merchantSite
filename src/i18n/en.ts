@@ -31,6 +31,7 @@ const customEnglishMessages: TranslationMessages = {
           aLaCarte: 'A la carte',
           combo: 'Combo',
           dragMe: 'DRAG ME',
+          choose: 'Choose',
           addDishes: 'Click to add dishes',
           unavailable: 'Unavailable',
           aLaCarteVariantSelection: 'A La Carte Variant Selection',

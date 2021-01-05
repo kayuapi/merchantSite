@@ -31,6 +31,7 @@ const customMalayMessages: TranslationMessages = {
           aLaCarte: 'A la carte',
           combo: 'Kombo',
           dragMe: 'SERETKAN AKU',
+          choose: 'Pilih',
           addDishes: 'Klik sini untuk tambah benda menu',
           unavailable: 'Tidak tersedia',
           aLaCarteVariantSelection: 'Pilihan Benda A La Carte',

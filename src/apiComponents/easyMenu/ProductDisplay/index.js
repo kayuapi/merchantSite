@@ -106,7 +106,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ProductDisplay = ({
-  item: { id, name, price, image, status },
+  item: { id, name, price, image, status, type, variants, comboVariants },
   openVariantsPopUp,
   categoryStatus,
 })  => {
@@ -199,7 +199,10 @@ export const ProductDisplay = ({
                   onClick={() => {setIsVariantPopUpOpen(true)}}
                   edge="start"
                 >
-                  <AddIcon />
+                  { (((typeof type === 'undefined' || type === 'A_LA_CARTE') && variants && variants.length > 0) || (type === 'COMBO' && comboVariants && comboVariants.length > 0)) && <span>{translate('pos.menu.choose')}</span> }
+                  { ((typeof type === 'undefined' && (typeof variants === 'undefined' || variants.length === 0)) ||
+                    (type === 'A_LA_CARTE' && (typeof variants === 'undefined' || variants.length === 0)) ||
+                    (type === 'COMBO' && (typeof comboVariants === 'undefined' || comboVariants.length === 0))) && <AddIcon /> }
                 </IconButton>
               </Grid>
               <Grid item xs={6} className={classes.gridItem}>
