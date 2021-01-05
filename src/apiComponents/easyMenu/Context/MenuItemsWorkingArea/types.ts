@@ -75,6 +75,11 @@ export type MenuItemAction =
       uiLocation: MinimumRequiredParametersForRGLObject;
     }
   | {
+      type: "createDuplicatedMenuItem";
+      menuItem: MenuItem;
+      uiLocation: MinimumRequiredParametersForRGLObject;
+    }
+  | {
       type: "deleteMenuItem";
       id: Id;
     };
@@ -87,6 +92,7 @@ export interface useMenuItemsWorkingAreaInterface {
       updateMenuItem: (id: Id, attributeKey: MenuItemAttributeKey, attributeValue: any) => void;
       updateMenuItemLayout: (layout: MenuItemAttributeValueRGLLayoutType) => void;
       createMenuItem: (location: MinimumRequiredParametersForRGLObject) => void;
+      createDuplicatedMenuItem: (menuItem: MenuItem, location: MinimumRequiredParametersForRGLObject) => void;
       deleteMenuItem: (id: Id) => void;
   };
 }

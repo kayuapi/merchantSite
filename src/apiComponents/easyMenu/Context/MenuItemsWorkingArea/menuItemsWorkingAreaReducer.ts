@@ -1,5 +1,5 @@
 import { MenuItemsWorkingAreaState, MenuItemAction, MenuItem, MenuItemAttributeValueRGLLayoutType } from "./types";
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 export const menuItemsWorkingAreaReducer = (
     state: MenuItemsWorkingAreaState,
@@ -91,7 +91,7 @@ export const menuItemsWorkingAreaReducer = (
             [
               ...state.menuItems,
               {
-                id: uuidv4(),
+                id: nanoid(10),
                 name: '',
                 price: '',
                 image: '',
@@ -100,6 +100,23 @@ export const menuItemsWorkingAreaReducer = (
                 variants: [],
                 comboVariants: [],
               }
+            ],
+        };
+      }
+
+      case "createDuplicatedMenuItem": {
+        const { menuItem, uiLocation } = action;
+        const newMenuItem = {
+          ...menuItem,
+          id: nanoid(10),
+          uiLocation,
+        };
+        return {
+          ...state,
+          menuItems: 
+            [
+              ...state.menuItems,
+              newMenuItem,
             ],
         };
       }

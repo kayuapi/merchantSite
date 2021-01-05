@@ -124,11 +124,11 @@ export const AddRemoveLayout = ({
               compactType={null}
               onDragStart={(layout, oldItem, newItem, placeholder, e, element) => {
                 element.children[0].style.display="block";
-                element.children[5].style.display="block";
+                element.children[6].style.display="block";
               }}
               onDragStop={(layout, oldItem, newItem, placeholder, e, element) => {
                 element.children[0].style.display="none";
-                element.children[5].style.display="none";
+                element.children[6].style.display="none";
               }}
             >
               {_.map(newMenuItems, (el,ind) => createElement(el, categoryStatus))}

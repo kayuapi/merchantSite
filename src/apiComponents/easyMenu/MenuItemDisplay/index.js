@@ -1,3 +1,4 @@
+import { PRODUCT_DISPLAY_HEIGHT, PRODUCT_DISPLAY_MIN_HEIGHT, PRODUCT_DISPLAY_VERTICAL_GAP } from '../MenuItemsPanel/layoutConstants';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ProductDisplay from '../ProductDisplay';
@@ -40,12 +41,21 @@ export const MenuItemDisplay = ({el, categoryStatus}) => {
     top: 50,
     cursor: "pointer",
     fontSize: "small",
+  };
+  const copyStyle = {
+    position: "absolute",
+    right: "0px",
+    top: 75,
+    cursor: "pointer",
+    fontSize: "small",
   }
   const [open, setOpen] = React.useState(false);
+  const { menuItems, createDuplicatedMenuItem } = useMenuItemsWorkingArea();
   const translate = useTranslate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleSetAnchorEl = (event) => {
-    setAnchorEl(prev => event.currentTarget);
+    const tmpTarget = event.currentTarget;
+    setAnchorEl(prev => tmpTarget);
     setOpen(true);
   };
 
@@ -106,6 +116,24 @@ export const MenuItemDisplay = ({el, categoryStatus}) => {
           🛒⃠
         </span>      
       )}
+      <span
+        role="img"
+        aria-label="copy"
+        className="copy"
+        style={copyStyle}
+        onClick={()=> {
+          const menuItemsCount2 = menuItems.length;
+          createDuplicatedMenuItem(el, {
+            x: menuItemsCount2 % 2,
+            y: Math.floor(menuItemsCount2 / 2)*PRODUCT_DISPLAY_HEIGHT + Math.floor(menuItemsCount2 /2)*PRODUCT_DISPLAY_VERTICAL_GAP,
+            w: 1,
+            h: PRODUCT_DISPLAY_HEIGHT,
+            minH: PRODUCT_DISPLAY_MIN_HEIGHT,
+          });
+        }}
+      >
+        📋
+      </span> 
       <hr style={{margin: 0, width: '1000px', marginLeft: '-350px', display: 'none', borderStyle: 'ridge'}} />
       <Popper
         open={open}
