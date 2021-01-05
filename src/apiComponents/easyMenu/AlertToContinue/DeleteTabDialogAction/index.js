@@ -8,7 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { closeAlertToContinue } from '../actions';
 import { makeSelectActionToDispatch } from '../selectors';
 import { makeSelectCategoryDeleting } from '../../CategoryTabs/selectors';
-
+import { useTranslate } from 'react-admin';
 
 const DeleteTabDialogAction = ({
   actionToDispatch,
@@ -16,10 +16,11 @@ const DeleteTabDialogAction = ({
   closeAlertToContinue,
   dispatch,
 }) => {
+  const translate = useTranslate();
   return (
     <DialogActions>
       <Button onClick={closeAlertToContinue} color="primary">
-        Cancel
+        {translate('ra.action.cancel')}
       </Button>
       <Button
         disabled={isTabDeleting}
@@ -28,8 +29,8 @@ const DeleteTabDialogAction = ({
         }} 
         color="primary" 
         autoFocus>
-        {isTabDeleting && <span>Deleting ...</span>}
-        {!isTabDeleting && <span>Continue to delete</span>}
+        {isTabDeleting && <span>{translate('pos.menu.alertToContinue.deleteInProgressAction')}</span>}
+        {!isTabDeleting && <span>{translate('pos.menu.alertToContinue.deleteContinueAction')}</span>}
       </Button>
     </DialogActions>
   )

@@ -36,7 +36,8 @@
 .text {
   background-color: #4CAF50;
   color: white;
-  font-size: 16px;
-  padding: 16px 32px;
+  font-size: 12px;
+  padding: 10px 20px;
   cursor: pointer;
+  margin: 5px;
 }

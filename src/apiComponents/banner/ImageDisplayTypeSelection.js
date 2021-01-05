@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslate } from 'react-admin';
 import { makeStyles } from '@material-ui/core/styles';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -22,6 +23,7 @@ export default function ToggleButtons({
   }, 
   dispatch
 }) {
+  const translate = useTranslate();
   const classes = useStyles();
   const [isSaving, setIsSaving] = useState(false);
   const isDirty = bannerDisplayType !== _bannerDisplayType || banner !== _banner;
@@ -78,9 +80,9 @@ export default function ToggleButtons({
                 });
             }}
           >
-            { !isSaving && isDirty && <span>Save</span> }
-            { !isSaving && !isDirty && <span>Saved</span>}
-            { isSaving && <span>Saving...</span> }
+            { !isSaving && isDirty && <span>{translate('ra.action.save')}</span> }
+            { !isSaving && !isDirty && <span>{translate('pos.action.saved')}</span>}
+            { isSaving && <span>{translate('pos.action.saving')}</span> }
 
           </Button>
       </Box>

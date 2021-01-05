@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -28,6 +28,9 @@ import { Controller } from "react-hook-form";
 import { useMenuItemsWorkingArea } from '../Context/MenuItemsWorkingArea/useMenuItemsWorkingArea';
 // import StorageInput from '../../playground/RHFStorageInput';
 import StorageInput from '../../playground/SwitchableImagePicker';
+import DescriptionPopUp from '../DescriptionPopUp';
+import VariantPopUp from '../VariantsPopUp';
+import { useTranslate } from 'react-admin';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -103,12 +106,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ProductDisplay = ({
-  item: { id, name, price, image },
+  item: { id, name, price, image, status, type, variants, comboVariants },
   openVariantsPopUp,
   categoryStatus,
 })  => {
+  const translate = useTranslate();
   const classes = useStyles();
   const { updateMenuItem } = useMenuItemsWorkingArea();
+  const [isDescriptionPopUpOpen, setIsDescriptionPopUpOpen] = useState(false);
+  const [isVariantPopUpOpen, setIsVariantPopUpOpen] = useState(false);
   return (
     <>
       <Card className={classes.root}>
@@ -121,11 +127,12 @@ export const ProductDisplay = ({
           // width="100"
           // className={classes.cardMedia}
           downloadedImage={image}
+          openDescriptionPopUp={() => {setIsDescriptionPopUpOpen(true)}}
           image={image}
           title={name}
         />
         <div>
-          {categoryStatus === 'DISABLED' && 
+          {(categoryStatus === 'DISABLED' || status === 'UNAVAILABLE') && 
             <span style=
               {{background: '#ff0000', 
                 color: '#fff', 
@@ -136,7 +143,7 @@ export const ProductDisplay = ({
                 right: '30px', 
                 top: '10px' 
               }}>
-                Unavailable
+                {translate('pos.menu.unavailable')}
             </span>
           }
           <CardContent className={classes.content}>
@@ -189,10 +196,13 @@ export const ProductDisplay = ({
               <Grid item xs={6} className={classes.gridItem}>
                 <IconButton
                   className={classes.gridItem2}
-                  onClick={() => {openVariantsPopUp(id)}}
+                  onClick={() => {setIsVariantPopUpOpen(true)}}
                   edge="start"
                 >
-                  <AddIcon />
+                  { (((typeof type === 'undefined' || type === 'A_LA_CARTE') && variants && variants.length > 0) || (type === 'COMBO' && comboVariants && comboVariants.length > 0)) && <span>{translate('pos.menu.choose')}</span> }
+                  { ((typeof type === 'undefined' && (typeof variants === 'undefined' || variants.length === 0)) ||
+                    (type === 'A_LA_CARTE' && (typeof variants === 'undefined' || variants.length === 0)) ||
+                    (type === 'COMBO' && (typeof comboVariants === 'undefined' || comboVariants.length === 0))) && <AddIcon /> }
                 </IconButton>
               </Grid>
               <Grid item xs={6} className={classes.gridItem}>
@@ -204,7 +214,7 @@ export const ProductDisplay = ({
                     edge="end"
                   >
                     <MoveIcon />
-                    <div style={{fontSize: 'small', paddingLeft: '5px'}}> DRAG ME</div>
+                    <div style={{fontSize: 'small', paddingLeft: '5px'}}>{translate('pos.menu.dragMe')}</div>
                   </IconButton>
                 </div>
               </Grid>
@@ -212,6 +222,8 @@ export const ProductDisplay = ({
           </CardActions>
         </div>
       </Card>
+      <DescriptionPopUp menuItemId={id} isDescriptionPopUpOpen={isDescriptionPopUpOpen} closeDescriptionPopUp={() => setIsDescriptionPopUpOpen(false)} />
+      <VariantPopUp menuItemId={id} isVariantPopUpOpen={isVariantPopUpOpen} closeVariantsPopUp={() => setIsVariantPopUpOpen(false)} />
     </>
   );
 }

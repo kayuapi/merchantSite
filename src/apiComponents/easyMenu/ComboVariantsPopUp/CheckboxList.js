@@ -10,6 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { Controller } from "react-hook-form";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useTranslate } from 'react-admin';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CheckboxList({ variantItemSectionId, items, disabled = false, editable= false, updateVariantItemSectionDetail }) {
+  const translate = useTranslate();
   const classes = useStyles();
   const [checked] = React.useState([0]);
 
@@ -94,7 +96,7 @@ export default function CheckboxList({ variantItemSectionId, items, disabled = f
                         onBlur={(e)=>{updateVariantItemSectionDetail(variantItemSectionId, id, 'update', 'name', e.target.value); onBlur();}}
                         onChange={onChange}
                         value={value}
-                        placeholder="Choice of Beverage"
+                        placeholder={translate('pos.menu.comboNameExample')}
                         classes={{input: classes.productTitleInput}}
                         style={{width: '100%'}}
                         inputProps={{'aria-label': 'put product title' }} 
@@ -111,7 +113,7 @@ export default function CheckboxList({ variantItemSectionId, items, disabled = f
                         onBlur={(e)=>{updateVariantItemSectionDetail(variantItemSectionId, id, 'update' ,'price', e.target.value); onBlur();}}
                         onChange={onChange}
                         value={value}
-                        placeholder="Choice of Beverage"
+                        placeholder={translate('pos.menu.comboPriceExample')}
                         classes={{input: classes.inputRight}}
                         style={{width: '100%'}}
                         inputProps={{'aria-label': 'put product title' }} 

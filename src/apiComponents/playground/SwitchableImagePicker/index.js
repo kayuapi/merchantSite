@@ -11,6 +11,8 @@ import { makeSelectPrefixUploadedUrl } from '../../easyMenu/MenuItemsPanel/selec
 import { createStructuredSelector } from 'reselect';
 import { useMenuItemsWorkingArea  } from '../../easyMenu/Context/MenuItemsWorkingArea';
 import styles from './switchableImagePickerStyle.module.css';
+import { useTranslate } from 'react-admin';
+import { nanoid } from 'nanoid';
 
 function LinearProgressWithLabel(props) {
     return (
@@ -34,14 +36,14 @@ LinearProgressWithLabel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }) => {
+const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image, openDescriptionPopUp }) => {
   const [localState, setLocalState] = useState({
     uploadedPercentage: 0,
     uploaded: false
   });
-  const [uploadedImageUrl, setUploadedImageUrl] = useState(prefixUploadedUrl);
   const { updateMenuItem } = useMenuItemsWorkingArea();
   const inputOpenRef = React.createRef();
+  const translate = useTranslate();
   // grab uploadedImageUrl on componentMount
 
 
@@ -56,11 +58,14 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }
   //     }, 500);
   //   }
   // }, [localState]);
-
+  const extractType = (fname) => {return fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 2);}
   const onChange = (e, uploadedImageUrlOnChange) => {
-
     const file = e.target.files[0];
-    const fileName = file.name;
+    let fileName = nanoid(10);
+    const fileExtension = extractType(file.name);
+    if (fileExtension) {
+      fileName = `${fileName}.${fileExtension}`;
+    }
 
     Storage.put(fileName, file, {
         level: 'protected',
@@ -84,7 +89,6 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }
           }));
         }, 500);
         updateMenuItem(menuItemId, 'image', uploadedImageUrl);
-        setUploadedImageUrl(state => uploadedImageUrl);
         setLocalState(state => ({ 
           ...localState,
           uploadedPercentage: 100
@@ -129,17 +133,20 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image }
       <div className={styles.container}>
         <img
           className={styles.image}
-          src={image ? image : uploadedImageUrl || ''}
+          src={image ? image : ''}
           height='100%'
           width="100%"
           style={{objectFit: 'contain', background: 'white'}} 
           alt='' 
         />
-        <div className={styles.middle} onClick={()=>{inputOpenRef.current.click()}}>
-          <div className={styles.text}>
-            {!image && <span>Add image</span>}
-            {image && <span>Change image</span>}
-          </div>
+        <div className={styles.middle}>
+            <div className={styles.text} onClick={()=>{inputOpenRef.current.value = ''; inputOpenRef.current.click();}}>
+              {!image && <span>{translate(`pos.menu.addImage`)}</span>}
+              {image && <span>{translate(`pos.menu.changeImage`)}</span>}
+            </div>
+            <div className={styles.text} onClick={()=>{openDescriptionPopUp();}}>
+              {<span>{translate(`pos.menu.modifyDescriptionAndMore`)}</span>}
+            </div>
         </div>
         <input ref={inputOpenRef} type="file" accept='image/*' onChange={(evt) => onChange(evt, prefixUploadedUrl)} style={{display: 'none'}} />
       </div>

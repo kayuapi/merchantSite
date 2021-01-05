@@ -8,6 +8,8 @@ export type MenuItem = {
   image: string;
   type: "A_LA_CARTE" | "COMBO";
   uiLocation: {[key: string]: any};
+  status?: "AVAILABLE" | "UNAVAILABLE";
+  description?: string;
   variants?: {[key: string]: any}[] | null;
   comboVariants?: {[key: string]: any}[] | null;
 };
@@ -26,6 +28,8 @@ export type MenuItemAttributeKey =
   "image" | 
   "type" | 
   "uiLocation" | 
+  "status" |
+  "description" |
   "variants" | 
   "comboVariants";
 
@@ -36,6 +40,8 @@ export type MenuItemAttributeValueNameType = string;
 export type MenuItemAttributeValuePriceType = string;
 export type MenuItemAttributeValueImageType = string;
 export type MenuItemAttributeValueTypeType = "A_LA_CARTE" | "COMBO";
+export type MenuItemAttributeValueStatusType = "AVAILABLE" | "UNAVAILABLE";
+export type MenuItemAttributeValueDescriptionType = string;
 export type MenuItemAttributeValueRGLLayoutType = {[key: string]: any}[];
 export type MenuItemAttributeValueVariantsType = {[key: string]: any}[];
 export type MenuItemAttributeValueComboVariantsType = {[key: string]: any}[];
@@ -55,6 +61,8 @@ export type MenuItemAction =
         MenuItemAttributeValuePriceType |
         MenuItemAttributeValueImageType |
         MenuItemAttributeValueTypeType |
+        MenuItemAttributeValueStatusType |
+        MenuItemAttributeValueDescriptionType |
         MenuItemAttributeValueVariantsType |
         MenuItemAttributeValueComboVariantsType;
     }
@@ -64,6 +72,11 @@ export type MenuItemAction =
     }
   | {
       type: "createMenuItem";
+      uiLocation: MinimumRequiredParametersForRGLObject;
+    }
+  | {
+      type: "createDuplicatedMenuItem";
+      menuItem: MenuItem;
       uiLocation: MinimumRequiredParametersForRGLObject;
     }
   | {
@@ -79,6 +92,7 @@ export interface useMenuItemsWorkingAreaInterface {
       updateMenuItem: (id: Id, attributeKey: MenuItemAttributeKey, attributeValue: any) => void;
       updateMenuItemLayout: (layout: MenuItemAttributeValueRGLLayoutType) => void;
       createMenuItem: (location: MinimumRequiredParametersForRGLObject) => void;
+      createDuplicatedMenuItem: (menuItem: MenuItem, location: MinimumRequiredParametersForRGLObject) => void;
       deleteMenuItem: (id: Id) => void;
   };
 }

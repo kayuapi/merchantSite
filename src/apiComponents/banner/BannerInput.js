@@ -6,6 +6,7 @@ import { Storage } from 'aws-amplify';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './bannerStyle.module.css';
+import { withTranslate } from 'react-admin';
 
 const useStyles = theme => ({
   root: {
@@ -101,6 +102,7 @@ class S3ImageUpload extends React.Component {
   
     render() {
       const { uploadedPercentage } = this.state;
+      const { translate } = this.props;
       return (
         <>
           <div className={styles.container}>
@@ -113,8 +115,8 @@ class S3ImageUpload extends React.Component {
             />
             <div className={styles.middle} onClick={()=>{this.inputOpenRef.current.click()}}>
               <div className={styles.text}>
-                {!this.props._banner && <span>Click to add banner</span>}
-                {this.props._banner && <span>Click to change banner</span>}
+                {!this.props._banner && <span>{translate('pos.banner.addBanner')}</span>}
+                {this.props._banner && <span>{translate('pos.banner.changeBanner')}</span>}
               </div>
             </div>
             <input ref={this.inputOpenRef} type="file" accept='image/*' onChange={(evt) => this.onChange(evt)} style={{display: 'none'}} />
@@ -124,4 +126,4 @@ class S3ImageUpload extends React.Component {
       )
     }
   }
-export default withStyles(useStyles)(S3ImageUpload);
+export default withStyles(useStyles)(withTranslate(S3ImageUpload));

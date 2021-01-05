@@ -60,7 +60,9 @@ firebase.firestore();
 const i18nProvider = polyglotI18nProvider(locale => {
     if (locale === 'cn') {
         return import('./i18n/cn').then(messages => messages.default);
-    }
+    } else if (locale === 'ms') {
+      return import('./i18n/ms').then(messages => messages.default);
+  }
     return englishMessages;
 }, 'en');
 const history = createHashHistory();

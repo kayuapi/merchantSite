@@ -3,6 +3,7 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import { makeStyles } from '@material-ui/core/styles';
 import Add from '@material-ui/icons/Add';
+import { useTranslate } from 'react-admin';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,12 +23,13 @@ const useStyles = makeStyles(theme => ({
 
 export function AddCard(props) {
   const classes = useStyles();
+  const translate = useTranslate();
 
   return (
     <Card className={classes.root}>
       <CardActionArea className={classes.center} onClick={props.onClick}>
         {/* <IconButton aria-label="add item"> */}
-          <Add /><br /><br />Click to add dishes
+          <Add /><br /><br />{translate('pos.menu.addDishes')}
         {/* </IconButton> */}
       </CardActionArea>
     </Card>

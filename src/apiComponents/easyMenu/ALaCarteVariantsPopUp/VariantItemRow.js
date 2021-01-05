@@ -10,8 +10,10 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useTranslate } from 'react-admin';
 
 export default function VariantItemRow({ variantItem: {id, name, price} }) {
+  const translate = useTranslate();
   const { updateVariantItem, deleteVariantItem } = useVariantItemsALaCarteWorkingArea();
   return (
     <>
@@ -25,7 +27,7 @@ export default function VariantItemRow({ variantItem: {id, name, price} }) {
                 onBlur={(e)=>{updateVariantItem(id, 'name', e.target.value); onBlur();}}
                 onChange={onChange}
                 value={value}
-                placeholder="e.g: Variant 1"
+                placeholder={translate('pos.menu.aLaCarteNameExample')}
                 // classes={{input: classes.productTitleInput}}
                 style={{width: '100%'}}
                 multiline
@@ -43,7 +45,7 @@ export default function VariantItemRow({ variantItem: {id, name, price} }) {
                 onBlur={(e)=>{updateVariantItem(id, 'price', e.target.value); onBlur();}}
                 onChange={onChange}
                 value={value}
-                placeholder="e.g: RM 5 "
+                placeholder={translate('pos.menu.aLaCartePriceExample')}
                 // classes={{input: classes.productTitleInput}}
                 style={{width: '100%'}}
                 multiline
