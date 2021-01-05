@@ -69,8 +69,15 @@ const Help = () => {
                         {translate('pos.help.changelog')}
                     </Typography>
                     <Box maxWidth="40em">
-                      <Typography variant="body1" component="p" style={{color: 'white'}} gutterBottom>
-                        {translate('pos.help.linkToManual')}
+                      <Typography variant="body1" component="ul" style={{color: 'white'}} gutterBottom>
+                        <li>NEW FEATURE: enable adding description to individual menu item</li>
+                        <li>NEW FEATURE: enable changing indiviual menu item to unavailable</li>
+                        <li>NEW FEATURE: enable deleting image</li>
+                        <li>NEW FEATURE: enable malay, english and chinese multi language support</li>
+                        <li>NEW FEATURE: enable help page to add manual link and changelogs</li>
+                        <li>NEW FEATURE: enable creating duplicated menu item</li>
+                        <li>FIX BUGS: menu item icon updated</li>
+                        <li>FIX BUGS: general bug fixes and refactoring</li>
                       </Typography>
                     </Box>
                 </Box>
