@@ -4,6 +4,12 @@ import chineseMessages from 'ra-language-chinese';
 const customChineseMessages: TranslationMessages = {
     ...chineseMessages,
     pos: {
+        help: {
+          manual: '使用手册',
+          instruction: '请点击下方链接查阅使用手册。',
+          linkToManual: '链接到使用手册',
+          changelog: '变更日志',
+        },
         banner: {
           name: '横幅装饰',
           addBanner: '添加横幅',
@@ -62,7 +68,8 @@ const customChineseMessages: TranslationMessages = {
             deleteContent: '此类别及里面的物品将被删除，请按“继续”确认。',
             deleteInProgressAction: '删除中 ...',
             deleteContinueAction: '继续删除',
-          }
+          },
+
         },
         notification: {
           saved_successfully: 'Saved successfully!',
@@ -114,6 +121,9 @@ const customChineseMessages: TranslationMessages = {
         },
     },
     resources: {
+        help: {
+          name: '帮助',
+        },
         orderMemo: {
           name: 'Order Memo |||| Order Memos',
           filters: {

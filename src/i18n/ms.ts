@@ -4,6 +4,12 @@ import malayMessages from 'ra-language-malay';
 const customMalayMessages: TranslationMessages = {
     ...malayMessages,
     pos: {
+        help: {
+          manual: 'Manual',
+          instruction: 'Sila tekan pautan di bawah untuk baca manual.',
+          linkToManual: 'Pautan ke manual',
+          changelog: 'Changelog',
+        },
         banner: {
           name: 'Sepanduk',
           addBanner: 'Tambah sepanduk',
@@ -62,7 +68,8 @@ const customMalayMessages: TranslationMessages = {
             deleteContent: 'Kategori ini dan menu-nya akan dipadam, sila tekan "Terus" untuk memastikan tindakan ini.',
             deleteInProgressAction: 'Sedang padam ...',
             deleteContinueAction: 'Terus untuk padam',
-          }
+          },
+          help: 'Bantuan',
         },
         notification: {
           saved_successfully: 'Saved successfully!',
@@ -114,6 +121,9 @@ const customMalayMessages: TranslationMessages = {
         },
     },
     resources: {
+        help: {
+          name: 'Bantuan',
+        },
         orderMemo: {
           name: 'Order Memo |||| Order Memos',
           filters: {

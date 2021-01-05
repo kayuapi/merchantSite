@@ -4,6 +4,12 @@ import englishMessages from 'ra-language-english';
 const customEnglishMessages: TranslationMessages = {
     ...englishMessages,
     pos: {
+        help: {
+          manual: 'Manual',
+          instruction: 'Please click the link below to view the manual',
+          linkToManual: 'link to manual',
+          changelog: 'Changelog',
+        },
         banner: {
           name: 'Banner',
           addBanner: 'Add banner',
@@ -62,7 +68,7 @@ const customEnglishMessages: TranslationMessages = {
             deleteContent: 'The tab and all menu items in the tabs will be deleted, please press "Continue" to confirm.',
             deleteInProgressAction: 'Deleting ...',
             deleteContinueAction: 'Continue to delete',
-          }
+          },
         },
         notification: {
           saved_successfully: 'Saved successfully!',
@@ -114,6 +120,9 @@ const customEnglishMessages: TranslationMessages = {
         },
     },
     resources: {
+        help: {
+          name: 'Help',
+        },
         orderMemo: {
           name: 'Order Memo |||| Order Memos',
           filters: {

@@ -8,6 +8,7 @@ import { MenuItemLink, DashboardMenuItem, MenuProps, useTranslate } from 'react-
 import BannerIcon from '@material-ui/icons/Image';
 import MenuIcon from '@material-ui/icons/Create';
 import OrderMemoIcon from '@material-ui/icons/Note';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { AppState } from '../types';
 import SubMenu from './SubMenu';
 
@@ -71,7 +72,13 @@ const Menu: FC<MenuProps> = ({ onMenuClick, dense=false, logout }) => {
                 onClick={onMenuClick}
                 sidebarIsOpen={open}
               />
-
+              <MenuItemLink
+                to={`/help`}
+                primaryText={translate(`resources.help.name`)}
+                leftIcon={createElement(HelpOutlineIcon)}
+                onClick={onMenuClick}
+                sidebarIsOpen={open}
+              />
             {isXLarge && logout}
         </div>
     );
