@@ -154,7 +154,7 @@ const Control = ({
       </Button>
       <ToggleButton
         value="check"
-        disabled={ isDirty || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
+        disabled={ isDirty || isCategoryTabSaving || tabAndPanelSaving || isCategoriesLoading || isMenuItemsLoading }
         selected={isCategorySortModeOn}
         onChange={() => {
           if (isDirty) {
