@@ -1,5 +1,5 @@
 import { VariantItemSectionsWorkingAreaState, VariantItemSectionsWorkingAreaAction } from "./types";
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 export const variantItemSectionsWorkingAreaReducer = (
     state: VariantItemSectionsWorkingAreaState,
@@ -95,16 +95,16 @@ export const variantItemSectionsWorkingAreaReducer = (
             [
               ...state.variantItemSections, 
               {
-                id: uuidv4(),
+                id: nanoid(10),
                 title: 'Choice of Mains',
                 required: true,
                 minSelectionNumber: 0,
                 maxSelectionNumber: 999,
                 details: [
                   {
-                    id: uuidv4(),
+                    id: nanoid(10),
                     name: 'Fried chicken',
-                    price: 'RM 12',
+                    price: 'RM0',
                   },
                 ],
               }

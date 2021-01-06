@@ -12,7 +12,7 @@ import ReactCardFlip from 'react-card-flip';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -138,7 +138,7 @@ export function VariantItemSectionCard({
           >
             Ok
           </Button>
-          <Button size="small" onClick={() => {updateVariantItemSection(id, 'details', [...details, {id: uuidv4(), name: 'tes1', price: 'RM5'}])}}>{translate('pos.menu.addItem')}</Button>
+          <Button size="small" onClick={() => {updateVariantItemSection(id, 'details', [...details, {id: nanoid(10), name: 'BBQ chicken', price: 'RM0'}])}}>{translate('pos.menu.addItem')}</Button>
         </CardActions>
       </Card>
 
