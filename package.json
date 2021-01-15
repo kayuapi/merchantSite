@@ -13,6 +13,7 @@
     "array-move": "^3.0.1",
     "aws-amplify": "^3.3.11",
     "aws-amplify-react": "^4.2.15",
+    "browser-image-compression": "^1.0.14",
     "camelcase-keys": "^6.2.2",
     "connected-react-router": "^6.8.0",
     "firebase": "^7.24.0",

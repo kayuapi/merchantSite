@@ -13,6 +13,7 @@ import { useMenuItemsWorkingArea  } from '../../easyMenu/Context/MenuItemsWorkin
 import styles from './switchableImagePickerStyle.module.css';
 import { useTranslate } from 'react-admin';
 import { nanoid } from 'nanoid';
+import imageCompression from 'browser-image-compression';
 
 function LinearProgressWithLabel(props) {
     return (
@@ -59,7 +60,7 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image, 
   //   }
   // }, [localState]);
   const extractType = (fname) => {return fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 2);}
-  const onChange = (e, uploadedImageUrlOnChange) => {
+  const onChange = async (e, uploadedImageUrlOnChange) => {
     const file = e.target.files[0];
     let fileName = nanoid(10);
     const fileExtension = extractType(file.name);
@@ -67,7 +68,22 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image, 
       fileName = `${fileName}.${fileExtension}`;
     }
 
-    Storage.put(fileName, file, {
+    const options = { 
+      maxSizeMB: 10,          // (default: Number.POSITIVE_INFINITY)
+      maxWidthOrHeight: 500,   // compressedFile will scale down by ratio to a point that width or height is smaller than maxWidthOrHeight (default: undefined)
+      // onProgress: Function,       // optional, a function takes one progress argument (percentage from 0 to 100) 
+      useWebWorker: true,      // optional, use multi-thread web worker, fallback to run in main-thread (default: true)
+    
+      // following options are for advanced users
+      // maxIteration: number,       // optional, max number of iteration to compress the image (default: 10)
+      // exifOrientation: number,    // optional, see https://stackoverflow.com/a/32490603/10395024
+      // fileType: string,           // optional, fileType override
+      initialQuality: 0.9      // optional, initial quality value between 0 and 1 (default: 1)
+    }
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      Storage.put(fileName, compressedFile, {
         level: 'protected',
         contentType: 'image/*',
         progressCallback(progress) {
@@ -79,8 +95,7 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image, 
             }));
           }
         },
-    })
-    .then (result => {
+      }).then (result => {
         const uploadedImageUrl = encodeURI(uploadedImageUrlOnChange+'/'+result['key']);
         setTimeout(() => {
           setLocalState(state => ({
@@ -93,8 +108,10 @@ const S3ImageUpload = ({ menuItemId, prefixUploadedUrl, downloadedImage: image, 
           ...localState,
           uploadedPercentage: 100
         }));
-    })
-    .catch(err => console.log(err));
+      }).catch(err => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
