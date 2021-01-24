@@ -49,11 +49,6 @@ const useStyles = makeStyles(theme => ({
 
 }
 ));
-const sounds = {
-  'notificationMandarinCasual': new Audio(`${process.env.PUBLIC_URL}/newOrderCasual.mp3`),
-  'notificationMandarin': new Audio(`${process.env.PUBLIC_URL}/newOrderMandarin.mp3`),
-  'notificationEnglish': new Audio(`${process.env.PUBLIC_URL}/newOrderEnglish.mp3`),
-};
 
 const updateOrderStatus = async (shopId, fulfillmentMethod, orderId) => {
   const queryingOrderId = {
@@ -129,6 +124,11 @@ const OrderBoard = SortableContainer(({orders, state, setState}) => {
   )  
 
 });
+
+function playNotification() {
+  let audioSelected = document.getElementById('audio1');
+  audioSelected.play();
+}
 
 // eslint-disable-next-line no-sequences
 const sortObject = o => Object.keys(o).sort((a,b) => {return new Date(b) - new Date(a)}).reduce((r, k) => (r[k] = o[k], r), {});
@@ -222,7 +222,7 @@ const OrderPageShow = props => {
             if (fulfillmentMethod !== 'ALL') {
               if (receivedOrder.fulfillmentMethod === fulfillmentMethod) {
                 if (receivedOrder.orderId > startingOrderId && receivedOrder.orderId < endingOrderId) {
-                  sounds['notificationEnglish'].play();
+                  playNotification();
                   setState(prevState => {
                     const updatedReceivedOrder = [...prevState.orders, receivedOrder];
                     const updatedReceivedOrderByDate = groupByDate(updatedReceivedOrder, ['deliveryDate', 'pickupDate']);
@@ -239,7 +239,7 @@ const OrderPageShow = props => {
             }
             if (fulfillmentMethod === 'ALL') {
               if (receivedOrder.orderId > startingOrderId && receivedOrder.orderId < endingOrderId) {
-                sounds['notificationEnglish'].play();
+                playNotification();
                 setState(prevState => {
                   const updatedReceivedOrder = [...prevState.orders, receivedOrder];
                   const updatedReceivedOrderByDate = groupByDate(updatedReceivedOrder, ['deliveryDate', 'pickupDate']);
@@ -382,6 +382,10 @@ const OrderPageShow = props => {
 
     return (
       <div className={classes.root}>
+        <input type="button" value="IOS users click here to enable live notification" onClick={()=>playNotification()} />
+        <audio id="audio1">
+          <source src={process.env.PUBLIC_URL + '/newOrderEnglish.mp3'} type="audio/mpeg" />
+        </audio>
         <div className={classes.filter}>
           <Top filterValues={filterValues} setFilters={setFilters} />
           <TopFulfillmentMethod filterValues={filterValues} setFilters={setFilters} /> 
