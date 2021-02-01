@@ -130,6 +130,11 @@ function playNotification() {
   audioSelected.play();
 }
 
+function stopNotification() {
+  let audioSelected = document.getElementById('audio1');
+  audioSelected.pause();
+}
+
 // eslint-disable-next-line no-sequences
 const sortObject = o => Object.keys(o).sort((a,b) => {return new Date(b) - new Date(a)}).reduce((r, k) => (r[k] = o[k], r), {});
 
@@ -160,6 +165,7 @@ const OrderPageShow = props => {
     const classes = useStyles();
     const [state, setState] = useState({orders: [], ordersByDate: {}});
     const [loading, setLoading] = useState(false);
+    const [enableAudioLoop, setEnableAudioLoop] = useState(false);
     // set default filter to this week and all fulfillmentMethods
     // use 00 to zz range as suffix to orderId
     const [filterValues, setFilters] =  useState({
@@ -383,7 +389,9 @@ const OrderPageShow = props => {
     return (
       <div className={classes.root}>
         <input type="button" value="IOS users click here to enable live notification" onClick={()=>playNotification()} />
-        <audio id="audio1">
+        <input type="button" value={enableAudioLoop ? "Disable loop" : "Enable loop"} onClick={()=>setEnableAudioLoop(prev => !prev)} />
+        <input type="button" value="Stop notification" onClick={()=>stopNotification()} />
+        <audio id="audio1" loop={enableAudioLoop}>
           <source src={process.env.PUBLIC_URL + '/newOrderEnglish.mp3'} type="audio/mpeg" />
         </audio>
         <div className={classes.filter}>

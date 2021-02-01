@@ -122,17 +122,34 @@ export const menuItemsWorkingAreaReducer = (
 
       case "createDuplicatedMenuItem": {
         const { menuItem, uiLocation } = action;
-        const newMenuItem = {
-          ...menuItem,
-          id: nanoid(10),
-          uiLocation,
-        };
+        const { variants } = menuItem;
+
+        let newMenuItem = {};
+        if (variants) {
+          const newVariants = variants.map(variant => ({
+            id: nanoid(10),
+            name: variant.name,
+            price: variant.price,
+          }));
+          newMenuItem = {
+            ...menuItem,
+            id: nanoid(10),
+            uiLocation,
+            variants: newVariants,
+          };  
+        } else {
+          newMenuItem = {
+            ...menuItem,
+            id: nanoid(10),
+            uiLocation,
+          };  
+        }
         return {
           ...state,
           menuItems: 
             [
               ...state.menuItems,
-              newMenuItem,
+              newMenuItem as MenuItem,
             ],
         };
       }
