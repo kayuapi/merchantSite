@@ -1,5 +1,5 @@
 import { VariantItemsALaCarteWorkingAreaState, VariantItem, VariantItemsALaCarteWorkingAreaAction } from "./types";
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 export const variantItemsALaCarteWorkingAreaReducer = (
     state: VariantItemsALaCarteWorkingAreaState,
@@ -40,7 +40,7 @@ export const variantItemsALaCarteWorkingAreaReducer = (
             [
               ...state.variantItems, 
               {
-                id: uuidv4(),
+                id: nanoid(10),
                 name: '',
                 price: '',
               }
