@@ -4,7 +4,7 @@
  * Append <AddCard /> by adding it to state.items when component updates again
  * 
  */
-import { PRODUCT_DISPLAY_HEIGHT, PRODUCT_DISPLAY_MIN_HEIGHT, PRODUCT_DISPLAY_VERTICAL_GAP } from './layoutConstants';
+import { PRODUCT_DISPLAY_HEIGHT, PRODUCT_DISPLAY_MIN_HEIGHT, PRODUCT_DISPLAY_VERTICAL_GAP, PRODUCT_DISPLAY_SNAP_GAP } from './layoutConstants';
 import '../css/styles.css';
 import React, { useEffect } from "react";
 import { WidthProvider, Responsive } from "react-grid-layout";
@@ -57,13 +57,32 @@ function AddCard2() {
     <div key={uuidv4()} data-grid={{x: 0, y:0, w: 1, h:PRODUCT_DISPLAY_HEIGHT}}>
       <AddCard onClick={()=> {
         const menuItemsCount2 = menuItems.length;
-        createMenuItem({
-          x: menuItemsCount2 % 2,
-          y: Math.floor(menuItemsCount2 / 2)*PRODUCT_DISPLAY_HEIGHT + Math.floor(menuItemsCount2 /2)*PRODUCT_DISPLAY_VERTICAL_GAP,
-          w: 1,
-          h: PRODUCT_DISPLAY_HEIGHT,
-          minH: PRODUCT_DISPLAY_MIN_HEIGHT,
-        });
+        const selectedColumn = menuItems.filter(menuItem => menuItem.uiLocation.x === menuItemsCount2 % 2);
+        const selectedColumnLength = selectedColumn.length;
+        let maxY = Math.max(...selectedColumn.map(menuItem => menuItem.uiLocation.y));
+        if (!isFinite(maxY)) {
+          maxY = 0;
+        }
+        if (selectedColumnLength) {
+          const menuItemWithMaxY = selectedColumn.findIndex((item) => item.uiLocation.y === maxY);
+          const itemWithMaxYHeight = selectedColumn[menuItemWithMaxY].uiLocation.h;
+          createMenuItem({
+            x: menuItemsCount2 % 2,
+            y: maxY + itemWithMaxYHeight + PRODUCT_DISPLAY_VERTICAL_GAP,
+            w: 1,
+            h: PRODUCT_DISPLAY_HEIGHT,
+            minH: PRODUCT_DISPLAY_MIN_HEIGHT,
+          });
+        } else {
+          createMenuItem({
+            x: menuItemsCount2 % 2,
+            y: Math.floor(menuItemsCount2 / 2)*PRODUCT_DISPLAY_HEIGHT + Math.floor(menuItemsCount2 /2)*PRODUCT_DISPLAY_VERTICAL_GAP,
+            w: 1,
+            h: PRODUCT_DISPLAY_HEIGHT,
+            minH: PRODUCT_DISPLAY_MIN_HEIGHT,
+          });
+        }
+
       }} /> 
     </div>
   );
@@ -123,12 +142,20 @@ export const AddRemoveLayout = ({
               margin={[0,0]}
               compactType={null}
               onDragStart={(layout, oldItem, newItem, placeholder, e, element) => {
-                element.children[0].style.display="block";
-                element.children[6].style.display="block";
+                // element.children[0].style.display="block";
+                // element.children[6].style.display="block";
               }}
               onDragStop={(layout, oldItem, newItem, placeholder, e, element) => {
-                element.children[0].style.display="none";
-                element.children[6].style.display="none";
+                // element.children[0].style.display="none";
+                // element.children[6].style.display="none";
+                const allYs = layout.map(layoutlette => layoutlette.y);
+                for (let yValue of allYs) {
+                  const diff = Math.abs(yValue - newItem.y);
+                  if (diff !== 0 && diff <= PRODUCT_DISPLAY_SNAP_GAP) {
+                    newItem.y = yValue;
+                    break;
+                  }
+                }
               }}
             >
               {_.map(newMenuItems, (el,ind) => createElement(el, categoryStatus))}

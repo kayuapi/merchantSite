@@ -34,8 +34,9 @@ import { useCurrentCategoryWorkingArea } from '../Context/CurrentCategoryWorking
 
 import Add from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
-import MobileFriendlyIcon from '@material-ui/icons/MobileFriendly';
-import MobileOffIcon from '@material-ui/icons/MobileOff';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
+
 import { makeStyles } from "@material-ui/styles";
 import TabList from '@material-ui/lab/TabList';
 import TabContext from '@material-ui/lab/TabContext';
@@ -322,12 +323,12 @@ const CategoryTabs = ({
                             <>
                               <MyCloseIcon style={{margin: 0}} categoryId={category.id} />
                               { (!nextCurrentCategory.status || nextCurrentCategory.status === 'ENABLED') && 
-                                <MobileFriendlyIcon onClick={() => {
+                                <ShoppingCartIcon onClick={() => {
                                   updateCurrentCategory('status', 'DISABLED');
                                 }} />
                               }
                               { nextCurrentCategory.status === 'DISABLED' && 
-                                <MobileOffIcon onClick={() => {
+                                <RemoveShoppingCartIcon onClick={() => {
                                   updateCurrentCategory('status', 'ENABLED');
                                 }} /> 
                               }
