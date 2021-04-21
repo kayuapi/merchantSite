@@ -25,6 +25,7 @@ export interface IOrderItem {
 export interface DineInOrder extends Order {
   tableNumber: string;
   storeFrontSideTotalPrice: string;
+  phoneNumber?: string;
 }
 export interface DeliveryOrder extends Order {
   firstName: string;
