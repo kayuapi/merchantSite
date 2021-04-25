@@ -70,9 +70,7 @@ const Help = () => {
                     </Typography>
                     <Box maxWidth="40em">
                       <Typography variant="body1" component="ul" style={{color: 'white'}} gutterBottom>
-                        <li>NEW FEATURE: enable basic looping notification feature</li>
-                        <li>NEW FEATURE: auto snap to the adjacent y position when dragging near to it</li>
-                        <li>FIX BUGS: fix duplicated a la carte menu items with variants id bug, add new item position bug fixed, category tabs icon changed.</li>
+                        <li>NEW FEATURE: whatsapp message orders to customers (dine in and self pickup only)</li>
                       </Typography>
                     </Box>
                 </Box>

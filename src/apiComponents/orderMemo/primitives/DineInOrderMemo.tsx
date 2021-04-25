@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FC, Fragment } from 'react';
 
 
-import { DineInOrder } from '../types';
+import { DineInOrder, MenuItem } from '../types';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -23,6 +23,8 @@ import CopyToClipboardIcon from '@material-ui/icons/Assignment';
 
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -55,6 +57,27 @@ const useStyles = makeStyles(theme => ({
 }
 ));
 
+interface ISomeObject {
+  [key: string]: string|number;
+}
+
+function extractItemsFromCartItems(cartItems: MenuItem[]) {
+  const items = cartItems.reduce((acc: ISomeObject, obj) => {
+    const key = `${obj.name}(${obj.variant})`;
+    acc[key] = `(${obj.quantity})`;
+    return acc;
+  }, {});
+  return items;
+}
+
+const whatsappStringifyOrder = (orders:MenuItem[]) =>
+  `***Orders:***\r\n${JSON.stringify(extractItemsFromCartItems(orders))
+    .slice(1, -1)
+    .replace(/\(undefined\)/g, '')
+    .replace(/\(null\)/g, '')
+    .replace(/"/g, '')
+    .replace(/\$\$\$/g, ',subtotal:')
+    .replace(/,/g, '\r\n\r\n')}`;
 
 const OrderMemo: FC<DineInOrder> = ({
   createdAt,
@@ -69,6 +92,7 @@ const OrderMemo: FC<DineInOrder> = ({
   postscript,
   orderedItems,
   tableNumber,
+  phoneNumber,
   deleteOrder,
 }) => {
   const classes = useStyles();
@@ -92,6 +116,15 @@ const OrderMemo: FC<DineInOrder> = ({
     document.execCommand('copy');
     notify("pos.notification.order_memo_copied", 'info');
     tableTextArea.remove();
+  }
+  
+  function sendWhatsapp(phoneNumber: string) {
+    const totalPriceTextToSend = storeFrontSideTotalPrice ? `\r\n\r\nTotal: RM ${storeFrontSideTotalPrice.replace(/[^0-9.-]+/g,'')}`: '';
+    const textToSend = encodeURIComponent(`**Checklist / 清单** ${totalPriceTextToSend}\r\n\r\n${whatsappStringifyOrder(orderedItems)}${totalPriceTextToSend}\r\n\r\n***Info/资料:***\r\nTable: ${tableNumber}\r\nHp: ${phoneNumber.replace(/(^\+6)/g, '')}`);
+    const windowReference = window.open('', '_blank');
+    (windowReference as Window).location.href = `https://wa.me/${
+      phoneNumber
+    }?text=${textToSend}`;
   }
 
   return (
@@ -123,6 +156,16 @@ const OrderMemo: FC<DineInOrder> = ({
             </IconButton>
           </Tooltip>
         </Typography>
+        {phoneNumber && 
+          <Typography variant="h5" component="h2">
+            {<span>{phoneNumber}</span>}
+            <Tooltip title="send checklist via whatsapp">
+              <IconButton onClick={() => sendWhatsapp(phoneNumber)} size='medium'>
+                <WhatsAppIcon fontSize='small' />
+              </IconButton>
+            </Tooltip>
+          </Typography>
+        }
         <Typography variant="body2" component="p">
           <span>PS: {postscript}</span>
           <br />
