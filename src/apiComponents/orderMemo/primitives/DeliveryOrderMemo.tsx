@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FC, Fragment } from 'react';
 
-import { DeliveryOrder } from '../types';
+import { DeliveryOrder, MenuItem } from '../types';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -56,6 +56,27 @@ const useStyles = makeStyles(theme => ({
 }
 ));
 
+interface ISomeObject {
+  [key: string]: string|number;
+}
+
+function extractItemsFromCartItems(cartItems: MenuItem[]) {
+  const items = cartItems.reduce((acc: ISomeObject, obj) => {
+    const key = `${obj.name}(${obj.variant})`;
+    acc[key] = `(${obj.quantity})`;
+    return acc;
+  }, {});
+  return items;
+}
+
+const whatsappStringifyOrder = (orders:MenuItem[]) =>
+  `***Orders:***\r\n${JSON.stringify(extractItemsFromCartItems(orders))
+    .slice(1, -1)
+    .replace(/\(undefined\)/g, '')
+    .replace(/\(null\)/g, '')
+    .replace(/"/g, '')
+    .replace(/\$\$\$/g, ',subtotal:')
+    .replace(/,/g, '\r\n\r\n')}`;
 
 const DeliveryOrderMemo: FC<DeliveryOrder> = ({
   createdAt,
@@ -135,6 +156,15 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
     addressTextArea.remove();
   }
 
+  function sendWhatsapp(phoneNumber: string) {
+    const totalPriceTextToSend = storeFrontSideTotalPrice ? `\r\n\r\nTotal: RM ${storeFrontSideTotalPrice.replace(/[^0-9.-]+/g,'')}`: '';
+    const textToSend = encodeURIComponent(`**Checklist / 清单** ${totalPriceTextToSend}\r\n\r\n${whatsappStringifyOrder(orderedItems)}${totalPriceTextToSend}\r\n\r\n***Info/资料:***\r\nPayment Method:${paymentMethod}\r\nHp: ${phoneNumber.replace(/(^\+6)/g, '')}`);
+    const windowReference = window.open('', '_blank');
+    (windowReference as Window).location.href = `https://wa.me/${
+      phoneNumber
+    }?text=${textToSend}`;
+  }
+
   return (
     <Grid item xs={12} sm={12} md={4} className={classes.cardGrid}>
       <Card className={classes.root}>
@@ -164,6 +194,16 @@ const DeliveryOrderMemo: FC<DeliveryOrder> = ({
             </IconButton>
           </Tooltip>
         </Typography>
+        {phoneNumber && 
+          <Typography variant="h5" component="h2">
+            {<span>{phoneNumber}</span>}
+            <Tooltip title="send checklist via whatsapp">
+              <IconButton onClick={() => sendWhatsapp(phoneNumber)} size='medium'>
+                <WhatsAppIcon fontSize='small' />
+              </IconButton>
+            </Tooltip>
+          </Typography>
+        }
         <Typography variant="body2" component="p">
           <span>PS: {postscript}</span>
           <br />
